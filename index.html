@@ -11,16 +11,12 @@
   
   <link rel="stylesheet" href="css/style.css">
   
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="app-body">
 
   <div id="main-content" class="main-content">
     
-    <!-- ========================================== -->
-    <!-- DARK SCREEN -->
-    <!-- ========================================== -->
     <div id="screen-dark" class="screen-view dark-theme show">
       <header class="main-header">
         <div class="brand">
@@ -210,9 +206,6 @@
     </div>
 
 
-    <!-- ========================================== -->
-    <!-- LIGHT SCREEN -->
-    <!-- ========================================== -->
     <div id="screen-light" class="screen-view light-theme hidden">
       <header class="main-header">
         <div class="brand">
@@ -346,12 +339,8 @@
 
   <div id="notification-container" class="notification-container"></div>
 
-  <!-- ========================================== -->
-  <!-- 💬 MULTI-ROLE CHAT BOX                       -->
-  <!-- ========================================== -->
   <div id="chatbox-widget" class="chatbot-widget">
     
-    <!-- Chat Window -->
     <div id="chat-window" class="chat-window hidden">
       
       <!-- HEADER -->
@@ -361,11 +350,11 @@
             <i data-lucide="chevron-left"></i>
           </button>
           <div class="bot-avatar">
-            <i id="chat-header-icon" data-lucide="user"></i>
+            <i id="chat-header-icon" data-lucide="message-circle"></i>
             <span class="bot-status-dot"></span>
           </div>
           <div>
-            <h4 id="chat-header-title" class="bot-name">Hỗ trợ khách hàng</h4>
+            <h4 id="chat-header-title" class="bot-name">Hỗ trợ trực tuyến</h4>
             <span id="chat-header-status" class="bot-status">Sẵn sàng hỗ trợ</span>
           </div>
         </div>
@@ -374,10 +363,7 @@
         </button>
       </div>
       
-      <!-- VIEWS -->
-      <!-- VIEW 1: CHAT LIST -->
       <div id="view-chat-list" class="chat-view hidden">
-        <!-- Admin Panel (Only visible for Admin) -->
         <div id="admin-panel" class="admin-panel hidden">
           <div class="admin-panel-title"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Admin Control Panel</div>
           <div class="admin-stats">
@@ -392,14 +378,11 @@
         </div>
         
         <div class="chat-list-items" id="chat-list-items">
-          <!-- Rendered by JS -->
         </div>
       </div>
 
-      <!-- VIEW 2: CHAT DETAIL -->
       <div id="view-chat-detail" class="chat-view active">
         <div id="chat-messages" class="chat-messages">
-          <!-- Rendered by JS -->
         </div>
         <div class="chat-input-area">
           <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off" />
@@ -410,11 +393,9 @@
       </div>
 
     </div>
-
-    <!-- Floating Toggle Button -->
     <button id="chatbot-toggle-btn" class="chatbot-toggle-btn">
       <div class="bot-icon-wrapper">
-        <i data-lucide="message-circle" style="color:white; width:24px; height:24px;"></i>
+        <i data-lucide="message-circle" style="color:white; width:28px; height:28px;"></i>
       </div>
       <span id="chat-badge" class="chat-badge hidden">0</span>
       <span class="toggle-ping"></span>
