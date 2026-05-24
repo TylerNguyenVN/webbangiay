@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
 
   const currentUserStr = localStorage.getItem("nike_current_user");
@@ -162,6 +161,12 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   let currentRole = "customer";
+  try {
+    const localUser = JSON.parse(localStorage.getItem("nike_current_user"));
+    if (localUser && (localUser.role === "staff" || localUser.role === "admin")) {
+      currentRole = localUser.role;
+    }
+  } catch(e) {}
   let activeChatId = null;
 
   const chatbotToggleBtn = document.getElementById("chatbot-toggle-btn");
@@ -197,10 +202,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       chatBackBtn.classList.add("hidden");
 
-      chatHeaderTitle.textContent = "Hỗ trợ khách hàng";
+      chatHeaderTitle.textContent = "Hỗ trợ trực tuyến";
       chatHeaderStatus.textContent = "Sẵn sàng hỗ trợ";
       if (window.lucide) {
-        chatHeaderIcon.setAttribute("data-lucide", "headphones");
+        chatHeaderIcon.setAttribute("data-lucide", "message-circle");
         lucide.createIcons();
       }
 
