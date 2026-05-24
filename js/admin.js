@@ -1,4 +1,3 @@
-// js/admin.js
 
 const weeklyRevenueData = [
   { name: "T2", revenue: 21 },
@@ -32,9 +31,6 @@ const unresolvedQueries = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ==========================================
-  // ROUTE PROTECTION
-  // ==========================================
   const currentUserStr = localStorage.getItem("nike_current_user");
   if (!currentUserStr) {
     window.location.href = "auth.html";
@@ -47,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Handle Logout
   const adminLogoutBtn = document.getElementById("admin-logout-btn");
   if (adminLogoutBtn) {
     adminLogoutBtn.addEventListener("click", (e) => {
@@ -57,19 +52,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 1. Sidebar Navigation Switcher
   const navItems = document.querySelectorAll(".nav-item[data-target]");
   const sections = document.querySelectorAll(".view-section");
   
   navItems.forEach(item => {
     item.addEventListener("click", () => {
-      // update active nav
+      
       navItems.forEach(n => n.classList.remove("active"));
       item.classList.add("active");
       
       const target = item.getAttribute("data-target");
       
-      // update sections
       sections.forEach(sec => {
         if (sec.id === target) {
           sec.classList.add("active");
@@ -80,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 2. Notification Button
   const notiBtn = document.querySelector(".noti-btn");
   if (notiBtn) {
     notiBtn.addEventListener("click", () => {
@@ -88,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 3. Chart Logic
   let currentChartPeriod = 'monthly';
   const btnChartWeek = document.getElementById("btn-chart-week");
   const btnChartMonth = document.getElementById("btn-chart-month");
@@ -172,7 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     svgWrap.innerHTML = svgHtml;
 
-    // Add Hover effect for JS dots
     const dotGroups = svgWrap.querySelectorAll(".chart-dot-group");
     dotGroups.forEach(g => {
       g.addEventListener("mouseenter", () => {
@@ -183,14 +173,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Update labels
     labelWrap.innerHTML = data.map(d => `<span>${d.name}</span>`).join("");
   }
   
-  // Initial render
   renderChart();
 
-  // 4. AI Training Logic
   const queryListWrap = document.getElementById("query-list-wrap");
   const triggerQueryText = document.getElementById("trigger-query-text");
   const editorCategory = document.getElementById("editor-category");
@@ -232,7 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
       queryListWrap.appendChild(el);
     });
     
-    // Re-init lucide icons for newly added elements
     if (window.lucide) {
       window.lucide.createIcons();
     }
@@ -250,7 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderQueries();
   loadActiveQuery();
 
-  // Draft button
   const btnDraft = document.getElementById("btn-ai-draft");
   if (btnDraft) {
     btnDraft.addEventListener("click", () => {
@@ -268,7 +253,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Save button
   const btnSave = document.getElementById("btn-ai-save");
   if (btnSave) {
     btnSave.addEventListener("click", () => {
@@ -283,7 +267,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Simulator
   const btnSim = document.getElementById("btn-sim-send");
   const inputSim = document.getElementById("input-sim");
   if (btnSim && inputSim) {
@@ -307,7 +290,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Helper Notification
   function showAdminNotification(msg) {
     alert("Admin System: " + msg); // Simplified notification for pure JS demo without building complex popup system again
   }
