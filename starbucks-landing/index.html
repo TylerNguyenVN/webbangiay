@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starbucks Coffee Company</title>
+    
+    <!-- Google Fonts as substitutes for Starbucks proprietary fonts -->
+    <!-- Inter replaces SoDoSans (sans-serif), Lora replaces Lander Tall (serif) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Global Navigation -->
+    <header class="global-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <!-- Simple SVG Logo Placeholder for Starbucks -->
+                <a href="#" class="logo" aria-label="Starbucks Logo">
+                    <svg viewBox="0 0 50 50" width="50" height="50">
+                        <circle cx="25" cy="25" r="25" fill="var(--color-starbucks-green)" />
+                        <circle cx="25" cy="25" r="22" fill="#fff" />
+                        <circle cx="25" cy="25" r="20" fill="var(--color-starbucks-green)" />
+                        <path d="M25 15 L28 22 L35 22 L29 27 L31 34 L25 30 L19 34 L21 27 L15 22 L22 22 Z" fill="#fff" />
+                    </svg>
+                </a>
+                <nav class="primary-links">
+                    <a href="#">Menu</a>
+                    <a href="#">Rewards</a>
+                    <a href="#">Gift Cards</a>
+                </nav>
+            </div>
+            <div class="nav-right">
+                <a href="#" class="store-locator">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Find a store
+                </a>
+                <div class="auth-buttons">
+                    <button class="btn btn-outlined">Sign in</button>
+                    <button class="btn btn-black">Join now</button>
+                    <button id="theme-toggle" class="btn btn-icon" aria-label="Toggle Dark Mode">
+                        <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-toggle" aria-label="Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section (Feature Band) -->
+        <section class="feature-band">
+            <div class="band-content">
+                <h2 class="display-text">Refresh your afternoon</h2>
+                <p class="body-large">Enjoy a bright, iced beverage to keep you going. Explore our new refreshing options for a perfect midday lift.</p>
+                <div class="cta-row">
+                    <button class="btn btn-inverted">See the spring menu</button>
+                    <button class="btn btn-outlined-dark">Learn more</button>
+                </div>
+            </div>
+            <div class="band-image">
+                <img src="https://images.unsplash.com/photo-1553909489-cd47cebeabe8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Iced Coffee Beverage" loading="lazy">
+            </div>
+        </section>
+
+        <!-- Product Cards / Features Section -->
+        <section class="features-section">
+            <div class="section-container">
+                <div class="card-grid">
+                    <!-- Content Card 1 -->
+                    <article class="card">
+                        <div class="card-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1620589125156-fd5028c5e05b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Coffee cup" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <h3>Start an order</h3>
+                            <p>Pick up your favorites from a store near you.</p>
+                            <button class="btn btn-primary-outlined">Order now</button>
+                        </div>
+                    </article>
+                    
+                    <!-- Content Card 2 -->
+                    <article class="card">
+                        <div class="card-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Coffee beans" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <h3>Coffee delivered</h3>
+                            <p>Enjoy your favorite Starbucks coffee at home.</p>
+                            <button class="btn btn-primary-outlined">Learn more</button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rewards Status Section -->
+        <section class="rewards-section">
+            <div class="section-container">
+                <h2 class="h1-heading text-center" style="margin-bottom: var(--space-5);">Rewards Tiers</h2>
+                <div class="rewards-grid">
+                    <!-- Status Card -->
+                    <div class="reward-status-card">
+                        <div class="tier-accent silver"></div>
+                        <div class="tier-level">Level 1</div>
+                        <h3 class="tier-title">Green</h3>
+                        <ul class="benefits-list">
+                            <li>Free refills on hot or iced coffee & tea</li>
+                            <li>Free birthday reward</li>
+                            <li>Order ahead & pay</li>
+                        </ul>
+                        <p class="progression-text">Earn more stars to unlock Gold...</p>
+                    </div>
+
+                    <!-- Status Card -->
+                    <div class="reward-status-card">
+                        <div class="tier-accent gold"></div>
+                        <div class="tier-level" style="color: var(--color-gold);">Level 2</div>
+                        <h3 class="tier-title" style="color: var(--color-gold);">Gold</h3>
+                        <ul class="benefits-list">
+                            <li>All Green benefits</li>
+                            <li>Monthly double star days</li>
+                            <li>Custom personalized offers</li>
+                            <li>Exclusive gold member card</li>
+                        </ul>
+                        <p class="progression-text">You are enjoying Gold benefits!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Partnership Section -->
+        <section class="partnership-section">
+             <div class="section-container">
+                 <div class="partnership-card">
+                     <h3>Partnerships</h3>
+                     <p>Link your Delta SkyMiles® and Starbucks® Rewards accounts to earn 1 mile per $1 spent at Starbucks.</p>
+                     <button class="btn btn-primary-filled">Link accounts</button>
+                 </div>
+             </div>
+        </section>
+    </main>
+
+    <!-- Frap Floating Order Button -->
+    <button class="frap-button" aria-label="Start Order">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+    </button>
+
+    <!-- Footer -->
+    <footer class="global-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>About Us</h4>
+                    <a href="#">Our Company</a>
+                    <a href="#">Our Coffee</a>
+                    <a href="#">Stories and News</a>
+                    <a href="#">Customer Service</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Careers</h4>
+                    <a href="#">Culture and Values</a>
+                    <a href="#">Diversity and Inclusion</a>
+                    <a href="#">Work at Starbucks</a>
+                    <a href="#">Corporate Careers</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Social Impact</h4>
+                    <a href="#">People</a>
+                    <a href="#">Planet</a>
+                    <a href="#">Environmental and Social Impact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Starbucks Coffee Company. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
