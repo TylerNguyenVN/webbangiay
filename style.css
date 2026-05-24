@@ -1,8 +1,4 @@
-/* =========================================
-   STARBUCKS DESIGN SYSTEM CSS
-   ========================================= */
-
-   :root {
+:root {
     /* 1. Color Palette & Roles */
     /* Primary Greens */
     --color-starbucks-green: #006241;
@@ -10,29 +6,30 @@
     --color-house-green: #1E3932;
     --color-green-uplift: #2b5148;
     --color-green-light: #d4e9e2;
-    
+
     /* Secondary & Accent */
     --color-gold: #cba258;
     --color-gold-light: #dfc49d;
     --color-gold-lightest: #faf6ee;
-    
+
     /* Canvas & Surfaces */
-    --page-bg: #f2f0eb; /* Neutral Warm canvas */
+    --page-bg: #f2f0eb;
+    /* Neutral Warm canvas */
     --card-bg: #ffffff;
     --surface-ceramic: #edebe9;
     --surface-neutral-cool: #f9f9f9;
-    
+
     /* Text */
     --text-black: rgba(0, 0, 0, 0.87);
     --text-black-soft: rgba(0, 0, 0, 0.58);
     --text-white: rgba(255, 255, 255, 1);
     --text-white-soft: rgba(255, 255, 255, 0.70);
     --text-rewards-green: #33433d;
-    
+
     /* Status */
     --color-red: #c82014;
     --color-yellow: #fbbc05;
-    
+
     /* 2. Spacing Scale (1rem = 10px) */
     --space-1: 0.4rem;
     --space-2: 0.8rem;
@@ -43,42 +40,44 @@
     --space-7: 4.8rem;
     --space-8: 5.6rem;
     --space-9: 6.4rem;
-    
-    --outer-gutter: 1.6rem; /* xs/mobile */
-    
+
+    --outer-gutter: 1.6rem;
+    /* xs/mobile */
+
     /* 3. Typography Tokens */
     --font-primary: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     --font-serif: 'Lora', 'Iowan Old Style', Georgia, serif;
     --letter-spacing-normal: -0.01em;
-    
+
     /* 4. Elevations & Radius */
     --radius-button: 50px;
     --radius-card: 12px;
-    
-    --shadow-card: 0 0 0.5px rgba(0,0,0,0.14), 0 1px 1px rgba(0,0,0,0.24);
-    --shadow-nav: 0 1px 3px rgba(0,0,0,0.1), 0 2px 2px rgba(0,0,0,0.06), 0 0 2px rgba(0,0,0,0.07);
-    --shadow-frap-base: 0 0 6px rgba(0,0,0,0.24);
-    --shadow-frap-ambient: 0 8px 12px rgba(0,0,0,0.14);
-    
+
+    --shadow-card: 0 0 0.5px rgba(0, 0, 0, 0.14), 0 1px 1px rgba(0, 0, 0, 0.24);
+    --shadow-nav: 0 1px 3px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.06), 0 0 2px rgba(0, 0, 0, 0.07);
+    --shadow-frap-base: 0 0 6px rgba(0, 0, 0, 0.24);
+    --shadow-frap-ambient: 0 8px 12px rgba(0, 0, 0, 0.14);
+
     /* Transitions */
     --transition-btn: all 0.2s ease;
     --btn-active-scale: scale(0.95);
-    
+
     /* Layout */
-    --nav-height: 64px; /* xs */
+    --nav-height: 64px;
+    /* xs */
 }
 
 /* Dark Theme Overrides */
 [data-theme="dark"] {
-    --page-bg: #121212;
-    --card-bg: #1e1e1e;
-    --surface-ceramic: #2c2c2c;
-    --surface-neutral-cool: #2a2a2a;
+    --page-bg: #0f1815; /* Canvas */
+    --card-bg: #1E3932; /* Surface 1 */
+    --surface-ceramic: #2b5148; /* Surface 2 */
+    --surface-neutral-cool: #33433d; /* Surface 3 */
     
     --text-black: rgba(255, 255, 255, 0.87);
     --text-black-soft: rgba(255, 255, 255, 0.58);
     
-    --color-house-green: #0a1f18; /* Darker house green for dark mode contrast */
+    --color-house-green: #1E3932; /* Surface 1 for feature bands */
     
     --shadow-card: 0 0 0.5px rgba(255,255,255,0.05), 0 1px 1px rgba(255,255,255,0.1);
 }
@@ -88,12 +87,15 @@
    ========================================= */
 
 html {
-    font-size: 62.5%; /* 1rem = 10px */
+    font-size: 62.5%;
+    /* 1rem = 10px */
     box-sizing: border-box;
     scroll-behavior: smooth;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: inherit;
     margin: 0;
     padding: 0;
@@ -131,14 +133,20 @@ ul {
    TYPOGRAPHY HIERARCHY
    ========================================= */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: 600;
     line-height: 1.2;
     letter-spacing: var(--letter-spacing-normal);
 }
 
 .display-text {
-    font-size: 3.6rem; /* Mobile first, will scale */
+    font-size: 3.6rem;
+    /* Mobile first, will scale */
     color: var(--text-white);
 }
 
@@ -212,6 +220,7 @@ h1, h2, h3, h4, h5, h6 {
     color: #ffffff;
     border-color: #000000;
 }
+
 [data-theme="dark"] .btn-black {
     background-color: var(--text-white);
     color: #000000;
@@ -246,9 +255,11 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-black);
     border: 1px solid var(--text-black);
 }
+
 [data-theme="dark"] .btn-icon .moon-icon {
     display: none;
 }
+
 [data-theme="light"] .btn-icon .sun-icon,
 :root:not([data-theme="dark"]) .btn-icon .sun-icon {
     display: none;
@@ -279,7 +290,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .frap-button:active {
-    box-shadow: var(--shadow-frap-base), 0 8px 12px rgba(0,0,0,0);
+    box-shadow: var(--shadow-frap-base), 0 8px 12px rgba(0, 0, 0, 0);
     transform: scale(0.95);
 }
 
@@ -308,14 +319,16 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 var(--outer-gutter);
 }
 
-.nav-left, .nav-right {
+.nav-left,
+.nav-right {
     display: flex;
     align-items: center;
     gap: var(--space-4);
 }
 
 .primary-links {
-    display: none; /* hidden on mobile */
+    display: none;
+    /* hidden on mobile */
     gap: var(--space-4);
     font-weight: 600;
 }
@@ -325,14 +338,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .store-locator {
-    display: none; /* hidden on mobile */
+    display: none;
+    /* hidden on mobile */
     align-items: center;
     gap: var(--space-1);
     font-weight: 600;
 }
 
 .auth-buttons {
-    display: none; /* hidden on mobile */
+    display: none;
+    /* hidden on mobile */
     gap: var(--space-3);
     align-items: center;
 }
@@ -457,10 +472,18 @@ h1, h2, h3, h4, h5, h6 {
 .tier-accent {
     height: 6px;
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0;
+    left: 0;
+    right: 0;
 }
-.tier-accent.silver { background: linear-gradient(90deg, #b0bec5, #cfd8dc); }
-.tier-accent.gold { background: linear-gradient(90deg, #cba258, #fbbc05); }
+
+.tier-accent.silver {
+    background: linear-gradient(90deg, #b0bec5, #cfd8dc);
+}
+
+.tier-accent.gold {
+    background: linear-gradient(90deg, #cba258, #fbbc05);
+}
 
 .tier-level {
     font-size: 1.4rem;
@@ -569,15 +592,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: var(--space-4);
     font-size: 1.4rem;
 }
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* =========================================
@@ -589,6 +617,7 @@ h1, h2, h3, h4, h5, h6 {
     :root {
         --nav-height: 72px;
     }
+
     .card-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -600,21 +629,21 @@ h1, h2, h3, h4, h5, h6 {
         --nav-height: 83px;
         --outer-gutter: 2.4rem;
     }
-    
+
     .feature-band {
         flex-direction: row;
     }
-    
+
     .band-content {
         flex: 0 0 60%;
         padding: var(--space-6) var(--space-5);
     }
-    
+
     .band-image {
         flex: 0 0 40%;
         height: auto;
     }
-    
+
     .display-text {
         font-size: 4.5rem;
     }
@@ -631,14 +660,16 @@ h1, h2, h3, h4, h5, h6 {
         --outer-gutter: 4.0rem;
     }
 
-    .primary-links, .store-locator, .auth-buttons {
+    .primary-links,
+    .store-locator,
+    .auth-buttons {
         display: flex;
     }
 
     .mobile-toggle {
         display: none;
     }
-    
+
     .logo {
         margin-right: var(--space-5);
     }
@@ -657,6 +688,7 @@ h1, h2, h3, h4, h5, h6 {
     .feature-band {
         padding-left: calc((100vw - 1440px) / 2);
     }
+
     .feature-band .band-image {
         max-width: calc(1440px * 0.4);
     }
