@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nike Elite - Admin Console</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/admin.css">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="admin-body">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="admin-brand">
+      <h1>NIKE ELITE</h1>
+      <p>Premium Management</p>
+    </div>
+
+    <nav class="admin-nav">
+      <button class="nav-item active" data-target="admin-dashboard">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </div>
+        <i data-lucide="chevron-right" style="width:14px;height:14px;color:#030712;"></i>
+      </button>
+
+      <button class="nav-item">
+        <i data-lucide="layers"></i>
+        <span>Danh mục</span>
+      </button>
+
+      <button class="nav-item">
+        <i data-lucide="package"></i>
+        <span>Sản phẩm</span>
+      </button>
+
+      <button class="nav-item">
+        <i data-lucide="shopping-cart"></i>
+        <span>Đơn hàng</span>
+        <span class="nav-badge">2</span>
+      </button>
+
+      <div class="nav-divider"></div>
+
+      <button class="nav-item" data-target="admin-ai">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <i data-lucide="bot"></i>
+          <span>Huấn luyện Chatbot</span>
+        </div>
+        <i data-lucide="sparkles" style="width:11px;height:11px;color:#bf9f62;margin-left:auto;"></i>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="btn-store">
+        <span>Xem Cửa hàng</span>
+        <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
+      </a>
+      <a href="#" id="admin-logout-btn" class="btn-store" style="background:#fef2f2; color:#ef4444; margin-top:0.5rem;">
+        <span>Đăng xuất</span>
+        <i data-lucide="log-out" style="width:14px;height:14px;"></i>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <main class="admin-main">
+    
+    <!-- ============================================== -->
+    <!-- DASHBOARD SECTION                              -->
+    <!-- ============================================== -->
+    <section id="admin-dashboard" class="view-section active">
+      
+      <!-- Header Row -->
+      <div class="header-row">
+        <div class="header-title-wrapper">
+          <span class="header-label">Admin Console</span>
+          <h2 class="header-title">Tổng quan kinh doanh</h2>
+          <p class="header-desc">Hiệu suất và chỉ số chính trên dòng sản phẩm cao cấp Nike Elite.</p>
+        </div>
+        <div class="header-tools">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" class="search-input" placeholder="Tìm kiếm...">
+          </div>
+          <button class="noti-btn">
+            <i data-lucide="bell" style="width:16px;height:16px;"></i>
+            <span class="noti-dot"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-label">Doanh thu</span>
+          <p class="metric-val">128.500.000 ₫</p>
+          <div class="metric-trend trend-up">
+            <i data-lucide="trending-up" style="width:13px;height:13px;"></i>
+            <span>+12.5% so với tháng trước</span>
+          </div>
+          <div class="metric-bg-icon metric-bg-text">$</div>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-label">Đơn hàng mới</span>
+          <p class="metric-val">342</p>
+          <div class="metric-trend trend-up">
+            <i data-lucide="trending-up" style="width:13px;height:13px;"></i>
+            <span>+8.2% so với tháng trước</span>
+          </div>
+          <div class="metric-bg-icon"><i data-lucide="shopping-bag"></i></div>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-label">Thành viên mới</span>
+          <p class="metric-val">1,204</p>
+          <div class="metric-trend trend-down">
+            <i data-lucide="trending-down" style="width:13px;height:13px;"></i>
+            <span>-2.4% so với tháng trước</span>
+          </div>
+          <div class="metric-bg-icon"><i data-lucide="users"></i></div>
+        </div>
+
+        <div class="metric-card interactive" onclick="document.querySelector('.nav-item[data-target=\'admin-ai\']').click()">
+          <span class="metric-label">Tỷ lệ phản hồi Chatbot</span>
+          <p class="metric-val">85%</p>
+          <div class="metric-trend trend-up">
+            <i data-lucide="check-circle" style="width:13px;height:13px;"></i>
+            <span>Tối ưu</span>
+          </div>
+          <div style="width:100%; background:#f3f4f6; height:6px; border-radius:99px; margin-top:1rem; overflow:hidden;">
+            <div style="background:linear-gradient(to right, #14b8a6, #053225); width:85%; height:100%;"></div>
+          </div>
+          <div class="metric-bg-icon"><i data-lucide="bot"></i></div>
+        </div>
+      </div>
+
+      <!-- Chart Container -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <div style="display:flex; flex-direction:column; gap:0.25rem;">
+            <h3 class="chart-title">
+              Biểu đồ doanh thu 
+              <span class="chart-badge">Sát thực tế</span>
+            </h3>
+            <p class="chart-desc">Phân tích lưu lượng doanh số dòng sản phẩm cao cấp.</p>
+          </div>
+          <div class="chart-filters">
+            <button id="btn-chart-week">Tuần</button>
+            <button id="btn-chart-month" class="active">Tháng</button>
+          </div>
+        </div>
+
+        <div class="svg-chart-wrapper">
+          <div class="chart-grid-lines">
+            <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line solid"></div>
+          </div>
+          
+          <div id="chart-svg-wrap" class="chart-svg"></div>
+          
+          <div id="chart-labels-wrap" class="chart-x-labels"></div>
+        </div>
+        
+        <div class="chart-info">
+          Dữ liệu được cập nhật liên tục thông qua trung tâm đồng bộ. Đỉnh điểm doanh thu ghi nhận vào thời điểm hôm nay.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================== -->
+    <!-- AI CHATBOT TRAINING SECTION                    -->
+    <!-- ============================================== -->
+    <section id="admin-ai" class="view-section">
+      
+      <!-- Header Row -->
+      <div class="header-row">
+        <div class="header-title-wrapper">
+          <span class="header-label" style="color:#047857;">AI AGENT TRAINING MODULE</span>
+          <h2 class="header-title">
+            Bảng điều khiển Nghiệp vụ AI
+            <span class="badge-tag"><i data-lucide="sparkles" style="width:11px;height:11px;color:#d97706;"></i> Gemini Activated</span>
+          </h2>
+          <p class="header-desc">Phục hồi các câu hỏi chưa lý giải, gắn thẻ chất lượng kiến thức và đồng bộ hóa thư viện.</p>
+        </div>
+        
+        <div class="gauge-container">
+          <div class="gauge-info">
+            <span class="gauge-label">Model Readiness</span>
+            <div class="gauge-val">
+              <span class="pct">85%</span>
+              <span class="sub">chỉ tiêu kiến thức</span>
+            </div>
+          </div>
+          <div class="gauge-bar-bg"><div class="gauge-bar-fill"></div></div>
+        </div>
+      </div>
+
+      <!-- AI Grid Split -->
+      <div class="ai-grid">
+        
+        <!-- Left: List -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Unresolved Queries</h3>
+            <button style="border:none;background:transparent;color:#047857;font-size:0.75rem;font-weight:600;display:flex;align-items:center;gap:0.25rem;cursor:pointer;">
+              <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Reset
+            </button>
+          </div>
+          
+          <div id="query-list-wrap" class="query-list">
+            <!-- Rendered by JS -->
+          </div>
+
+          <div class="sim-input-area">
+            <span class="sim-label">Mô phỏng câu hỏi mới gửi về từ Web Client</span>
+            <div class="sim-flex">
+              <input type="text" id="input-sim" placeholder="Ví dụ: Giày này có bền không?">
+              <button id="btn-sim-send">Gửi</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Editor -->
+        <div class="panel editor-panel">
+          
+          <div style="display:flex; align-items:center; gap:0.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem;">
+            <i data-lucide="bot" style="color:#047857;"></i>
+            <div style="display:flex;flex-direction:column;">
+              <h3 style="margin:0;font-family:var(--font-display);font-size:1.125rem;color:#053225;font-weight:700;">Knowledge Injection Workspace</h3>
+              <span style="font-size:0.75rem;color:#6b7280;">Xác thực chuẩn hóa dải tri thức để nạp dữ liệu lõi cho Chatbot.</span>
+            </div>
+          </div>
+
+          <div class="trigger-query">
+            <span class="trigger-label">Trigger Query (Câu hỏi mồi)</span>
+            <p id="trigger-query-text" class="trigger-text">"..."</p>
+          </div>
+
+          <div class="editor-field">
+            <span class="editor-label">Intent Classification (Phân loại ý định)</span>
+            <div class="editor-select-row">
+              <select id="editor-category" class="editor-select">
+                <option value="Product Inquiry > Tech Specs">Product Inquiry > Tech Specs</option>
+                <option value="Product Inquiry > Material">Product Inquiry > Material</option>
+                <option value="Support > Returns">Support > Returns</option>
+                <option value="Support > Sizing">Support > Sizing</option>
+                <option value="Product Inquiry > General">Product Inquiry > General</option>
+              </select>
+              <button class="btn-new-intent">+ New Intent</button>
+            </div>
+          </div>
+
+          <div class="editor-field">
+            <span class="editor-label">Suggested Optimal AI Response</span>
+            <textarea id="editor-answer" class="editor-textarea" placeholder="Nhập câu trả lời tối ưu..."></textarea>
+          </div>
+
+          <div class="editor-actions">
+            <button id="btn-ai-draft" class="btn-draft">
+              <i data-lucide="bot" style="width:15px;height:15px;"></i> Generate AI Draft
+            </button>
+            <button id="btn-ai-save" class="btn-save">
+              Inject Knowledge to DB
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    // Initialize icons
+    lucide.createIcons();
+  </script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

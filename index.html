@@ -1,218 +1,430 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store</title>
-
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@400;600&display=swap"
-        rel="stylesheet">
-
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nike Elite - High-Performance Storefront</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+<body class="app-body">
 
-<body>
-    <header class="global-nav">
-        <div class="nav-container">
-            <div class="nav-left">
-                <a href="#" class="logo" aria-label="Starbucks Logo">
-                    <svg viewBox="0 0 50 50" width="50" height="50">
-                        <circle cx="25" cy="25" r="25" fill="var(--color-starbucks-green)" />
-                        <circle cx="25" cy="25" r="22" fill="#fff" />
-                        <circle cx="25" cy="25" r="20" fill="var(--color-starbucks-green)" />
-                        <path d="M25 15 L28 22 L35 22 L29 27 L31 34 L25 30 L19 34 L21 27 L15 22 L22 22 Z" fill="#fff" />
-                    </svg>
-                </a>
-                <nav class="primary-links">
-                    <a href="#">Menu</a>
-                    <a href="#">Rewards</a>
-                    <a href="#">Gift Cards</a>
-                </nav>
-            </div>
-            <div class="nav-right">
-                <a href="#" class="store-locator">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    Find a store
-                </a>
-                <div class="auth-buttons">
-                    <button class="btn btn-outlined">Sign in</button>
-                    <button class="btn btn-black">Join now</button>
-                    <button id="theme-toggle" class="btn btn-icon" aria-label="Toggle Dark Mode">
-                        <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                        <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <button class="mobile-toggle" aria-label="Menu">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
+  <div id="main-content" class="main-content">
+    
+    <!-- ========================================== -->
+    <!-- DARK SCREEN -->
+    <!-- ========================================== -->
+    <div id="screen-dark" class="screen-view dark-theme show">
+      <header class="main-header">
+        <div class="brand">
+          <span class="brand-text">NIKE</span>
+          <span class="brand-dot"></span>
         </div>
-    </header>
+        
+        <nav class="nav-links">
+          <a href="#new" class="nav-link active">Mới và Nổi bật</a>
+          <a href="#men" class="nav-link">Nam</a>
+          <a href="#women" class="nav-link">Nữ</a>
+          <a href="#kids" class="nav-link">Trẻ em</a>
+          <a href="#sale" class="nav-link sale">Sale</a>
+          <a href="#about" class="nav-link">Về chúng tôi</a>
+        </nav>
+        
+        <div class="utilities">
+          <button class="icon-btn theme-toggle-btn" data-target="screen-light" title="Chuyển giao diện Sáng">
+            <i data-lucide="sun"></i>
+          </button>
+          <button class="icon-btn" title="Tìm kiếm"><i data-lucide="search"></i></button>
+          <button class="icon-btn" title="Yêu thích">
+            <i data-lucide="heart"></i>
+            <span class="badge fav-count">3</span>
+          </button>
+          <button class="icon-btn" title="Giỏ hàng">
+            <i data-lucide="shopping-bag"></i>
+            <span class="badge cart-count">2</span>
+          </button>
+          <div class="util-divider"></div>
+          <div id="auth-status-dark" class="auth-status-container">
+            <a href="auth.html" class="admin-btn" style="text-decoration:none;">
+              <i data-lucide="log-in"></i>
+              <span>Đăng nhập</span>
+            </a>
+          </div>
+        </div>
+      </header>
 
-    <main>
-        <section class="feature-band">
-            <div class="band-content">
-                <h2 class="display-text">Refresh your afternoon</h2>
-                <p class="body-large">Enjoy a bright, iced beverage to keep you going. Explore our new refreshing
-                    options for a perfect midday lift.</p>
-                <div class="cta-row">
-                    <button class="btn btn-inverted">See the spring menu</button>
-                    <button class="btn btn-outlined-dark">Learn more</button>
+      <section class="hero-section dark-hero">
+        <div class="hero-bg"></div>
+        <div class="hero-gradient"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+          <h1 class="hero-title">TỐC ĐỘ ĐỊNH HÌNH <br/><span class="text-gradient">TƯƠNG LAI.</span></h1>
+          <p class="hero-subtitle">Trải nghiệm đỉnh cao của công nghệ và thiết kế. Dòng sản phẩm mới nhất mang đến hiệu suất vượt trội trong bóng tối.</p>
+          <button class="buy-btn hero-cta" data-price="5200000" data-name="Nike Air Zoom X">
+            KHÁM PHÁ NGAY <i data-lucide="arrow-up-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <section class="products-section">
+        <div class="section-header">
+          <h2 class="section-title">Thiết Kế Đỉnh Cao <span class="title-dot"></span></h2>
+          <span class="section-meta">Mùa 2026 Elite Edition</span>
+        </div>
+
+        <div class="product-grid">
+          <!-- Product 1 -->
+          <div class="product-card dark-card">
+            <span class="card-badge">New Spec</span>
+            <div class="card-bg-grid"></div>
+            <div class="card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&q=80&w=600" alt="Nike Air Zoom X">
+              <button class="help-btn"><i data-lucide="help-circle"></i></button>
+            </div>
+            <div class="card-info">
+              <div class="card-top">
+                <div>
+                  <h3 class="product-name">Nike Air Zoom X</h3>
+                  <p class="product-desc">Công nghệ đệm phản hồi tối đa.</p>
                 </div>
+                <button class="buy-btn add-btn" data-price="5200000" data-name="Nike Air Zoom X"><i data-lucide="plus"></i></button>
+              </div>
+              <div class="card-bottom">
+                <span class="product-price">5.200.000 ₫</span>
+                <span class="product-category">Running</span>
+              </div>
             </div>
-            <div class="band-image">
-                <img src="https://images.unsplash.com/photo-1553909489-cd47cebeabe8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Iced Coffee Beverage" loading="lazy">
+          </div>
+          <!-- Product 2 -->
+          <div class="product-card dark-card">
+            <div class="card-bg-grid"></div>
+            <div class="card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=600" alt="Flyknit Pro Elite">
+              <button class="help-btn"><i data-lucide="help-circle"></i></button>
             </div>
-        </section>
-
-        <section class="features-section">
-            <div class="section-container">
-                <div class="card-grid">
-                    <article class="card">
-                        <div class="card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1620589125156-fd5028c5e05b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                                alt="Coffee cup" loading="lazy">
-                        </div>
-                        <div class="card-content">
-                            <h3>Start an order</h3>
-                            <p>Pick up your favorites from a store near you.</p>
-                            <button class="btn btn-primary-outlined">Order now</button>
-                        </div>
-                    </article>
-
-                    <article class="card">
-                        <div class="card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                                alt="Coffee beans" loading="lazy">
-                        </div>
-                        <div class="card-content">
-                            <h3>Coffee delivered</h3>
-                            <p>Enjoy your favorite Starbucks coffee at home.</p>
-                            <button class="btn btn-primary-outlined">Learn more</button>
-                        </div>
-                    </article>
+            <div class="card-info">
+              <div class="card-top">
+                <div>
+                  <h3 class="product-name">Flyknit Pro Elite</h3>
+                  <p class="product-desc">Nhẹ như không, ôm sát hoàn hảo.</p>
                 </div>
+                <button class="buy-btn add-btn" data-price="4800000" data-name="Flyknit Pro Elite"><i data-lucide="plus"></i></button>
+              </div>
+              <div class="card-bottom">
+                <span class="product-price">4.800.000 ₫</span>
+                <span class="product-category">Professional</span>
+              </div>
             </div>
-        </section>
-
-        <!-- Rewards Status Section -->
-        <section class="rewards-section">
-            <div class="section-container">
-                <h2 class="h1-heading text-center" style="margin-bottom: var(--space-5);">Rewards Tiers</h2>
-                <div class="rewards-grid">
-                    <!-- Status Card -->
-                    <div class="reward-status-card">
-                        <div class="tier-accent silver"></div>
-                        <div class="tier-level">Level 1</div>
-                        <h3 class="tier-title">Green</h3>
-                        <ul class="benefits-list">
-                            <li>Free refills on hot or iced coffee & tea</li>
-                            <li>Free birthday reward</li>
-                            <li>Order ahead & pay</li>
-                        </ul>
-                        <p class="progression-text">Earn more stars to unlock Gold...</p>
-                    </div>
-
-                    <!-- Status Card -->
-                    <div class="reward-status-card">
-                        <div class="tier-accent gold"></div>
-                        <div class="tier-level" style="color: var(--color-gold);">Level 2</div>
-                        <h3 class="tier-title" style="color: var(--color-gold);">Gold</h3>
-                        <ul class="benefits-list">
-                            <li>All Green benefits</li>
-                            <li>Monthly double star days</li>
-                            <li>Custom personalized offers</li>
-                            <li>Exclusive gold member card</li>
-                        </ul>
-                        <p class="progression-text">You are enjoying Gold benefits!</p>
-                    </div>
+          </div>
+          <!-- Product 3 -->
+          <div class="product-card dark-card">
+            <div class="card-bg-grid"></div>
+            <div class="card-image-wrapper">
+              <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=600" alt="Aero Swift 2.0">
+              <button class="help-btn"><i data-lucide="help-circle"></i></button>
+            </div>
+            <div class="card-info">
+              <div class="card-top">
+                <div>
+                  <h3 class="product-name">Aero Swift 2.0</h3>
+                  <p class="product-desc">Bứt tốc mạnh mẽ mọi địa hình.</p>
                 </div>
+                <button class="buy-btn add-btn" data-price="6500000" data-name="Aero Swift 2.0"><i data-lucide="plus"></i></button>
+              </div>
+              <div class="card-bottom">
+                <span class="product-price">6.500.000 ₫</span>
+                <span class="product-category">All-Terrain</span>
+              </div>
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        <!-- Partnership Section -->
-        <section class="partnership-section">
-            <div class="section-container">
-                <div class="partnership-card">
-                    <h3>Partnerships</h3>
-                    <p>Link your Delta SkyMiles® and Starbucks® Rewards accounts to earn 1 mile per $1 spent at
-                        Starbucks.</p>
-                    <button class="btn btn-primary-filled">Link accounts</button>
+      <section class="tech-section">
+        <div class="tech-container">
+          <div class="tech-header">
+            <h2>CÔNG NGHỆ TƯƠNG LAI</h2>
+            <div class="tech-divider"></div>
+            <p>Engineering and Premium Materials Blueprint</p>
+          </div>
+          <div class="tech-grid">
+            <div class="tech-card main-tech-card">
+              <div class="tech-glow"></div>
+              <div class="tech-content">
+                <span class="tech-badge">Spec-Grid #01</span>
+                <h3>Flyknit Đột Phá</h3>
+                <p>Cấu trúc sợi dệt vi mô siêu nhẹ, ôm khít bàn chân như một lớp da thứ hai, tối ưu hóa sự linh hoạt và thoáng khí vượt trội qua hàng trăm dặm hành trình.</p>
+              </div>
+              <div class="tech-link">
+                Xem tài liệu dệt kim <i data-lucide="arrow-right"></i>
+              </div>
+            </div>
+            <div class="tech-sidebar">
+              <div class="tech-card side-tech-card">
+                <div class="side-top">
+                  <div>
+                    <span class="tech-badge">Spec-Grid #02</span>
+                    <h4>Air Zoom</h4>
+                  </div>
+                  <span class="icon-box teal"><i data-lucide="plus"></i></span>
                 </div>
+                <p>Hệ thống đệm khí kép tăng cường phản hồi lực kéo thông minh dồn cho bàn chân trước khi đáp đất.</p>
+              </div>
+              <div class="tech-card side-tech-card">
+                <div class="side-top">
+                  <div>
+                    <span class="tech-badge">Spec-Grid #03</span>
+                    <h4 class="gold-text">Shield Tech</h4>
+                  </div>
+                  <span class="icon-box gold"><i data-lucide="plus"></i></span>
+                </div>
+                <p>Lớp phủ màng chống thấm dẻo dai giúp tăng sức bền, loại bỏ mồ hôi và ẩm từ môi trường khắc nghiệt ẩm thấp.</p>
+              </div>
             </div>
-        </section>
-    </main>
+          </div>
+        </div>
+      </section>
 
-    <!-- Frap Floating Order Button -->
-    <button class="frap-button" aria-label="Start Order">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <path d="M16 10a4 4 0 0 1-8 0"></path>
-        </svg>
-    </button>
-
-    <!-- Footer -->
-    <footer class="global-footer">
+      <footer class="main-footer dark-footer">
         <div class="footer-container">
-            <div class="footer-links">
-                <div class="footer-column">
-                    <h4>About Us</h4>
-                    <a href="#">Our Company</a>
-                    <a href="#">Our Coffee</a>
-                    <a href="#">Stories and News</a>
-                    <a href="#">Customer Service</a>
-                </div>
-                <div class="footer-column">
-                    <h4>Careers</h4>
-                    <a href="#">Culture and Values</a>
-                    <a href="#">Diversity and Inclusion</a>
-                    <a href="#">Work at Starbucks</a>
-                    <a href="#">Corporate Careers</a>
-                </div>
-                <div class="footer-column">
-                    <h4>Social Impact</h4>
-                    <a href="#">People</a>
-                    <a href="#">Planet</a>
-                    <a href="#">Environmental and Social Impact</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Starbucks Coffee Company. All rights reserved.</p>
-            </div>
+          <div class="footer-left">
+            <span class="footer-logo">NIKE</span>
+            <div class="footer-div"></div>
+            <p>© 2026 Nike, Inc. Bảo lưu mọi quyền.</p>
+          </div>
+          <div class="footer-links">
+            <a href="#">Tìm cửa hàng</a>
+            <a href="#">Trở thành hội viên</a>
+            <a href="#" class="gold-text">Phản hồi</a>
+            <a href="#">Thẻ quà tặng</a>
+          </div>
         </div>
-    </footer>
+      </footer>
+    </div>
 
-    <script src="js/script.js"></script>
+
+    <!-- ========================================== -->
+    <!-- LIGHT SCREEN -->
+    <!-- ========================================== -->
+    <div id="screen-light" class="screen-view light-theme hidden">
+      <header class="main-header">
+        <div class="brand">
+          <span class="brand-text">NIKE</span>
+          <span class="brand-dot emerald"></span>
+        </div>
+        
+        <nav class="nav-links">
+          <a href="#new" class="nav-link active">Mới và Nổi bật</a>
+          <a href="#men" class="nav-link">Nam</a>
+          <a href="#women" class="nav-link">Nữ</a>
+          <a href="#kids" class="nav-link">Trẻ em</a>
+          <a href="#sale" class="nav-link">Sale</a>
+          <a href="#about" class="nav-link">Về chúng tôi</a>
+        </nav>
+        
+        <div class="utilities">
+          <button class="icon-btn theme-toggle-btn" data-target="screen-dark" title="Chuyển giao diện Tối">
+            <i data-lucide="moon"></i>
+          </button>
+          <button class="icon-btn" title="Yêu thích">
+            <i data-lucide="heart"></i>
+          </button>
+          <button class="icon-btn" title="Giỏ hàng">
+            <i data-lucide="shopping-bag"></i>
+            <span class="badge cart-count emerald">2</span>
+          </button>
+          <div class="util-divider"></div>
+          <div id="auth-status-light" class="auth-status-container">
+            <a href="auth.html" class="admin-btn" style="text-decoration:none;">
+              <i data-lucide="log-in"></i>
+              <span>Đăng nhập</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <section class="hero-section light-hero">
+        <div class="light-hero-container">
+          <div class="light-hero-bg">
+             <div class="light-hero-glow"></div>
+             <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800" alt="Nike Speed">
+          </div>
+          <div class="light-hero-content">
+            <span class="hero-tag">BỘ SƯU TẬP MỚI</span>
+            <h1 class="hero-title">TỐC ĐỘ ĐỊNH HÌNH <br/><span class="emerald-text">TƯƠNG LAI.</span></h1>
+            <p class="hero-subtitle">Trải nghiệm sự kết hợp hoàn hảo giữa thiết kế đương đại và hiệu suất đỉnh cao. Khám phá chuẩn mực mới của sự thanh lịch thể thao.</p>
+            <button class="buy-btn hero-cta" data-price="5200000" data-name="Nike Air Zoom Sport">
+              KHÁM PHÁ NGAY <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="products-section light-products">
+        <div class="section-header center">
+          <h2 class="section-title lg">Bộ sưu tập Nổi bật</h2>
+          <div class="title-divider"></div>
+        </div>
+        <div class="product-list">
+          <div class="product-row">
+            <div class="product-row-info">
+              <div class="row-top">
+                <span class="card-badge grey">Mới</span>
+                <h3 class="product-name">Nike Air Zoom Mercurial</h3>
+                <p class="product-desc">Sự thăng hoa của tốc độ và độ chính xác.</p>
+              </div>
+              <div class="row-bottom">
+                <span class="product-price emerald-text">5.200.000 ₫</span>
+                <button class="buy-btn add-btn text-only" data-price="5200000" data-name="Nike Air Zoom Mercurial">Mua ngay <i data-lucide="chevron-right"></i></button>
+              </div>
+            </div>
+            <div class="product-row-img">
+              <img src="https://images.unsplash.com/photo-1514989940723-e8e51635b782?auto=format&fit=crop&q=80&w=600" alt="Nike Air Zoom Mercurial">
+            </div>
+          </div>
+          <div class="product-row">
+            <div class="product-row-info">
+              <div class="row-top">
+                <span class="card-badge grey">Độc quyền</span>
+                <h3 class="product-name">Nike Phantom GX Elite</h3>
+                <p class="product-desc">Kiểm soát tối đa, phong cách tối giản.</p>
+              </div>
+              <div class="row-bottom">
+                <span class="product-price emerald-text">6.100.000 ₫</span>
+                <button class="buy-btn add-btn text-only" data-price="6100000" data-name="Nike Phantom GX Elite">Mua ngay <i data-lucide="chevron-right"></i></button>
+              </div>
+            </div>
+            <div class="product-row-img">
+              <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&q=80&w=600" alt="Nike Phantom GX Elite">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="macro-section">
+        <div class="macro-container">
+          <div class="macro-info">
+            <div class="macro-tag">
+              <i data-lucide="sparkles"></i> DI SẢN & ĐỔI MỚI
+            </div>
+            <h2>Đỉnh Cao Kỹ Thuật</h2>
+            <p>Mỗi sản phẩm là một tác phẩm nghệ thuật, kết hợp giữa kỹ nghệ truyền thống và công nghệ tiên tiến nhất. Chúng tôi tinh chỉnh từng chi tiết để mang đến trải nghiệm thoải mái và đẳng cấp không thể trộn lẫn đối với kỷ nguyên tốc độ sắp tới.</p>
+            <a href="#" class="macro-link">Tìm hiểu về chất liệu <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div class="macro-image">
+            <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800" alt="Macro details">
+            <div class="macro-overlay"></div>
+            <span class="macro-badge">Microfiber Leather Macro Focus</span>
+          </div>
+        </div>
+      </section>
+
+      <footer class="main-footer light-footer">
+        <div class="footer-container">
+          <div class="footer-left">
+            <span class="footer-logo">NIKE</span>
+            <div class="footer-div"></div>
+            <p>© 2026 Nike, Inc. Bảo lưu mọi quyền.</p>
+          </div>
+          <div class="footer-links">
+            <a href="#">Tìm cửa hàng</a>
+            <a href="#">Trở thành hội viên</a>
+            <a href="#" class="emerald-text">Phản hồi</a>
+            <a href="#">Thẻ quà tặng</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="notification-container" class="notification-container"></div>
+
+  <!-- ========================================== -->
+  <!-- 💬 MULTI-ROLE CHAT BOX                       -->
+  <!-- ========================================== -->
+  <div id="chatbox-widget" class="chatbot-widget">
+    
+    <!-- Chat Window -->
+    <div id="chat-window" class="chat-window hidden">
+      
+      <!-- HEADER -->
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <button id="chat-back-btn" class="chat-back-btn hidden">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <div class="bot-avatar">
+            <i id="chat-header-icon" data-lucide="user"></i>
+            <span class="bot-status-dot"></span>
+          </div>
+          <div>
+            <h4 id="chat-header-title" class="bot-name">Hỗ trợ khách hàng</h4>
+            <span id="chat-header-status" class="bot-status">Sẵn sàng hỗ trợ</span>
+          </div>
+        </div>
+        <button id="close-chat-btn" class="close-chat-btn">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      
+      <!-- VIEWS -->
+      <!-- VIEW 1: CHAT LIST -->
+      <div id="view-chat-list" class="chat-view hidden">
+        <!-- Admin Panel (Only visible for Admin) -->
+        <div id="admin-panel" class="admin-panel hidden">
+          <div class="admin-panel-title"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Admin Control Panel</div>
+          <div class="admin-stats">
+            <div class="stat-item">Trực tuyến: <span class="stat-val">2 Staffs</span></div>
+            <div class="stat-item">Cần xử lý: <span class="stat-val text-red">3 Chats</span></div>
+          </div>
+          <div class="admin-filters">
+            <button class="filter-btn active">Tất cả</button>
+            <button class="filter-btn">Chưa đọc</button>
+            <button class="filter-btn">Hoàn tất</button>
+          </div>
+        </div>
+        
+        <div class="chat-list-items" id="chat-list-items">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- VIEW 2: CHAT DETAIL -->
+      <div id="view-chat-detail" class="chat-view active">
+        <div id="chat-messages" class="chat-messages">
+          <!-- Rendered by JS -->
+        </div>
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off" />
+          <button id="send-chat-btn" class="send-chat-btn">
+            <i data-lucide="send" style="width:16px;height:16px;"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Floating Toggle Button -->
+    <button id="chatbot-toggle-btn" class="chatbot-toggle-btn">
+      <div class="bot-icon-wrapper">
+        <i data-lucide="message-circle" style="color:white; width:24px; height:24px;"></i>
+      </div>
+      <span id="chat-badge" class="chat-badge hidden">0</span>
+      <span class="toggle-ping"></span>
+    </button>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="js/script.js"></script>
 </body>
-
 </html>
