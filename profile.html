@@ -46,10 +46,6 @@
         </h1>
       </div>
       <div class="flex items-center gap-4">
-        <button id="theme-toggle"
-          class="p-2 rounded-full bg-[#F2EDE4]/50 hover:bg-[#EAE5D8] dark:bg-[#1c1f17] dark:hover:bg-[#282d21] text-[#3D4035] dark:text-[#b4bda5] transition-all cursor-pointer">
-          <i data-lucide="moon" class="w-5 h-5"></i>
-        </button>
       </div>
     </header>
 
@@ -190,30 +186,7 @@
     // Khởi tạo Icon
     lucide.createIcons();
 
-    // Logic Đổi Giao Diện Sáng/Tối
-    let isDark = localStorage.getItem("nike_theme") === "dark";
-    const container = document.getElementById("app-container");
-    const toggleBtn = document.getElementById("theme-toggle");
 
-    const applyTheme = () => {
-      if (isDark) {
-        container.classList.add("dark");
-        document.body.classList.add("bg-[#0f110c]");
-        toggleBtn.innerHTML = '<i data-lucide="sun" class="w-5 h-5"></i>';
-      } else {
-        container.classList.remove("dark");
-        document.body.classList.remove("bg-[#0f110c]");
-        toggleBtn.innerHTML = '<i data-lucide="moon" class="w-5 h-5"></i>';
-      }
-      lucide.createIcons();
-    }
-    applyTheme();
-
-    toggleBtn.addEventListener("click", () => {
-      isDark = !isDark;
-      localStorage.setItem("nike_theme", isDark ? "dark" : "light");
-      applyTheme();
-    });
 
     // Đổ dữ liệu thật từ LocalStorage vào
     const userStr = localStorage.getItem("nike_current_user");

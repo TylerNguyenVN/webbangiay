@@ -1,28 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  let currentTheme = localStorage.getItem("nike_theme") || "dark";
-  const authThemeToggle = document.getElementById("auth-theme-toggle");
-  
-  const applyTheme = (theme) => {
-    if (theme === "light") {
-      document.body.classList.add("light-theme");
-      if(authThemeToggle) authThemeToggle.innerHTML = '<i data-lucide="moon"></i>';
-    } else {
-      document.body.classList.remove("light-theme");
-      if(authThemeToggle) authThemeToggle.innerHTML = '<i data-lucide="sun"></i>';
-    }
-    if(window.lucide) window.lucide.createIcons();
-  };
-
-  applyTheme(currentTheme);
-
-  if (authThemeToggle) {
-    authThemeToggle.addEventListener("click", () => {
-      currentTheme = currentTheme === "light" ? "dark" : "light";
-      localStorage.setItem("nike_theme", currentTheme);
-      applyTheme(currentTheme);
-    });
-  }
-  
   const DB_KEY = "nike_users_db";
   
   if (!localStorage.getItem(DB_KEY)) {

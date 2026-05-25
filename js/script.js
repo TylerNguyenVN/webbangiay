@@ -33,41 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const themeToggles = document.querySelectorAll(".theme-toggle-btn");
-  const screens = document.querySelectorAll(".screen-view");
-
-  const savedTheme = localStorage.getItem("nike_theme") || "dark";
-  const initialTargetId = savedTheme === "light" ? "screen-light" : "screen-dark";
-
-  screens.forEach((screen) => {
-    if (screen.id === initialTargetId) {
-      screen.classList.remove("hidden");
-      screen.classList.add("show");
-    } else {
-      screen.classList.remove("show");
-      screen.classList.add("hidden");
-    }
-  });
-
-  themeToggles.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const targetId = btn.getAttribute("data-target");
-      const newTheme = targetId === "screen-light" ? "light" : "dark";
-
-      localStorage.setItem("nike_theme", newTheme);
-
-      screens.forEach((screen) => {
-        if (screen.id === targetId) {
-          screen.classList.remove("hidden");
-          screen.classList.add("show");
-        } else {
-          screen.classList.remove("show");
-          screen.classList.add("hidden");
-        }
-      });
-    });
-  });
-
   let cartCount = 2;
   const cartBadges = document.querySelectorAll(".cart-count");
 
