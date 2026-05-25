@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!container) return;
       container.innerHTML = `
         <div style="display:flex; align-items:center; gap:10px;">
-          <a href="${user.role === 'admin' ? 'admin.html' : '#'}" class="admin-btn" style="text-decoration:none; background:transparent; border:none; padding:0;">
+          <a href="${user.role === 'admin' ? 'admin.html' : 'profile.html'}" class="admin-btn" style="text-decoration:none; background:transparent; border:none; padding:0;">
             <i data-lucide="user-check"></i>
             <span>${user.name}</span>
           </a>

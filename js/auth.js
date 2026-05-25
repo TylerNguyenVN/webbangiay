@@ -84,63 +84,146 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const registerForm = document.getElementById("register-form");
   if (registerForm) {
-    registerForm.addEventListener("submit", (e) => {
+    registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       
       const name = document.getElementById("register-name").value.trim();
       const email = document.getElementById("register-email").value.trim();
       const pass = document.getElementById("register-password").value;
       const repass = document.getElementById("register-repassword").value;
+      const phone = document.getElementById("register-phone") ? document.getElementById("register-phone").value.trim() : "";
+      const address = document.getElementById("register-address") ? document.getElementById("register-address").value.trim() : "";
       
       if (pass !== repass) {
         return showNotification("Mật khẩu xác nhận không khớp!", "info");
       }
       
-      const users = getUsers();
-      if (users.find(u => u.email === email)) {
-        return showNotification("Email này đã được đăng ký!", "info");
+      try {
+        // Gọi API PHP thay vì lưu LocalStorage
+        const response = await fetch("register.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username: name,
+            email: email,
+            password: pass,
+            phone: phone,
+            address: address
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showNotification(data.message || "Đăng ký thành công! Vui lòng đăng nhập.", "success");
+          setTimeout(() => {
+            registerForm.reset();
+            registerWrapper.classList.remove("active");
+            loginWrapper.classList.add("active");
+          }, 1500);
+        } else {
+          showNotification(data.message || "Lỗi khi đăng ký!", "info");
+        }
+      } catch (error) {
+        console.error("Lỗi kết nối API:", error);
+        showNotification("Lỗi kết nối đến máy chủ!", "info");
       }
-      
-      const newUser = {
-        id: "usr_" + Date.now(),
-        name: name,
-        email: email,
-        password: pass,
-        role: "customer"
-      };
-      
-      users.push(newUser);
-      saveUsers(users);
-      
-      showNotification("Đăng ký thành công! Vui lòng đăng nhập.", "success");
-      
-      setTimeout(() => {
-        registerForm.reset();
-        registerWrapper.classList.remove("active");
-        loginWrapper.classList.add("active");
-      }, 1500);
     });
   }
 
   const loginForm = document.getElementById("login-form");
   if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       
       const email = document.getElementById("login-email").value.trim();
       const pass = document.getElementById("login-password").value;
       
-      const users = getUsers();
-      const user = users.find(u => u.email === email && u.password === pass);
-      
-      if (!user) {
-        return showNotification("Sai email hoặc mật khẩu!", "info");
+      try {
+        const response = await fetch("login.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email: email, password: pass })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+          const user = data.user;
+          const sessionUser = { 
+            id: user.id, 
+            name: user.username, 
+            email: user.email, 
+            phone: user.phone,
+            address: user.address,
+            role: user.role 
+          };
+          localStorage.setItem("nike_current_user", JSON.stringify(sessionUser));
+          
+          showNotification(`Đăng nhập thành công! Chào mừng ${user.username}`, "success");
+          
+          setTimeout(() => {
+            if (user.role === "admin") {
+              window.location.href = "admin.html";
+            } else {
+              window.location.href = "index.html";
+            }
+          }, 1000);
+        } else {
+          showNotification(data.message || "Sai email hoặc mật khẩu!", "info");
+        }
+      } catch (error) {
+        console.error("Lỗi kết nối API:", error);
+        showNotification("Lỗi kết nối đến máy chủ!", "info");
       }
-      
-      const sessionUser = { id: user.id, name: user.name, email: user.email, role: user.role };
+    });
+  }
+
+});
+
+// Hàm callback nhận JWT token từ Google
+window.handleGoogleCredentialResponse = async (response) => {
+  const credential = response.credential;
+  
+  try {
+    const res = await fetch("google_login.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ credential })
+    });
+    
+    const data = await res.json();
+    
+    if (res.ok && data.success) {
+      const user = data.user;
+      const sessionUser = { 
+        id: user.id, 
+        name: user.username, 
+        email: user.email, 
+        phone: user.phone,
+        address: user.address,
+        role: user.role 
+      };
       localStorage.setItem("nike_current_user", JSON.stringify(sessionUser));
       
-      showNotification(`Đăng nhập thành công! Chào mừng ${user.name}`, "success");
+      // Hiển thị thông báo (nếu có container)
+      const container = document.getElementById("notification-container");
+      if (container) {
+        const notif = document.createElement("div");
+        notif.className = `notification success`;
+        notif.innerHTML = `<i data-lucide="check-circle" class="icon-success"></i> <span>Đăng nhập Google thành công! Chào mừng ${user.username}</span>`;
+        container.appendChild(notif);
+        if(window.lucide) window.lucide.createIcons();
+        setTimeout(() => notif.remove(), 3000);
+      } else {
+        alert(`Đăng nhập Google thành công! Chào mừng ${user.username}`);
+      }
       
       setTimeout(() => {
         if (user.role === "admin") {
@@ -149,8 +232,11 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "index.html";
         }
       }, 1000);
-      
-    });
+    } else {
+      alert(data.message || "Lỗi đăng nhập Google!");
+    }
+  } catch (error) {
+    console.error("Lỗi gọi API Google Login:", error);
+    alert("Lỗi kết nối máy chủ khi đăng nhập Google!");
   }
-
-});
+};
