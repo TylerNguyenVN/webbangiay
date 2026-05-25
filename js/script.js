@@ -532,21 +532,18 @@ document.addEventListener("DOMContentLoaded", () => {
       chatInput.value = "";
       renderMessages(activeChatId);
 
-      // Broadcast customer message instantly to Admin Dashboard!
       chatChannel.postMessage({
         type: "CUSTOMER_MESSAGE",
         chatId: activeChatId,
         message: newMsg
       });
 
-      // Trigger automatic AI reply if in AI Mode on customer side
       if (currentRole === "customer" && chat.status === "ai") {
         chatInput.disabled = true;
         sendChatBtn.disabled = true;
 
         chatHeaderStatus.textContent = "AI đang phản hồi...";
 
-        // Broadcast AI is typing to Admin Dashboard
         chatChannel.postMessage({
           type: "AGENT_TYPING",
           chatId: activeChatId,
@@ -554,7 +551,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         setTimeout(() => {
-          // Query the trained knowledge database first
           fetch("live-chat/api.php?action=query_ai", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -564,9 +560,9 @@ document.addEventListener("DOMContentLoaded", () => {
           .then(data => {
             let aiResponseText = "";
             if (data.success && data.answer) {
-              aiResponseText = data.answer; // Database-matched trained response
+              aiResponseText = data.answer; 
             } else {
-              aiResponseText = generateAIAnswer(text); // Fallback to templates
+              aiResponseText = generateAIAnswer(text); 
             }
 
             const freshChats = getChats();
@@ -581,14 +577,12 @@ document.addEventListener("DOMContentLoaded", () => {
               freshChat.lastUpdated = Date.now();
               saveChats(freshChats);
               
-              // Broadcast Bot Reply to Admin Dashboard
               chatChannel.postMessage({
                 type: "CUSTOMER_MESSAGE",
                 chatId: activeChatId,
                 message: botMsg
               });
 
-              // Broadcast AI stopped typing
               chatChannel.postMessage({
                 type: "AGENT_TYPING",
                 chatId: activeChatId,
@@ -618,14 +612,12 @@ document.addEventListener("DOMContentLoaded", () => {
               freshChat.lastUpdated = Date.now();
               saveChats(freshChats);
               
-              // Broadcast Bot Reply to Admin Dashboard
               chatChannel.postMessage({
                 type: "CUSTOMER_MESSAGE",
                 chatId: activeChatId,
                 message: botMsg
               });
 
-              // Broadcast AI stopped typing
               chatChannel.postMessage({
                 type: "AGENT_TYPING",
                 chatId: activeChatId,
@@ -649,7 +641,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === "Enter") sendMessage();
     });
 
-    // Listen to BroadcastChannel signals from Dashboard (Real-Time sync!)
     chatChannel.onmessage = (event) => {
       const { type, chatId, message, agentName, isTyping } = event.data;
       if (chatId !== "chat_active") return;
@@ -716,7 +707,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
 
-    // Real-time backup synchronization with localStorage (Storage Event)
     window.addEventListener("storage", (e) => {
       if (e.key === QUEUES_KEY) {
         if (!chatWindow.classList.contains("hidden")) {
@@ -725,13 +715,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Helper loading wrapper
     function loadChatSession() {
       updateUI();
       updateBadge();
     }
 
-    // Load from database to sync
     async function syncWithDatabase() {
       if (!currentUserProfile) {
         await initUserAndChat();
@@ -747,7 +735,6 @@ document.addEventListener("DOMContentLoaded", () => {
             queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
           }
 
-          // Dynamic user chat session generation
           let session = queues.find(q => q.id === activeChatId);
           if (!session) {
             session = {
@@ -797,6 +784,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     syncWithDatabase();
+  }
+
+  const searchTriggerBtn = document.getElementById("search-trigger-btn");
+  const searchOverlay = document.getElementById("search-overlay");
+  const closeSearchBtn = document.getElementById("close-search-btn");
+  const searchInputField = document.getElementById("search-input-field");
+
+  if (searchTriggerBtn && searchOverlay && closeSearchBtn) {
+    searchTriggerBtn.addEventListener("click", () => {
+      searchOverlay.classList.remove("hidden");
+      setTimeout(() => {
+        searchInputField.focus();
+      }, 100); 
+    });
+
+    closeSearchBtn.addEventListener("click", () => {
+      searchOverlay.classList.add("hidden");
+    });
+
+    searchOverlay.addEventListener("click", (e) => {
+      if (e.target === searchOverlay) {
+        searchOverlay.classList.add("hidden");
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !searchOverlay.classList.contains("hidden")) {
+        searchOverlay.classList.add("hidden");
+      }
+    });
   }
 
 });
