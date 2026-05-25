@@ -1,817 +1,338 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TL Shop | Hỗ Trợ Trực Tuyến</title>
+  <title>TL Shop </title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#f0f5ff',
-              100: '#e0ebff',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="css/style.css">
 
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <style>
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.1);
-      border-radius: 99px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(0, 0, 0, 0.2);
-    }
-    .typing-dot {
-      animation: typingWave 1.4s infinite ease-in-out;
-    }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typingWave {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-4px); }
-    }
-  </style>
 </head>
 
-<body class="bg-slate-50 font-sans h-full flex flex-col justify-between" style="background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 20px 20px;">
+<body class="app-body">
 
-  <main class="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-2xl mx-auto">
-    <div class="bg-white/80 backdrop-blur-md border border-slate-200/60 p-10 rounded-3xl shadow-xl flex flex-col items-center">
-      <div class="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-6 text-brand-600 shadow-md">
-        <i data-lucide="sparkles" class="w-8 h-8"></i>
-      </div>
-      <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight mb-3">TL Shop Chat Support Client</h1>
-      <p class="text-slate-600 mb-6 max-w-md leading-relaxed">
-        Trang kiểm thử hộp chat trực tuyến của Khách hàng. Nhấn nút chat nổi ở góc phải bên dưới để bắt đầu trò chuyện với **Trợ lý AI** hoặc **Nhân viên tư vấn**.
-      </p>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <button onclick="toggleChatWindow()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
-          <i data-lucide="message-square" class="w-5 h-5"></i> Mở khung chat ngay
-        </button>
-        <a href="dashboard.html" target="_blank" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold px-6 py-3 rounded-xl shadow-sm transition-all duration-300 flex items-center justify-center gap-2">
-          Mở Dashboard Nhân viên <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </a>
-      </div>
-    </div>
-  </main>
+  <div id="main-content" class="main-content">
 
-  <div id="chat-widget-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-    
-    <button id="chat-fab" onclick="toggleChatWindow()" class="group relative w-14 h-14 bg-gradient-to-tr from-brand-600 to-blue-500 hover:from-brand-700 hover:to-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer">
-      <span id="unread-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-bounce hidden">1</span>
-      
-      <i id="fab-chat-icon" data-lucide="message-circle" class="w-7 h-7 transition-all duration-300 transform group-hover:rotate-12"></i>
-      <i id="fab-close-icon" data-lucide="x" class="w-7 h-7 hidden transition-all duration-300 transform group-hover:scale-110"></i>
-      
-      <span id="fab-tooltip" class="absolute right-16 bg-slate-900/90 text-white text-xs font-medium py-2.5 px-4 rounded-xl shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
-        Bạn cần hỗ trợ? Trò chuyện ngay!
-      </span>
-    </button>
-
-    <div id="chat-window" class="hidden absolute bottom-18 right-0 w-[380px] max-w-[calc(100vw-2rem)] h-[580px] bg-white border border-slate-200/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-all duration-300 transform scale-95 opacity-0 origin-bottom-right">
-      
-      <div id="chat-header" class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white px-4 py-3.5 flex items-center justify-between border-b border-slate-700/30">
-        <div class="flex items-center gap-3">
-          <div class="relative">
-            <div id="avatar-container" class="w-10 h-10 rounded-full flex items-center justify-center shadow-inner overflow-hidden border border-white/20 transition-all duration-300">
-              <img id="avatar-image" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=256" class="w-full h-full object-cover hidden">
-              <i id="avatar-icon" data-lucide="bot" class="w-5 h-5 text-blue-400"></i>
-            </div>
-            <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-900 rounded-full animate-pulse"></span>
-          </div>
-          <div>
-            <div class="flex items-center gap-1.5">
-              <h3 id="header-title" class="font-semibold text-sm tracking-wide">Trợ Lý AI Smart</h3>
-              <span id="header-badge" class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-500/20 uppercase tracking-widest">AI</span>
-              <button id="btn-get-human" onclick="escalateToHuman()" class="bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/20 text-[10px] font-bold px-2 py-0.5 rounded-md transition-all cursor-pointer">Gặp Nhân Viên</button>
-            </div>
-            <p id="header-status" class="text-slate-400 text-xs flex items-center gap-1">
-              Sẵn sàng hỗ trợ 24/7
-            </p>
-          </div>
+    <div id="screen-light" class="screen-view light-theme show">
+      <header class="main-header">
+        <div class="brand">
+          <span class="brand-text">TL Shop</span>
+          <span class="brand-dot emerald"></span>
         </div>
-        <button onclick="toggleChatWindow()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors duration-200 cursor-pointer">
-          <i data-lucide="minus" class="w-4 h-4"></i>
-        </button>
-      </div>
 
-      <div id="chat-messages" class="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 custom-scrollbar bg-slate-50">
-      </div>
-
-      <div id="chat-typing-container" class="px-4 py-2 bg-slate-50 border-t border-slate-100 hidden">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-full bg-slate-200/80 flex items-center justify-center">
-            <i data-lucide="bot" id="typing-icon" class="w-4 h-4 text-slate-500"></i>
+        <nav class="nav-links">
+          <a href="#new" class="nav-link active">Mới và Nổi bật</a>
+          <div class="nav-item">
+            <a href="#men" class="nav-link">Nam</a>
+            <div class="mega-menu">
+              <div class="mega-col">
+                <h4>Dòng Sản Phẩm</h4>
+                <a href="#">Air Force 1</a>
+                <a href="#">Air Max</a>
+                <a href="#">Air Jordan</a>
+                <a href="#">Dunk</a>
+              </div>
+              <div class="mega-col">
+                <h4>Giày Thể Thao</h4>
+                <a href="#">Chạy Bộ (Pegasus)</a>
+                <a href="#">Bóng Đá (Mercurial, Phantom)</a>
+                <a href="#">Tập Luyện (Metcon)</a>
+                <a href="#">Bóng Rổ (LeBron)</a>
+              </div>
+            </div>
           </div>
-          <div class="bg-white border border-slate-200/60 py-2 px-3 rounded-2xl flex items-center gap-1">
-            <span class="w-1.5 h-1.5 bg-slate-400 rounded-full typing-dot"></span>
-            <span class="w-1.5 h-1.5 bg-slate-400 rounded-full typing-dot"></span>
-            <span class="w-1.5 h-1.5 bg-slate-400 rounded-full typing-dot"></span>
+          <div class="nav-item">
+            <a href="#women" class="nav-link">Nữ</a>
+            <div class="mega-menu">
+              <div class="mega-col">
+                <h4>Dòng Sản Phẩm</h4>
+                <a href="#">Air Force 1</a>
+                <a href="#">Air Max</a>
+                <a href="#">Air Jordan</a>
+                <a href="#">Dunk</a>
+              </div>
+              <div class="mega-col">
+                <h4>Giày Thể Thao</h4>
+                <a href="#">Chạy Bộ (Pegasus)</a>
+                <a href="#">Tập Luyện & Gym (Metcon)</a>
+                <a href="#">Quần Vợt</a>
+                <a href="#">Bóng Rổ</a>
+              </div>
+            </div>
           </div>
-          <span id="typing-text" class="text-[11px] text-slate-400 italic">AI đang trả lời...</span>
-        </div>
-      </div>
+          <div class="nav-item">
+            <a href="#kids" class="nav-link">Trẻ em</a>
+            <div class="mega-menu">
+              <div class="mega-col">
+                <h4>Dòng Sản Phẩm</h4>
+                <a href="#">Air Force 1</a>
+                <a href="#">Air Max</a>
+                <a href="#">Air Jordan</a>
+                <a href="#">Dunk</a>
+              </div>
+              <div class="mega-col">
+                <h4>Giày Thể Thao</h4>
+                <a href="#">Chạy Bộ</a>
+                <a href="#">Bóng Đá</a>
+                <a href="#">Bóng Rổ</a>
+              </div>
+            </div>
+          </div>
+          <a href="#sale" class="nav-link">Sale</a>
+          <a href="#about" class="nav-link">Về chúng tôi</a>
+        </nav>
 
-      <div id="chat-footer" class="p-3 bg-white border-t border-slate-100 flex flex-col gap-2">
-        <form id="chat-form" onsubmit="handleUserSend(event)" class="flex items-center gap-2">
-          <input type="text" id="chat-input" placeholder="Nhập câu hỏi tại đây..." autocomplete="off" class="flex-1 text-slate-800 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 text-sm px-4 py-2.5 rounded-xl outline-none transition-all duration-200">
-          <button type="submit" id="chat-send-btn" class="w-10 h-10 bg-brand-600 hover:bg-brand-700 text-white rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/10 hover:shadow-brand-500/20 transition-all duration-200 active:scale-95 cursor-pointer">
-            <i data-lucide="send" class="w-4.5 h-4.5"></i>
+        <div class="utilities">
+          <button id="search-trigger-btn" class="icon-btn" title="Tìm kiếm">
+            <i data-lucide="search"></i>
           </button>
-        </form>
-        <div class="flex items-center justify-between text-[10px] text-slate-400 px-1 pt-0.5">
-          <span>TL Shop Support Widget</span>
-          <span class="flex items-center gap-0.5"><i data-lucide="shield" class="w-3 h-3"></i> Bảo mật SSL</span>
+          <button class="icon-btn" title="Yêu thích">
+            <i data-lucide="heart"></i>
+          </button>
+          <button class="icon-btn" title="Giỏ hàng">
+            <i data-lucide="shopping-bag"></i>
+            <span class="badge cart-count emerald">2</span>
+          </button>
+          <div class="util-divider"></div>
+          <div id="auth-status-light" class="auth-status-container">
+            <a href="auth.html" class="admin-btn" style="text-decoration:none;">
+              <i data-lucide="log-in"></i>
+              <span>Đăng nhập</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Search Overlay -->
+      <div id="search-overlay" class="search-overlay hidden">
+        <div class="search-overlay-container">
+          <div class="search-input-wrapper">
+            <i data-lucide="search" class="search-icon-lg"></i>
+            <input type="text" id="search-input-field" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+            <button id="close-search-btn" class="icon-btn close-search"><i data-lucide="x"></i></button>
+          </div>
+          <div class="search-suggestions">
+            <p>Gợi ý tìm kiếm:</p>
+            <div class="suggestion-tags">
+              <a href="#">Air Force 1</a>
+              <a href="#">Jordan</a>
+              <a href="#">Air Max</a>
+              <a href="#">Blazer</a>
+            </div>
+          </div>
         </div>
       </div>
 
+      <section class="hero-section light-hero">
+        <div class="light-hero-container">
+          <div class="light-hero-bg">
+            <div class="light-hero-glow"></div>
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800"
+              alt="Nike Speed">
+          </div>
+          <div class="light-hero-content">
+            <span class="hero-tag">BỘ SƯU TẬP MỚI</span>
+            <h1 class="hero-title">TỐC ĐỘ ĐỊNH HÌNH <br /><span class="emerald-text">TƯƠNG LAI.</span></h1>
+            <p class="hero-subtitle">Trải nghiệm sự kết hợp hoàn hảo giữa thiết kế đương đại và hiệu suất đỉnh cao. Khám
+              phá chuẩn mực mới của sự thanh lịch thể thao.</p>
+            <button class="buy-btn hero-cta" data-price="5200000" data-name="Nike Air Zoom Sport">
+              KHÁM PHÁ NGAY <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="products-section light-products">
+        <div class="section-header center">
+          <h2 class="section-title lg">Bộ sưu tập Nổi bật</h2>
+          <div class="title-divider"></div>
+        </div>
+        <div class="product-list">
+          <div class="product-row">
+            <div class="product-row-info">
+              <div class="row-top">
+                <span class="card-badge grey">Mới</span>
+                <h3 class="product-name">Nike Air Zoom Mercurial</h3>
+                <p class="product-desc">Sự thăng hoa của tốc độ và độ chính xác.</p>
+              </div>
+              <div class="row-bottom">
+                <span class="product-price emerald-text">5.200.000 ₫</span>
+                <button class="buy-btn add-btn text-only" data-price="5200000" data-name="Nike Air Zoom Mercurial">Mua
+                  ngay <i data-lucide="chevron-right"></i></button>
+              </div>
+            </div>
+            <div class="product-row-img">
+              <img src="https://images.unsplash.com/photo-1514989940723-e8e51635b782?auto=format&fit=crop&q=80&w=600"
+                alt="Nike Air Zoom Mercurial">
+            </div>
+          </div>
+          <div class="product-row">
+            <div class="product-row-info">
+              <div class="row-top">
+                <span class="card-badge grey">Độc quyền</span>
+                <h3 class="product-name">Nike Phantom GX Elite</h3>
+                <p class="product-desc">Kiểm soát tối đa, phong cách tối giản.</p>
+              </div>
+              <div class="row-bottom">
+                <span class="product-price emerald-text">6.100.000 ₫</span>
+                <button class="buy-btn add-btn text-only" data-price="6100000" data-name="Nike Phantom GX Elite">Mua
+                  ngay <i data-lucide="chevron-right"></i></button>
+              </div>
+            </div>
+            <div class="product-row-img">
+              <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&q=80&w=600"
+                alt="Nike Phantom GX Elite">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="macro-section">
+        <div class="macro-container">
+          <div class="macro-info">
+            <div class="macro-tag">
+              <i data-lucide="sparkles"></i> DI SẢN & ĐỔI MỚI
+            </div>
+            <h2>Đỉnh Cao Kỹ Thuật</h2>
+            <p>Mỗi sản phẩm là một tác phẩm nghệ thuật, kết hợp giữa kỹ nghệ truyền thống và công nghệ tiên tiến nhất.
+              Chúng tôi tinh chỉnh từng chi tiết để mang đến trải nghiệm thoải mái và đẳng cấp không thể trộn lẫn đối
+              với kỷ nguyên tốc độ sắp tới.</p>
+            <a href="#" class="macro-link">Tìm hiểu về chất liệu <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div class="macro-image">
+            <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800"
+              alt="Macro details">
+            <div class="macro-overlay"></div>
+            <span class="macro-badge">Microfiber Leather Macro Focus</span>
+          </div>
+        </div>
+      </section>
+
+      <footer class="main-footer nike-style-footer">
+        <div class="footer-top-container">
+          <div class="footer-col">
+            <a href="#" class="footer-heading">TÌM CỬA HÀNG</a>
+            <a href="#" class="footer-heading">TRỞ THÀNH HỘI VIÊN</a>
+            <a href="#" class="footer-heading">ĐĂNG KÝ NHẬN EMAIL</a>
+            <a href="#" class="footer-heading">PHẢN HỒI</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-heading-sm">TRỢ GIÚP</span>
+            <a href="#">Tình trạng đơn hàng</a>
+            <a href="#">Giao hàng</a>
+            <a href="#">Đổi trả</a>
+            <a href="#">Tùy chọn thanh toán</a>
+            <a href="#">Liên hệ</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-heading-sm">VỀ CHÚNG TÔI</span>
+            <a href="#">Tin tức</a>
+            <a href="#">Nghề nghiệp</a>
+            <a href="#">Nhà đầu tư</a>
+            <a href="#">Bền vững</a>
+          </div>
+          <div class="footer-col social-col">
+            <a href="#" class="social-icon"><i data-lucide="twitter"></i></a>
+            <a href="#" class="social-icon"><i data-lucide="facebook"></i></a>
+            <a href="#" class="social-icon"><i data-lucide="youtube"></i></a>
+            <a href="#" class="social-icon"><i data-lucide="instagram"></i></a>
+          </div>
+        </div>
+        <div class="footer-bottom-container">
+          <div class="footer-bottom-left">
+            <span class="location"><i data-lucide="map-pin"></i> Việt Nam</span>
+            <span class="copyright">© 2026 TL Shop, Inc. All Rights Reserved</span>
+          </div>
+          <div class="footer-bottom-links">
+            <a href="#">Hướng dẫn</a>
+            <a href="#">Điều khoản bán hàng</a>
+            <a href="#">Điều khoản sử dụng</a>
+            <a href="#">Chính sách bảo mật</a>
+          </div>
+        </div>
+      </footer>
     </div>
   </div>
 
-  <script>
-    const QUEUES_KEY = "live_chat_queues";
-    let ACTIVE_CHAT_ID = "chat_active";
-    let currentUserProfile = null;
+  <div id="notification-container" class="notification-container"></div>
 
-    const chatChannel = new BroadcastChannel("chat_system");
+  <div id="chatbox-widget" class="chatbot-widget">
 
-    if (!window.currentUser) {
-      window.currentUser = null;
-    }
+    <div id="chat-window" class="chat-window hidden">
 
-    async function fetchCurrentLoggedInUser() {
-      try {
-        const response = await fetch("api.php?action=get_logged_in_user");
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.user) {
-            return data.user;
-          }
-        }
-      } catch (err) {
-        console.warn("Could not fetch user session from API, trying local storage fallback:", err);
-      }
-      
-      try {
-        const localUser = localStorage.getItem("nike_current_user");
-        if (localUser) {
-          return JSON.parse(localUser);
-        }
-      } catch (e) {}
-
-      return null;
-    }
-
-    async function initUserAndChat() {
-      if (window.currentUser && window.currentUser.name) {
-        currentUserProfile = window.currentUser;
-      }
-      
-      if (!currentUserProfile) {
-        const fetchedUser = await fetchCurrentLoggedInUser();
-        if (fetchedUser) {
-          currentUserProfile = {
-            id: fetchedUser.id || fetchedUser.email || "user_" + Date.now(),
-            name: fetchedUser.username || fetchedUser.name || fetchedUser.email,
-            email: fetchedUser.email || "",
-            phone: fetchedUser.phone || "",
-            avatar: fetchedUser.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256"
-          };
-        }
-      }
-
-      if (!currentUserProfile) {
-        let guestProfile = JSON.parse(localStorage.getItem("live_chat_guest_profile"));
-        if (!guestProfile) {
-          const randId = Math.floor(1000 + Math.random() * 9000);
-          guestProfile = {
-            id: "guest_" + randId,
-            name: "Khách vãng lai #" + randId,
-            email: "guest_" + randId + "@nike.com",
-            phone: "",
-            avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256"
-          };
-          localStorage.setItem("live_chat_guest_profile", JSON.stringify(guestProfile));
-        }
-        currentUserProfile = guestProfile;
-      }
-
-      ACTIVE_CHAT_ID = "chat_" + currentUserProfile.id;
-      console.log("Chat system initialized for user:", currentUserProfile, "Chat ID:", ACTIVE_CHAT_ID);
-    }
-
-    chatChannel.onmessage = (event) => {
-      const { type, chatId, message, agentName, isTyping } = event.data;
-      if (chatId !== ACTIVE_CHAT_ID) return;
-
-      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-      const session = queues.find(q => q.id === ACTIVE_CHAT_ID);
-      if (!session) return;
-
-      console.log("Client received broadcast event:", type, event.data);
-
-      switch (type) {
-        case "AGENT_MESSAGE":
-          session.messages.push(message);
-          session.lastUpdated = Date.now();
-          session.isTyping = false;
-          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
-          renderLocalSession();
-          break;
-
-        case "AGENT_TAKE_OVER":
-          session.status = "human";
-          session.agentName = agentName || "Tyler Nguyen";
-          session.messages.push({
-            sender: "system",
-            text: `Nhân viên ${session.agentName} đã tiếp quản cuộc trò chuyện này.`,
-            timestamp: Date.now()
-          });
-          session.lastUpdated = Date.now();
-          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
-          renderLocalSession();
-          break;
-
-        case "AGENT_RETURN_BOT":
-          session.status = "ai";
-          session.isTyping = false;
-          session.messages.push({
-            sender: "system",
-            text: "Cuộc trò chuyện đã được chuyển lại cho Trợ lý AI.",
-            timestamp: Date.now()
-          });
-          session.lastUpdated = Date.now();
-          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
-          renderLocalSession();
-          break;
-
-        case "AGENT_CLOSE_TICKET":
-          session.status = "closed";
-          session.isTyping = false;
-          session.messages.push({
-            sender: "system",
-            text: "Cuộc trò chuyện đã được đóng hoàn tất.",
-            timestamp: Date.now()
-          });
-          session.lastUpdated = Date.now();
-          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
-          renderLocalSession();
-          break;
-
-        case "AGENT_TYPING":
-          session.isTyping = isTyping;
-          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
-          renderLocalSession();
-          break;
-      }
-    };
-
-    const chatWindow = document.getElementById("chat-window");
-    const chatFab = document.getElementById("chat-fab");
-    const fabChatIcon = document.getElementById("fab-chat-icon");
-    const fabCloseIcon = document.getElementById("fab-close-icon");
-    const unreadBadge = document.getElementById("unread-badge");
-    const chatMessages = document.getElementById("chat-messages");
-    const chatInput = document.getElementById("chat-input");
-    const chatSendBtn = document.getElementById("chat-send-btn");
-    const headerTitle = document.getElementById("header-title");
-    const headerStatus = document.getElementById("header-status");
-    const headerBadge = document.getElementById("header-badge");
-    const avatarIcon = document.getElementById("avatar-icon");
-    const avatarImage = document.getElementById("avatar-image");
-    const avatarContainer = document.getElementById("avatar-container");
-    const typingContainer = document.getElementById("chat-typing-container");
-    const typingText = document.getElementById("typing-text");
-    const typingIcon = document.getElementById("typing-icon");
-
-    let isWindowOpen = false;
-    let localMsgCount = 0;
-
-    function toggleChatWindow() {
-      isWindowOpen = !isWindowOpen;
-      
-      if (isWindowOpen) {
-        chatWindow.classList.remove("hidden");
-        void chatWindow.offsetWidth;
-        chatWindow.classList.remove("scale-95", "opacity-0");
-        chatWindow.classList.add("scale-100", "opacity-100");
-        
-        fabChatIcon.classList.add("hidden");
-        fabCloseIcon.classList.remove("hidden");
-        
-        unreadBadge.classList.add("hidden");
-        chatInput.focus();
-        
-        loadChatSession();
-      } else {
-        chatWindow.classList.add("scale-95", "opacity-0");
-        chatWindow.classList.remove("scale-100", "opacity-100");
-        setTimeout(() => {
-          if(!isWindowOpen) chatWindow.classList.add("hidden");
-        }, 300);
-        
-        fabChatIcon.classList.remove("hidden");
-        fabCloseIcon.classList.add("hidden");
-      }
-    }
-
-    function saveQueuesState(queues) {
-      localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
-      fetch("api.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ queues: queues })
-      }).catch(err => console.error("Database save error:", err));
-    }
-
-    async function loadChatSession() {
-      if (!currentUserProfile) {
-        await initUserAndChat();
-      }
-
-      fetch("api.php")
-        .then(res => res.json())
-        .then(data => {
-          let queues = [];
-          if (data.success && data.queues) {
-            queues = data.queues;
-          } else {
-            queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-          }
-
-          let session = queues.find(q => q.id === ACTIVE_CHAT_ID);
-          if (!session) {
-            session = {
-              id: ACTIVE_CHAT_ID,
-              userName: currentUserProfile.name,
-              userAvatar: currentUserProfile.avatar,
-              userEmail: currentUserProfile.email,
-              userPhone: currentUserProfile.phone,
-              status: "ai", 
-              agentName: "Tyler (Support)",
-              isTyping: false,
-              isUserTyping: false,
-              messages: [],
-              lastUpdated: Date.now()
-            };
-            queues.push(session);
-            saveQueuesState(queues);
-          }
-
-          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
-          renderLocalSession();
-        })
-        .catch(err => {
-          console.warn("DB load failed, using local copy:", err);
-          
-          let queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-          let session = queues.find(q => q.id === ACTIVE_CHAT_ID);
-          if (!session) {
-            session = {
-              id: ACTIVE_CHAT_ID,
-              userName: currentUserProfile.name,
-              userAvatar: currentUserProfile.avatar,
-              userEmail: currentUserProfile.email,
-              userPhone: currentUserProfile.phone,
-              status: "ai", 
-              agentName: "Tyler (Support)",
-              isTyping: false,
-              isUserTyping: false,
-              messages: [],
-              lastUpdated: Date.now()
-            };
-            queues.push(session);
-            localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
-          }
-          renderLocalSession();
-        });
-    }
-
-    function renderLocalSession() {
-      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-      const session = queues.find(q => q.id === ACTIVE_CHAT_ID);
-      
-      if (!session) return;
-
-      updateHeaderUI(session);
-      renderMessages(session.messages);
-
-      if (!isWindowOpen && session.messages.length > localMsgCount) {
-        unreadBadge.textContent = session.messages.length - localMsgCount;
-        unreadBadge.classList.remove("hidden");
-      } else {
-        localMsgCount = session.messages.length;
-        unreadBadge.classList.add("hidden");
-      }
-
-      if (session.isTyping && session.status === "human") {
-        showTypingIndicator("Nhân viên đang soạn tin...", "user");
-      } else {
-        hideTypingIndicator();
-      }
-    }
-
-    function updateHeaderUI(session) {
-      const getHumanBtn = document.getElementById("btn-get-human");
-      
-      if (session.status === "ai") {
-        headerTitle.textContent = "Trợ Lý AI Smart";
-        headerStatus.innerHTML = '<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span> Sẵn sàng phản hồi 24/7</span>';
-        headerBadge.textContent = "AI";
-        headerBadge.className = "bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-500/20 uppercase tracking-widest";
-        if (getHumanBtn) getHumanBtn.classList.remove("hidden");
-        
-        avatarImage.classList.add("hidden");
-        avatarIcon.classList.remove("hidden");
-        avatarContainer.className = "w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shadow-inner overflow-hidden border border-white/20";
-        avatarIcon.setAttribute("data-lucide", "bot");
-        if(window.lucide) lucide.createIcons();
-      } 
-      else if (session.status === "human_requested") {
-        headerTitle.textContent = "Đang kết nối...";
-        headerStatus.innerHTML = '<span class="flex items-center gap-1 text-amber-400"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span> Đang chờ tiếp nhận...</span>';
-        headerBadge.textContent = "Handoff";
-        headerBadge.className = "bg-amber-500/10 text-amber-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-amber-500/20 uppercase tracking-widest";
-        if (getHumanBtn) getHumanBtn.classList.add("hidden");
-        
-        avatarImage.classList.add("hidden");
-        avatarIcon.classList.remove("hidden");
-        avatarContainer.className = "w-10 h-10 rounded-full bg-amber-950 flex items-center justify-center shadow-inner overflow-hidden border border-amber-500/20";
-        avatarIcon.setAttribute("data-lucide", "help-circle");
-        if(window.lucide) lucide.createIcons();
-      }
-      else if (session.status === "human") {
-        headerTitle.textContent = session.agentName || "Nhân Viên Hỗ Trợ";
-        headerStatus.innerHTML = '<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span> Đang trực tuyến</span>';
-        headerBadge.textContent = "Staff";
-        headerBadge.className = "bg-blue-500/10 text-blue-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-blue-500/20 uppercase tracking-widest";
-        if (getHumanBtn) getHumanBtn.classList.add("hidden");
-
-        avatarImage.src = session.userAvatar; 
-        avatarImage.classList.remove("hidden");
-        avatarIcon.classList.add("hidden");
-        avatarContainer.className = "w-10 h-10 rounded-full bg-slate-200 shadow-inner overflow-hidden border border-white/20";
-      }
-      else if (session.status === "closed") {
-        headerTitle.textContent = "Trò Chuyện Đã Đóng";
-        headerStatus.innerHTML = '<span class="flex items-center gap-1 text-slate-500">Vé hỗ trợ đã được đóng</span>';
-        headerBadge.textContent = "Đóng";
-        headerBadge.className = "bg-rose-500/10 text-rose-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-rose-500/20 uppercase tracking-widest";
-        if (getHumanBtn) getHumanBtn.classList.add("hidden");
-        
-        avatarImage.classList.add("hidden");
-        avatarIcon.classList.remove("hidden");
-        avatarContainer.className = "w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shadow-inner overflow-hidden border border-white/20";
-        avatarIcon.setAttribute("data-lucide", "archive");
-        if(window.lucide) lucide.createIcons();
-      }
-    }
-
-    function renderMessages(messages) {
-      chatMessages.innerHTML = "";
-      
-      messages.forEach(msg => {
-        const isUser = msg.sender === "user";
-        const isBot = msg.sender === "bot";
-        const isSystem = msg.sender === "system";
-        
-        const messageRow = document.createElement("div");
-        messageRow.className = `flex w-full flex-col ${isSystem ? 'items-center my-2' : isUser ? 'items-end' : 'items-start'}`;
-
-        if (isSystem) {
-          messageRow.innerHTML = `
-            <div class="bg-slate-200/60 text-slate-500 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-              ${msg.text}
-            </div>
-          `;
-          chatMessages.appendChild(messageRow);
-          return;
-        }
-
-        let senderName = "Hỗ Trợ";
-        
-        if (isBot) {
-          senderName = "Trợ lý AI";
-        } else if (isUser) {
-          senderName = "Bạn";
-        } else {
-          senderName = "Nhân viên";
-        }
-
-        const timeStr = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        const innerHTML = `
-          <div class="flex gap-2.5 max-w-[80%] ${isUser ? 'flex-row-reverse' : 'flex-row'}">
-            ${!isUser ? `
-              <div class="w-8 h-8 rounded-full bg-slate-200 border border-slate-200 overflow-hidden flex items-center justify-center shadow-sm flex-shrink-0">
-                ${isBot ? `
-                  <div class="w-full h-full bg-slate-900 flex items-center justify-center text-blue-400">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
-                  </div>
-                ` : `
-                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256" class="w-full h-full object-cover">
-                `}
-              </div>
-            ` : ''}
-
-            <div>
-              <div class="px-4 py-2.5 rounded-2xl text-sm shadow-sm ${
-                isUser 
-                  ? 'bg-brand-600 text-white rounded-tr-none' 
-                  : 'bg-white text-slate-800 border border-slate-200/80 rounded-tl-none'
-              }">
-                <p class="leading-relaxed whitespace-pre-line">${escapeHTML(msg.text)}</p>
-              </div>
-              <span class="text-[10px] text-slate-400 mt-1 block px-1 ${isUser ? 'text-right' : 'text-left'}">
-                ${senderName} • ${timeStr}
-              </span>
-            </div>
+      <!-- HEADER -->
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <button id="chat-back-btn" class="chat-back-btn hidden">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <div class="bot-avatar">
+            <i id="chat-header-icon" data-lucide="message-circle"></i>
+            <span class="bot-status-dot"></span>
           </div>
-        `;
-        
-        messageRow.innerHTML = innerHTML;
-        chatMessages.appendChild(messageRow);
-      });
-      
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+          <div>
+            <h4 id="chat-header-title" class="bot-name">Hỗ trợ trực tuyến</h4>
+            <span id="chat-header-status" class="bot-status">Sẵn sàng hỗ trợ</span>
+          </div>
+        </div>
+        <button id="close-chat-btn" class="close-chat-btn">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
 
-    function escapeHTML(str) {
-      return str.replace(/[&<>'"]/g, 
-        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-      );
-    }
+      <div id="view-chat-list" class="chat-view hidden">
+        <div id="admin-panel" class="admin-panel hidden">
+          <div class="admin-panel-title"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Admin
+            Control Panel</div>
+          <div class="admin-stats">
+            <div class="stat-item">Trực tuyến: <span class="stat-val">2 Staffs</span></div>
+            <div class="stat-item">Cần xử lý: <span class="stat-val text-red">3 Chats</span></div>
+          </div>
+          <div class="admin-filters">
+            <button class="filter-btn active">Tất cả</button>
+            <button class="filter-btn">Chưa đọc</button>
+            <button class="filter-btn">Hoàn tất</button>
+          </div>
+        </div>
 
-    function showTypingIndicator(text, sender) {
-      typingText.textContent = text;
-      if (sender === "bot") {
-        typingIcon.setAttribute("data-lucide", "bot");
-      } else {
-        typingIcon.setAttribute("data-lucide", "user");
-      }
-      if(window.lucide) lucide.createIcons();
-      typingContainer.classList.remove("hidden");
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+        <div class="chat-list-items" id="chat-list-items">
+        </div>
+      </div>
 
-    function hideTypingIndicator() {
-      typingContainer.classList.add("hidden");
-    }
+      <div id="view-chat-detail" class="chat-view active">
+        <div id="chat-messages" class="chat-messages">
+        </div>
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off" />
+          <button id="send-chat-btn" class="send-chat-btn">
+            <i data-lucide="send" style="width:16px;height:16px;"></i>
+          </button>
+        </div>
+      </div>
 
-    let customerTypingTimeout = null;
-    chatInput.addEventListener("keyup", () => {
-      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-      const session = queues.find(q => q.id === ACTIVE_CHAT_ID);
-      
-      if (session && session.status === "human" && !session.isUserTyping) {
-        session.isUserTyping = true;
-        localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
-        
-        chatChannel.postMessage({
-          type: "CUSTOMER_TYPING",
-          chatId: ACTIVE_CHAT_ID,
-          isTyping: true
-        });
-      }
+    </div>
+    <button id="chatbot-toggle-btn" class="chatbot-toggle-btn">
+      <div class="bot-icon-wrapper">
+        <i data-lucide="message-circle" style="color:white; width:28px; height:28px;"></i>
+      </div>
+      <span id="chat-badge" class="chat-badge hidden">0</span>
+      <span class="toggle-ping"></span>
+    </button>
+  </div>
 
-      clearTimeout(customerTypingTimeout);
-      customerTypingTimeout = setTimeout(() => {
-        const freshQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-        const freshSession = freshQueues.find(q => q.id === ACTIVE_CHAT_ID);
-        if (freshSession && freshSession.isUserTyping) {
-          freshSession.isUserTyping = false;
-          localStorage.setItem(QUEUES_KEY, JSON.stringify(freshQueues));
-
-          chatChannel.postMessage({
-            type: "CUSTOMER_TYPING",
-            chatId: ACTIVE_CHAT_ID,
-            isTyping: false
-          });
-        }
-      }, 1500);
-    });
-
-    function handleUserSend(e) {
-      e.preventDefault();
-      const text = chatInput.value.trim();
-      if (!text) return;
-
-      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-      const session = queues.find(q => q.id === ACTIVE_CHAT_ID);
-
-      if (!session) return;
-
-      if (session.status === "closed") {
-        alert("Đoạn chat này đã đóng. Không thể gửi tin nhắn mới.");
-        return;
-      }
-
-      const newMsg = {
-        sender: "user",
-        text: text,
-        timestamp: Date.now()
-      };
-
-      session.messages.push(newMsg);
-      session.lastUpdated = Date.now();
-      session.isUserTyping = false;
-      
-      saveQueuesState(queues);
-      
-      chatChannel.postMessage({
-        type: "CUSTOMER_MESSAGE",
-        chatId: ACTIVE_CHAT_ID,
-        userName: currentUserProfile.name,
-        userAvatar: currentUserProfile.avatar,
-        userEmail: currentUserProfile.email,
-        userPhone: currentUserProfile.phone,
-        message: newMsg
-      });
-
-      chatInput.value = "";
-      loadChatSession();
-
-      if (session.status === "ai") {
-        showTypingIndicator("AI đang trả lời...", "bot");
-        
-        chatChannel.postMessage({
-          type: "AGENT_TYPING",
-          chatId: ACTIVE_CHAT_ID,
-          isTyping: true
-        });
-
-        setTimeout(() => {
-          fetch("api.php?action=query_ai", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question: text })
-          })
-          .then(res => res.json())
-          .then(data => {
-            let aiResponseText = "";
-            if (data.success && data.answer) {
-              aiResponseText = data.answer;
-            } else {
-              aiResponseText = generateAIAnswer(text);
-            }
-
-            const updatedQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-            const currentSession = updatedQueues.find(q => q.id === ACTIVE_CHAT_ID);
-            
-            if (currentSession && currentSession.status === "ai") {
-              const botMsg = {
-                sender: "bot",
-                text: aiResponseText,
-                timestamp: Date.now()
-              };
-              currentSession.messages.push(botMsg);
-              currentSession.lastUpdated = Date.now();
-              saveQueuesState(updatedQueues);
-              
-              chatChannel.postMessage({
-                type: "CUSTOMER_MESSAGE",
-                chatId: ACTIVE_CHAT_ID,
-                userName: "Trợ Lý AI",
-                userAvatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=256",
-                message: botMsg
-              });
-
-              chatChannel.postMessage({
-                type: "AGENT_TYPING",
-                chatId: ACTIVE_CHAT_ID,
-                isTyping: false
-              });
-
-              hideTypingIndicator();
-              loadChatSession();
-            }
-          })
-          .catch(err => {
-            console.error("AI matching failed, fallback to rules:", err);
-            const aiResponseText = generateAIAnswer(text);
-            
-            const updatedQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-            const currentSession = updatedQueues.find(q => q.id === ACTIVE_CHAT_ID);
-            
-            if (currentSession && currentSession.status === "ai") {
-              const botMsg = {
-                sender: "bot",
-                text: aiResponseText,
-                timestamp: Date.now()
-              };
-              currentSession.messages.push(botMsg);
-              currentSession.lastUpdated = Date.now();
-              saveQueuesState(updatedQueues);
-
-              chatChannel.postMessage({
-                type: "CUSTOMER_MESSAGE",
-                chatId: ACTIVE_CHAT_ID,
-                userName: "Trợ Lý AI",
-                userAvatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=256",
-                message: botMsg
-              });
-
-              chatChannel.postMessage({
-                type: "AGENT_TYPING",
-                chatId: ACTIVE_CHAT_ID,
-                isTyping: false
-              });
-              
-              hideTypingIndicator();
-              loadChatSession();
-            }
-          });
-        }, 1500);
-      }
-    }
-
-    function generateAIAnswer(question) {
-      const q = question.toLowerCase();
-      
-      if (q.includes("giày") || q.includes("sản phẩm") || q.includes("mua")) {
-        return "TL Shop cung cấp rất nhiều mẫu giày bóng đá và thể thao chính hãng như Nike Air Zoom X, Phantom GX, Flyknit Elite. Bạn quan tâm sản phẩm cụ thể nào để tôi thông tin thông số kỹ thuật chi tiết ạ?";
-      }
-      if (q.includes("đổi trả") || q.includes("trả") || q.includes("hoàn tiền")) {
-        return "Dạ chính sách đổi trả của TL Shop cực kỳ linh hoạt: Bạn được hỗ trợ đổi trả size hoặc sản phẩm lỗi miễn phí trong vòng 7 ngày kể từ khi nhận hàng. Lưu ý giữ nguyên hộp và tem mác giúp shop nhé!";
-      }
-      if (q.includes("bảo hành") || q.includes("hỏng") || q.includes("rách")) {
-        return "Dạ sản phẩm mua tại TL Shop đều đi kèm bảo hành chính hãng keo chỉ 6 tháng. Nếu gặp vấn đề kỹ thuật nào bạn cứ yên tâm gửi lại shop hỗ trợ khắc phục nhé.";
-      }
-      if (q.includes("chuyển") || q.includes("gặp người") || q.includes("nhân viên") || q.includes("admin") || q.includes("hỗ trợ")) {
-        setTimeout(() => {
-          escalateToHuman();
-        }, 500);
-        return "Tôi hiểu bạn muốn gặp nhân viên trực tiếp hỗ trợ. Tôi đang tạo yêu cầu chuyển hướng cuộc gọi đến Nhân viên tư vấn ngay lập tức, vui lòng đợi trong giây lát!";
-      }
-      if (q.includes("cảm ơn") || q.includes("thanks")) {
-        return "Dạ không có chi ạ! Rất vinh hạnh được hỗ trợ bạn. Chúc bạn có một ngày mua sắm vui vẻ tại TL Shop!";
-      }
-      return "Dạ tôi đã tiếp nhận câu hỏi của bạn. Hệ thống AI đang phân tích dữ liệu, hoặc bạn cũng có thể gõ 'gặp nhân viên' để tôi chuyển hướng cuộc gọi đến nhân viên tư vấn hỗ trợ trực tiếp nhé!";
-    }
-
-    function escalateToHuman() {
-      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-      const session = queues.find(q => q.id === ACTIVE_CHAT_ID);
-      
-      if (session && session.status === "ai") {
-        session.status = "human_requested";
-        session.lastUpdated = Date.now();
-        session.messages.push({
-          sender: "system",
-          text: "Yêu cầu gặp nhân viên: Đang chờ nhân viên hỗ trợ tiếp nhận cuộc trò chuyện...",
-          timestamp: Date.now()
-        });
-        saveQueuesState(queues);
-        
-        chatChannel.postMessage({
-          type: "HANDOFF_REQUEST",
-          chatId: ACTIVE_CHAT_ID,
-          userName: currentUserProfile.name,
-          userAvatar: currentUserProfile.avatar,
-          userEmail: currentUserProfile.email,
-          userPhone: currentUserProfile.phone
-        });
-
-        loadChatSession();
-      }
-    }
-
-    window.addEventListener("storage", (e) => {
-      if (e.key === QUEUES_KEY) {
-        loadChatSession();
-      }
-    });
-
-    loadChatSession();
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
     lucide.createIcons();
   </script>
+  <script src="js/script.js"></script>
 </body>
 
 </html>
