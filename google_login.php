@@ -101,7 +101,7 @@ echo json_encode([
         "email" => $userRecord['email'],
         "phone" => $userRecord['phone'],
         "address" => $userRecord['address'],
-        "role" => "customer"
+        "role" => ($userRecord['email'] === 'admin' || $userRecord['email'] === 'admin@nike.com') ? 'admin' : 'customer'
     ]
 ]);
 ?>

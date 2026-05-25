@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TL Shop | Dashboard Hỗ Trợ Khách Hàng</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f5ff',
+              100: '#e0ebff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Premium custom scrollbar styling */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 99px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+
+<body class="bg-slate-900 font-sans h-full overflow-hidden text-slate-100 flex">
+
+  <!-- Sidebar (Left Column) -->
+  <aside class="w-16 md:w-64 bg-slate-950 border-r border-slate-800/80 flex flex-col justify-between flex-shrink-0 transition-all duration-300">
+    <div class="flex flex-col">
+      <!-- Branding header -->
+      <div class="h-16 flex items-center gap-3 px-4 border-b border-slate-800/60 overflow-hidden">
+        <div class="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center flex-shrink-0 text-white shadow-lg shadow-brand-500/20">
+          <i data-lucide="shield" class="w-5 h-5"></i>
+        </div>
+        <span class="font-bold text-base tracking-wide text-white whitespace-nowrap block md:block hidden">TL Support Control</span>
+      </div>
+
+      <!-- Navigation links -->
+      <nav class="p-3 flex flex-col gap-1.5">
+        <a href="#" class="flex items-center gap-3.5 px-3 py-2.5 rounded-xl bg-brand-600/10 border border-brand-500/20 text-brand-400 font-medium text-sm transition-all duration-200">
+          <i data-lucide="inbox" class="w-5 h-5"></i>
+          <span class="md:block hidden whitespace-nowrap">Hộp thư hỗ trợ</span>
+        </a>
+        <a href="#" onclick="alert('Tính năng đang phát triển')" class="flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 font-medium text-sm transition-all duration-200">
+          <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+          <span class="md:block hidden whitespace-nowrap">Báo cáo & Phân tích</span>
+        </a>
+        <a href="#" onclick="alert('Tính năng đang phát triển')" class="flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 font-medium text-sm transition-all duration-200">
+          <i data-lucide="users" class="w-5 h-5"></i>
+          <span class="md:block hidden whitespace-nowrap">Quản lý đội ngũ</span>
+        </a>
+        <a href="#" onclick="alert('Tính năng đang phát triển')" class="flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 font-medium text-sm transition-all duration-200">
+          <i data-lucide="settings" class="w-5 h-5"></i>
+          <span class="md:block hidden whitespace-nowrap">Cài đặt hệ thống</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Agent Profile summary footer -->
+    <div class="p-3 border-t border-slate-800/60 overflow-hidden">
+      <div class="flex items-center gap-3 p-1.5 hover:bg-slate-800/40 rounded-xl transition-all duration-200 cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256" alt="Agent Avatar" class="w-9 h-9 rounded-full object-cover border border-slate-800">
+        <div class="md:block hidden whitespace-nowrap overflow-hidden">
+          <h4 class="font-semibold text-xs text-white">Tyler Nguyen</h4>
+          <span class="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Online (Staff)
+          </span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Middle Column: Chat Queue Area -->
+  <section class="w-80 bg-slate-900 border-r border-slate-800/80 flex flex-col flex-shrink-0">
+    <div class="h-16 px-4 border-b border-slate-800/60 flex items-center justify-between">
+      <h2 class="font-bold text-lg text-white tracking-wide">Hàng Đợi Hỗ Trợ</h2>
+      <button onclick="resetQueues()" title="Đặt lại dữ liệu mẫu" class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-all cursor-pointer">
+        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Queue search -->
+    <div class="p-3 border-b border-slate-800/40">
+      <div class="relative">
+        <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
+        <input type="text" placeholder="Tìm kiếm cuộc trò chuyện..." class="w-full bg-slate-950 border border-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs pl-9 pr-4 py-2 rounded-lg outline-none transition-all duration-250 text-slate-200">
+      </div>
+    </div>
+
+    <!-- Scrollable Queues Lists -->
+    <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-5 p-3">
+      
+      <!-- 1. Needs Human Help Column -->
+      <div>
+        <div class="flex items-center justify-between px-2 mb-2">
+          <span class="text-[11px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1.5">
+            <span class="w-2 h-2 bg-amber-500 rounded-full animate-ping"></span> Cần Nhân Viên Hỗ Trợ
+          </span>
+          <span id="badge-human-count" class="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+        </div>
+        <div id="queue-human-list" class="flex flex-col gap-2">
+          <!-- Inject human active queues -->
+        </div>
+      </div>
+
+      <!-- 2. Bot Handling Column -->
+      <div>
+        <div class="flex items-center justify-between px-2 mb-2">
+          <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+            <span class="w-2 h-2 bg-emerald-400 rounded-full"></span> Trợ Lý AI Đang Xử Lý
+          </span>
+          <span id="badge-bot-count" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+        </div>
+        <div id="queue-bot-list" class="flex flex-col gap-2">
+          <!-- Inject bot handled active queues -->
+        </div>
+      </div>
+
+      <!-- 3. Closed Tickets -->
+      <div>
+        <div class="flex items-center justify-between px-2 mb-2">
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+            Đã Hoàn Tất
+          </span>
+          <span id="badge-closed-count" class="bg-slate-800 text-slate-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+        </div>
+        <div id="queue-closed-list" class="flex flex-col gap-2">
+          <!-- Inject closed queues -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Right Column: Live Chat Workspace -->
+  <main id="chat-workspace" class="flex-1 bg-slate-950 flex flex-col min-w-0">
+    
+    <!-- Initial State if no chat selected -->
+    <div id="workspace-empty-state" class="flex-1 flex flex-col items-center justify-center p-8 text-center hidden">
+      <div class="w-16 h-16 bg-slate-900 border border-slate-800 text-slate-600 rounded-2xl flex items-center justify-center mb-4">
+        <i data-lucide="message-square" class="w-8 h-8"></i>
+      </div>
+      <h3 class="font-bold text-base text-white">Chưa Chọn Cuộc Trò Chuyện</h3>
+      <p class="text-slate-500 text-xs mt-1.5 max-w-xs leading-relaxed">
+        Chọn một cuộc hội thoại từ hàng đợi bên trái để theo dõi tin nhắn và tiếp quản từ AI.
+      </p>
+    </div>
+
+    <!-- Active Workspace State -->
+    <div id="workspace-active-state" class="flex-1 flex flex-col min-h-0">
+      
+      <!-- Top header bar with Customer details & Action controls -->
+      <div class="h-16 px-6 border-b border-slate-800/60 bg-slate-900 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-3">
+          <img id="active-user-avatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-slate-800">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 id="active-user-name" class="font-bold text-sm text-white">---</h3>
+              <span id="active-user-status" class="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase border">--</span>
+            </div>
+            <p id="active-user-meta" class="text-slate-400 text-[11px] truncate max-w-xs">Email: --- • SĐT: ---</p>
+          </div>
+        </div>
+        
+        <!-- Live Action Buttons (Handoff triggers!) -->
+        <div class="flex items-center gap-2.5">
+          <button id="btn-take-over" onclick="triggerTakeOver()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2 rounded-lg shadow-lg flex items-center gap-1.5 transition-all cursor-pointer">
+            <i data-lucide="user-check" class="w-4 h-4"></i> Tiếp quản (Handoff)
+          </button>
+          
+          <button id="btn-return-bot" onclick="triggerReturnBot()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs px-4 py-2 rounded-lg border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer">
+            <i data-lucide="bot" class="w-4 h-4"></i> Trả lại cho AI
+          </button>
+          
+          <button id="btn-close-ticket" onclick="triggerCloseTicket()" class="bg-slate-800 hover:bg-rose-950 text-rose-400 hover:text-rose-300 font-semibold text-xs px-4 py-2 rounded-lg border border-slate-700 hover:border-rose-900 flex items-center gap-1.5 transition-all cursor-pointer">
+            <i data-lucide="archive" class="w-4 h-4"></i> Đóng vé chat
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Messages Scroll Feed -->
+      <div id="active-chat-messages" class="flex-1 overflow-y-auto p-6 flex flex-col gap-4 custom-scrollbar bg-slate-950">
+        <!-- Messages will be rendered here dynamically -->
+      </div>
+
+      <!-- Real-Time User Typing Indicator from client -->
+      <div id="user-typing-indicator" class="px-6 py-2.5 bg-slate-900/40 border-t border-slate-800/40 flex items-center gap-2 hidden">
+        <span class="w-1.5 h-1.5 bg-brand-500 rounded-full animate-bounce"></span>
+        <span class="w-1.5 h-1.5 bg-brand-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+        <span class="w-1.5 h-1.5 bg-brand-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+        <span id="user-typing-text" class="text-xs text-slate-500 italic">Khách hàng đang soạn tin...</span>
+      </div>
+
+      <!-- Live Quick / Canned Replies Pane -->
+      <div class="px-6 py-2.5 bg-slate-900/60 border-t border-slate-850 flex items-center gap-2 overflow-x-auto custom-scrollbar flex-shrink-0">
+        <span class="text-[10px] font-bold text-slate-400 uppercase whitespace-nowrap tracking-wider flex items-center gap-1">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500"></i> Trả lời nhanh:
+        </span>
+        <button onclick="insertQuickReply('Dạ xin chào anh/chị, em có thể giúp gì được cho mình ạ?')" class="text-xs bg-slate-850 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1 rounded-full whitespace-nowrap transition-all cursor-pointer">
+          Chào hỏi mẫu
+        </button>
+        <button onclick="insertQuickReply('Sản phẩm tại TL Shop được bảo hành keo chỉ chính hãng trong vòng 6 tháng anh/chị nhé!')" class="text-xs bg-slate-850 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1 rounded-full whitespace-nowrap transition-all cursor-pointer">
+          Bảo hành giày
+        </button>
+        <button onclick="insertQuickReply('Dạ bên em hỗ trợ đổi size miễn phí trong 7 ngày nếu giữ nguyên hộp tag ạ.')" class="text-xs bg-slate-850 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1 rounded-full whitespace-nowrap transition-all cursor-pointer">
+          Chính sách đổi size
+        </button>
+        <button onclick="insertQuickReply('Dạ để em lên đơn gửi hỏa tốc giao ngay trong ngày cho mình nhé!')" class="text-xs bg-slate-850 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1 rounded-full whitespace-nowrap transition-all cursor-pointer">
+          Giao hỏa tốc
+        </button>
+      </div>
+
+      <!-- Bottom Chat typing zone -->
+      <div class="p-4 bg-slate-900 border-t border-slate-800/80 flex flex-col gap-2 flex-shrink-0">
+        <form id="agent-chat-form" onsubmit="handleAgentSend(event)" class="flex items-center gap-3">
+          <input type="text" id="agent-chat-input" onkeyup="handleAgentTyping()" placeholder="Nhập câu trả lời cho khách hàng..." autocomplete="off" class="flex-1 bg-slate-950 border border-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20 text-sm px-4 py-3 rounded-xl outline-none transition-all duration-200 text-white">
+          <button type="submit" id="agent-send-btn" class="w-12 h-12 bg-brand-600 hover:bg-brand-700 text-white rounded-xl flex items-center justify-center shadow-lg hover:shadow-brand-500/20 transition-all duration-200 active:scale-95 cursor-pointer flex-shrink-0">
+            <i data-lucide="send" class="w-5 h-5"></i>
+          </button>
+        </form>
+        <div class="flex justify-between items-center text-[10px] text-slate-500 px-1">
+          <span id="typing-state-msg">Đang kết nối cổng đồng bộ thời gian thực...</span>
+          <span class="flex items-center gap-1"><i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-400"></i> Sync Active (Cross-tab)</span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // Database storage keys
+    const QUEUES_KEY = "live_chat_queues";
+    const ACTIVE_CHAT_ID = "chat_active";
+
+    let activeSelectedId = ACTIVE_CHAT_ID;
+    let typingTimeout = null;
+
+    // Helper function to save queues to both localStorage and MySQL DB
+    function saveQueuesState(queues) {
+      localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+      fetch("api.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ queues: queues })
+      }).catch(err => console.error("Database save error:", err));
+    }
+
+    // Load and Categorize Queues from LocalStorage & DB
+    function loadQueues() {
+      fetch("api.php")
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.queues && data.queues.length > 0) {
+            localStorage.setItem(QUEUES_KEY, JSON.stringify(data.queues));
+          }
+          renderQueuesList();
+        })
+        .catch(err => {
+          console.warn("DB load failed, fallback to local:", err);
+          renderQueuesList();
+        });
+    }
+
+    function renderQueuesList() {
+      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+      
+      const humanList = document.getElementById("queue-human-list");
+      const botList = document.getElementById("queue-bot-list");
+      const closedList = document.getElementById("queue-closed-list");
+      
+      humanList.innerHTML = "";
+      botList.innerHTML = "";
+      closedList.innerHTML = "";
+
+      let humanCount = 0;
+      let botCount = 0;
+      let closedCount = 0;
+
+      queues.forEach(chat => {
+        const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].text : "Không có tin nhắn nào.";
+        const lastTime = chat.messages.length > 0 
+          ? new Date(chat.messages[chat.messages.length - 1].timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          : "";
+
+        const isActive = activeSelectedId === chat.id;
+
+        const chatEl = document.createElement("div");
+        chatEl.className = `p-3 rounded-xl cursor-pointer transition-all duration-200 ${
+          isActive 
+            ? 'bg-slate-800 border border-slate-700/80 shadow-md' 
+            : 'bg-slate-900/60 hover:bg-slate-800/40 border border-slate-900'
+        }`;
+        
+        chatEl.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="relative flex-shrink-0">
+              <img src="${chat.userAvatar}" alt="Avatar" class="w-9 h-9 rounded-full object-cover">
+              ${chat.status === 'human' ? `
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-500 border border-slate-900 rounded-full animate-pulse"></span>
+              ` : chat.status === 'ai' ? `
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border border-slate-900 rounded-full"></span>
+              ` : `
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-slate-600 border border-slate-900 rounded-full"></span>
+              `}
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-white truncate">${chat.userName}</h4>
+                <span class="text-[9px] text-slate-500">${lastTime}</span>
+              </div>
+              <p class="text-[11px] text-slate-400 truncate mt-0.5">${lastMsg}</p>
+            </div>
+          </div>
+        `;
+
+        chatEl.addEventListener("click", () => {
+          activeSelectedId = chat.id;
+          loadQueues();
+          renderActiveWorkspace();
+        });
+
+        if (chat.status === "human") {
+          humanCount++;
+          humanList.appendChild(chatEl);
+        } else if (chat.status === "ai") {
+          botCount++;
+          botList.appendChild(chatEl);
+        } else {
+          closedCount++;
+          closedList.appendChild(chatEl);
+        }
+      });
+
+      // Update counters
+      document.getElementById("badge-human-count").textContent = humanCount;
+      document.getElementById("badge-bot-count").textContent = botCount;
+      document.getElementById("badge-closed-count").textContent = closedCount;
+
+      if(window.lucide) lucide.createIcons();
+    }
+
+    // Render Active Chat Workspace Detail
+    function renderActiveWorkspace() {
+      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+      const chat = queues.find(c => c.id === activeSelectedId);
+
+      const emptyState = document.getElementById("workspace-empty-state");
+      const activeState = document.getElementById("workspace-active-state");
+
+      if (!chat) {
+        emptyState.classList.remove("hidden");
+        activeState.classList.add("hidden");
+        return;
+      }
+
+      emptyState.classList.add("hidden");
+      activeState.classList.remove("hidden");
+
+      // Set user header details
+      document.getElementById("active-user-avatar").src = chat.userAvatar;
+      document.getElementById("active-user-name").textContent = chat.userName;
+      document.getElementById("active-user-meta").textContent = `Email: ${chat.userEmail} • SĐT: ${chat.userPhone}`;
+      
+      const statusBadge = document.getElementById("active-user-status");
+      statusBadge.textContent = chat.status === 'human' ? 'Needs Help' : chat.status === 'ai' ? 'Bot Handling' : 'Closed';
+      
+      if (chat.status === "human") {
+        statusBadge.className = "px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase border border-amber-500/20 bg-amber-500/10 text-amber-400";
+      } else if (chat.status === "ai") {
+        statusBadge.className = "px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase border border-emerald-500/20 bg-emerald-500/10 text-emerald-400";
+      } else {
+        statusBadge.className = "px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase border border-slate-700 bg-slate-800 text-slate-400";
+      }
+
+      // Configure Action Buttons visibility/disability based on status
+      const btnTakeOver = document.getElementById("btn-take-over");
+      const btnReturnBot = document.getElementById("btn-return-bot");
+      const btnCloseTicket = document.getElementById("btn-close-ticket");
+      const inputForm = document.getElementById("agent-chat-input");
+      const sendBtn = document.getElementById("agent-send-btn");
+
+      if (chat.status === "closed") {
+        btnTakeOver.disabled = true;
+        btnTakeOver.className = "bg-slate-800 text-slate-500 font-semibold text-xs px-4 py-2 rounded-lg cursor-not-allowed border border-slate-800 opacity-50";
+        
+        btnReturnBot.disabled = true;
+        btnReturnBot.className = "bg-slate-800 text-slate-500 font-semibold text-xs px-4 py-2 rounded-lg cursor-not-allowed border border-slate-800 opacity-50";
+        
+        btnCloseTicket.disabled = true;
+        btnCloseTicket.className = "bg-slate-800 text-slate-500 font-semibold text-xs px-4 py-2 rounded-lg cursor-not-allowed border border-slate-800 opacity-50";
+        
+        inputForm.disabled = true;
+        inputForm.placeholder = "Đoạn chat này đã đóng hoàn tất.";
+        sendBtn.disabled = true;
+      } 
+      else if (chat.status === "ai") {
+        btnTakeOver.disabled = false;
+        btnTakeOver.className = "bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2 rounded-lg shadow-lg flex items-center gap-1.5 transition-all cursor-pointer transform hover:scale-[1.02] active:scale-95";
+        
+        btnReturnBot.disabled = true;
+        btnReturnBot.className = "bg-slate-800 text-slate-500 font-semibold text-xs px-4 py-2 rounded-lg cursor-not-allowed border border-slate-800/80 opacity-50";
+        
+        btnCloseTicket.disabled = false;
+        btnCloseTicket.className = "bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs px-4 py-2 rounded-lg border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer";
+        
+        inputForm.disabled = true;
+        inputForm.placeholder = "Nhấp 'Tiếp quản (Handoff)' để bắt đầu chat trực tiếp.";
+        sendBtn.disabled = true;
+      } 
+      else { // status === "human" (agent taken over)
+        btnTakeOver.disabled = true;
+        btnTakeOver.className = "bg-slate-800 text-slate-500 font-semibold text-xs px-4 py-2 rounded-lg cursor-not-allowed border border-slate-800/80 opacity-50";
+        
+        btnReturnBot.disabled = false;
+        btnReturnBot.className = "bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs px-4 py-2 rounded-lg border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer";
+        
+        btnCloseTicket.disabled = false;
+        btnCloseTicket.className = "bg-slate-800 hover:bg-rose-950 text-rose-400 hover:text-rose-300 font-semibold text-xs px-4 py-2 rounded-lg border border-slate-700 hover:border-rose-900 flex items-center gap-1.5 transition-all cursor-pointer";
+        
+        inputForm.disabled = false;
+        inputForm.placeholder = "Nhập câu trả lời gửi đến khách hàng...";
+        sendBtn.disabled = false;
+      }
+
+      // Render Messages scroll
+      renderMessages(chat.messages);
+
+      // System typing sync (if customer is typing inside page, though simulated here)
+      const typingIndicator = document.getElementById("user-typing-indicator");
+      if (chat.isUserTyping) {
+        typingIndicator.classList.remove("hidden");
+      } else {
+        typingIndicator.classList.add("hidden");
+      }
+    }
+
+    // Render Messages list inside Active Workspace
+    function renderMessages(messages) {
+      const chatFeed = document.getElementById("active-chat-messages");
+      chatFeed.innerHTML = "";
+
+      messages.forEach(msg => {
+        const isUser = msg.sender === "user";
+        const isBot = msg.sender === "bot";
+        const isSystem = msg.sender === "system";
+
+        const row = document.createElement("div");
+        row.className = `flex w-full flex-col ${isSystem ? 'items-center' : isUser ? 'items-start' : 'items-end'}`;
+
+        const timeStr = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        if (isSystem) {
+          row.innerHTML = `
+            <div class="my-2 bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-full text-[10px] text-slate-500 font-semibold tracking-wider text-center uppercase">
+              ${msg.text} • ${timeStr}
+            </div>
+          `;
+        } else {
+          row.innerHTML = `
+            <div class="flex gap-3 max-w-[75%] ${isUser ? 'flex-row' : 'flex-row-reverse'}">
+              <!-- Avatar icon -->
+              <div class="w-8 h-8 rounded-full border border-slate-800 flex-shrink-0 overflow-hidden bg-slate-800 flex items-center justify-center">
+                ${isUser ? `
+                  <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256" class="w-full h-full object-cover">
+                ` : isBot ? `
+                  <div class="text-blue-400">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>
+                  </div>
+                ` : `
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256" class="w-full h-full object-cover">
+                `}
+              </div>
+
+              <!-- Message details -->
+              <div>
+                <div class="flex items-center gap-1.5 mb-1 ${!isUser ? 'justify-end' : 'justify-start'}">
+                  <span class="text-[10px] font-bold text-slate-400">
+                    ${isUser ? 'Khách hàng' : isBot ? 'Trợ lý AI' : 'Bạn (Nhân viên)'}
+                  </span>
+                  <!-- Badges -->
+                  ${isBot ? `
+                    <span class="bg-emerald-500/10 text-emerald-400 text-[8px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-500/20 uppercase tracking-widest">BOT</span>
+                  ` : !isUser ? `
+                    <span class="bg-blue-500/10 text-blue-400 text-[8px] font-extrabold px-1.5 py-0.5 rounded border border-blue-500/20 uppercase tracking-widest">STAFF</span>
+                  ` : ''}
+                </div>
+                <div class="px-4 py-2.5 rounded-2xl text-xs shadow-md ${
+                  isUser 
+                    ? 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-none' 
+                    : 'bg-brand-600 text-white rounded-tr-none'
+                }">
+                  <p class="leading-relaxed whitespace-pre-line">${escapeHTML(msg.text)}</p>
+                </div>
+                <span class="text-[9px] text-slate-600 mt-1 block ${!isUser ? 'text-right' : 'text-left'}">${timeStr}</span>
+              </div>
+            </div>
+          `;
+        }
+
+        chatFeed.appendChild(row);
+      });
+
+      chatFeed.scrollTop = chatFeed.scrollHeight;
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
+
+    // Insert quick reply text into input box
+    function insertQuickReply(text) {
+      const input = document.getElementById("agent-chat-input");
+      input.value = text;
+      input.focus();
+      handleAgentTyping();
+    }
+
+    // Sync typing status to Client widget
+    function handleAgentTyping() {
+      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+      const chat = queues.find(c => c.id === activeSelectedId);
+
+      if (chat && chat.status === "human") {
+        if (!chat.isTyping) {
+          chat.isTyping = true;
+          saveQueuesState(queues);
+        }
+
+        // Clear previous timeout and set a new one to turn off typing indicator
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+          const freshQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+          const freshChat = freshQueues.find(c => c.id === activeSelectedId);
+          if (freshChat) {
+            freshChat.isTyping = false;
+            saveQueuesState(freshQueues);
+          }
+        }, 1500);
+      }
+    }
+
+    // Handle Agent Sending Message
+    function handleAgentSend(e) {
+      e.preventDefault();
+      const input = document.getElementById("agent-chat-input");
+      const text = input.value.trim();
+      if (!text) return;
+
+      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+      const chat = queues.find(c => c.id === activeSelectedId);
+
+      if (!chat || chat.status !== "human") return;
+
+      // Add Agent Message
+      chat.messages.push({
+        sender: "agent",
+        text: text,
+        timestamp: Date.now()
+      });
+      chat.lastUpdated = Date.now();
+      chat.isTyping = false; // reset typing state
+
+      saveQueuesState(queues);
+      input.value = "";
+      
+      loadQueues();
+      renderActiveWorkspace();
+    }
+
+    // Trigger Take Over (Escalate to Human Agent)
+    function triggerTakeOver() {
+      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+      const chat = queues.find(c => c.id === activeSelectedId);
+
+      if (chat && chat.status === "ai") {
+        chat.status = "human";
+        chat.agentName = "Tyler Nguyen";
+        chat.messages.push({
+          sender: "system",
+          text: "Nhân viên Tyler Nguyen đã tiếp quản cuộc trò chuyện này.",
+          timestamp: Date.now()
+        });
+        chat.lastUpdated = Date.now();
+
+        saveQueuesState(queues);
+        
+        loadQueues();
+        renderActiveWorkspace();
+      }
+    }
+
+    // Trigger Return Bot (Handoff control back to AI)
+    function triggerReturnBot() {
+      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+      const chat = queues.find(c => c.id === activeSelectedId);
+
+      if (chat && chat.status === "human") {
+        chat.status = "ai";
+        chat.isTyping = false;
+        chat.messages.push({
+          sender: "system",
+          text: "Tyler Nguyen đã trả quyền điều khiển cuộc trò chuyện về cho Trợ lý AI.",
+          timestamp: Date.now()
+        });
+        chat.lastUpdated = Date.now();
+
+        saveQueuesState(queues);
+        
+        loadQueues();
+        renderActiveWorkspace();
+      }
+    }
+
+    // Trigger Close Ticket
+    function triggerCloseTicket() {
+      if(!confirm("Bạn có chắc chắn muốn đóng vé trò chuyện này?")) return;
+
+      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+      const chat = queues.find(c => c.id === activeSelectedId);
+
+      if (chat) {
+        chat.status = "closed";
+        chat.isTyping = false;
+        chat.messages.push({
+          sender: "system",
+          text: "Cuộc trò chuyện đã được đóng hoàn tất.",
+          timestamp: Date.now()
+        });
+        chat.lastUpdated = Date.now();
+
+        saveQueuesState(queues);
+        
+        loadQueues();
+        renderActiveWorkspace();
+      }
+    }
+
+    // Reset Queues to Initial Data
+    function resetQueues() {
+      if(!confirm("Đặt lại toàn bộ cơ sở dữ liệu về trạng thái mẫu ban đầu?")) return;
+      localStorage.removeItem(QUEUES_KEY);
+      location.reload();
+    }
+
+    // Listen to LocalStorage updates from Client widget tab (Real-time Sync!)
+    window.addEventListener("storage", (e) => {
+      if (e.key === QUEUES_KEY) {
+        loadQueues();
+        renderActiveWorkspace();
+      }
+    });
+
+    // Initial load calls
+    loadQueues();
+    renderActiveWorkspace();
+    lucide.createIcons();
+
+    // Visual synchronization status indicator text
+    document.getElementById("typing-state-msg").textContent = "Cổng đồng bộ LocalStorage hoạt động ổn định.";
+  </script>
+</body>
+
+</html>

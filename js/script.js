@@ -160,6 +160,73 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   ];
 
+  const QUEUES_KEY = "live_chat_queues";
+  
+  const getChats = () => {
+    return JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+  };
+  
+  const saveChats = (chats) => {
+    localStorage.setItem(QUEUES_KEY, JSON.stringify(chats));
+    fetch("live-chat/api.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ queues: chats })
+    }).catch(err => console.error("Database sync save failed:", err));
+  };
+
+  const INITIAL_QUEUES = [
+    {
+      id: "chat_active",
+      userName: "Nguyễn Văn Minh (Khách)",
+      userAvatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256",
+      userEmail: "minh.nguyen@gmail.com",
+      userPhone: "0987-654-321",
+      status: "ai",
+      agentName: "Tyler (Support)",
+      isTyping: false,
+      isUserTyping: false,
+      messages: [
+        { sender: "bot", text: "Xin chào! Tôi là Trợ lý AI của TL Shop. Tôi có thể giúp gì cho bạn hôm nay?", timestamp: Date.now() }
+      ],
+      lastUpdated: Date.now()
+    },
+    {
+      id: "chat_2",
+      userName: "Lê Minh Anh",
+      userAvatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&q=80&w=256",
+      userEmail: "minhanh.le@gmail.com",
+      userPhone: "0912-345-678",
+      status: "human",
+      agentName: "",
+      isTyping: false,
+      isUserTyping: false,
+      messages: [
+        { sender: "user", text: "Cho mình hỏi mẫu giày Nike Air Zoom Mercurial có được bảo hành không?", timestamp: Date.now() - 360000 },
+        { sender: "bot", text: "Tất cả sản phẩm tại TL Shop được bảo hành chính hãng 6 tháng ạ. Để hỗ trợ tốt hơn tôi xin chuyển nối đến nhân viên nhé.", timestamp: Date.now() - 300000 }
+      ],
+      lastUpdated: Date.now() - 300000
+    },
+    {
+      id: "chat_3",
+      userName: "Trần Thị Lan",
+      userAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=256",
+      userEmail: "lantran.cpa@yahoo.com",
+      userPhone: "0905-111-222",
+      status: "closed",
+      agentName: "Lan Anh",
+      isTyping: false,
+      isUserTyping: false,
+      messages: [
+        { sender: "user", text: "Shop giao nhanh lắm nha, đóng gói cực kỳ xịn.", timestamp: Date.now() - 7200000 },
+        { sender: "agent", text: "Dạ vâng, cảm ơn chị Lan đã tin tưởng ủng hộ TL Shop ạ! Chúc chị một ngày tốt lành.", timestamp: Date.now() - 7100000 }
+      ],
+      lastUpdated: Date.now() - 7100000
+    }
+  ];
+
+  // (Handled dynamically on syncWithDatabase below)
+
   let currentRole = "customer";
   try {
     const localUser = JSON.parse(localStorage.getItem("nike_current_user"));
@@ -192,8 +259,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatHeaderIcon = document.getElementById("chat-header-icon");
 
   function updateUI() {
+    const chats = getChats();
+    
     if (currentRole === "customer") {
-      activeChatId = 1;
+      activeChatId = "chat_active";
       viewChatList.classList.remove("active");
       viewChatList.classList.add("hidden");
 
@@ -202,11 +271,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
       chatBackBtn.classList.add("hidden");
 
-      chatHeaderTitle.textContent = "Hỗ trợ trực tuyến";
-      chatHeaderStatus.textContent = "Sẵn sàng hỗ trợ";
-      if (window.lucide) {
-        chatHeaderIcon.setAttribute("data-lucide", "message-circle");
-        lucide.createIcons();
+      const activeChat = chats.find(c => c.id === activeChatId) || chats[0];
+      if (activeChat) {
+        if (activeChat.status === "ai") {
+          chatHeaderTitle.textContent = "Trợ lý AI Smart";
+          chatHeaderStatus.textContent = "Sẵn sàng hỗ trợ 24/7";
+          if (window.lucide) {
+            chatHeaderIcon.setAttribute("data-lucide", "bot");
+            lucide.createIcons();
+          }
+        } else if (activeChat.status === "human") {
+          chatHeaderTitle.textContent = activeChat.agentName || "Nhân Viên Hỗ Trợ";
+          chatHeaderStatus.textContent = "Đang trực tuyến";
+          if (window.lucide) {
+            chatHeaderIcon.setAttribute("data-lucide", "user-check");
+            lucide.createIcons();
+          }
+        } else {
+          chatHeaderTitle.textContent = "Hộp chat đã đóng";
+          chatHeaderStatus.textContent = "Vé hỗ trợ đã được đóng";
+          if (window.lucide) {
+            chatHeaderIcon.setAttribute("data-lucide", "archive");
+            lucide.createIcons();
+          }
+        }
+
+        // Show typing indicator in header status if agent is typing
+        if (activeChat.isTyping && activeChat.status === "human") {
+          chatHeaderStatus.textContent = "Nhân viên đang soạn tin...";
+        }
       }
 
       renderMessages(activeChatId);
@@ -243,12 +336,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         chatBackBtn.classList.remove("hidden");
 
-        const chat = mockChats.find(c => c.id === activeChatId);
-        chatHeaderTitle.textContent = chat.customerName;
-        chatHeaderStatus.textContent = "Khách hàng";
-        if (window.lucide) { chatHeaderIcon.setAttribute("data-lucide", chat.avatar); lucide.createIcons(); }
-
-        renderMessages(activeChatId);
+        const chat = chats.find(c => c.id === activeChatId);
+        if (chat) {
+          chatHeaderTitle.textContent = chat.userName || chat.customerName;
+          chatHeaderStatus.textContent = chat.status === "human" ? "Yêu cầu hỗ trợ" : chat.status === "ai" ? "AI đang chăm sóc" : "Đã hoàn tất";
+          if (window.lucide) { chatHeaderIcon.setAttribute("data-lucide", "user"); lucide.createIcons(); }
+          renderMessages(activeChatId);
+        }
       }
     }
   }
@@ -256,23 +350,24 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderChatList() {
     chatListItems.innerHTML = "";
     let totalUnread = 0;
+    const chats = getChats();
 
-    mockChats.forEach(chat => {
-      totalUnread += chat.unread;
-      const lastMsg = chat.messages[chat.messages.length - 1].text;
+    chats.forEach(chat => {
+      totalUnread += (chat.unread || 0);
+      const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].text : "Không có tin nhắn.";
 
       const el = document.createElement("div");
-      el.className = `chat-list-item ${chat.unread > 0 ? "unread" : ""}`;
+      el.className = `chat-list-item ${(chat.unread || 0) > 0 ? "unread" : ""}`;
       el.innerHTML = `
-        <div class="item-avatar"><i data-lucide="${chat.avatar}"></i></div>
+        <div class="item-avatar"><i data-lucide="user"></i></div>
         <div class="item-info">
           <div class="item-header">
-            <h4 class="item-name">${chat.customerName}</h4>
-            <span class="item-time">${chat.time}</span>
+            <h4 class="item-name">${chat.userName}</h4>
+            <span class="item-time">${chat.status === "human" ? "Cần hỗ trợ" : chat.status === "ai" ? "AI" : "Đóng"}</span>
           </div>
           <p class="item-preview">${lastMsg}</p>
         </div>
-        ${chat.unread > 0 ? `<div class="item-badge">${chat.unread}</div>` : ""}
+        ${(chat.unread || 0) > 0 ? `<div class="item-badge">${chat.unread}</div>` : ""}
       `;
 
       el.addEventListener("click", () => {
@@ -291,18 +386,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderMessages(id) {
     chatMessages.innerHTML = "";
-    const chat = mockChats.find(c => c.id === id);
+    const chats = getChats();
+    const chat = chats.find(c => c.id === id) || chats[0];
     if (!chat) return;
 
     chat.messages.forEach(msg => {
+      if (msg.sender === "system") {
+        const msgHtml = `
+          <div class="message system-message" style="align-self: center; margin: 8px 0; text-align: center;">
+            <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 99px; font-size: 0.65rem; color: rgba(255,255,255,0.4); font-family: var(--font-mono); text-transform: uppercase;">
+              ${msg.text}
+            </div>
+          </div>
+        `;
+        chatMessages.insertAdjacentHTML('beforeend', msgHtml);
+        return;
+      }
+
       let isSelf = false;
       if (currentRole === "customer" && msg.sender === "user") isSelf = true;
-      if (currentRole !== "customer" && msg.sender === "bot") isSelf = true;
+      if (currentRole !== "customer" && (msg.sender === "bot" || msg.sender === "agent")) isSelf = true;
+
+      let senderName = "CSKH";
+      if (isSelf) {
+        senderName = "Bạn";
+      } else {
+        if (msg.sender === "bot") senderName = "Trợ lý AI";
+        else if (msg.sender === "agent") senderName = chat.agentName || "Nhân viên";
+        else senderName = chat.userName || "Khách hàng";
+      }
+
+      const isAgent = msg.sender === "agent";
 
       const msgHtml = `
         <div class="message ${isSelf ? 'user-message' : 'bot-message'}">
-          <div class="msg-bubble">${msg.text}</div>
-          <span class="msg-time">${isSelf ? 'Bạn' : (currentRole === 'customer' ? 'CSKH' : chat.customerName)}</span>
+          <div class="msg-bubble" style="${isAgent && currentRole === 'customer' ? 'border-color: #3b82f6;' : ''}">
+            ${msg.text}
+          </div>
+          <span class="msg-time" style="${isAgent && currentRole === 'customer' ? 'color: #60a5fa;' : ''}">
+            ${senderName}
+          </span>
         </div>
       `;
       chatMessages.insertAdjacentHTML('beforeend', msgHtml);
@@ -314,7 +437,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (currentRole === "customer") {
       chatBadge.classList.add("hidden");
     } else {
-      let total = mockChats.reduce((sum, c) => sum + c.unread, 0);
+      const chats = getChats();
+      let total = chats.reduce((sum, c) => sum + (c.unread || 0), 0);
       if (total > 0) {
         chatBadge.textContent = total;
         chatBadge.classList.remove("hidden");
@@ -329,6 +453,7 @@ document.addEventListener("DOMContentLoaded", () => {
       chatWindow.classList.toggle("hidden");
       if (!chatWindow.classList.contains("hidden")) {
         if (currentRole === "customer" || activeChatId) chatInput.focus();
+        loadChatSession();
       }
     });
 
@@ -352,30 +477,119 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
+    function generateAIAnswer(question) {
+      const q = question.toLowerCase();
+      if (q.includes("giày") || q.includes("sản phẩm") || q.includes("mua")) {
+        return "TL Shop cung cấp rất nhiều mẫu giày bóng đá và thể thao chính hãng như Nike Air Zoom X, Phantom GX, Flyknit Elite. Bạn quan tâm sản phẩm cụ thể nào để tôi thông tin thông số kỹ thuật chi tiết ạ?";
+      }
+      if (q.includes("đổi trả") || q.includes("trả") || q.includes("hoàn tiền")) {
+        return "Dạ chính sách đổi trả của TL Shop cực kỳ linh hoạt: Bạn được hỗ trợ đổi trả size hoặc sản phẩm lỗi miễn phí trong vòng 7 ngày kể từ khi nhận hàng. Lưu ý giữ nguyên hộp và tem mác giúp shop nhé!";
+      }
+      if (q.includes("bảo hành") || q.includes("hỏng") || q.includes("rách")) {
+        return "Dạ sản phẩm mua tại TL Shop đều đi kèm bảo hành chính hãng keo chỉ 6 tháng. Nếu gặp vấn đề kỹ thuật nào bạn cứ yên tâm gửi lại shop hỗ trợ khắc phục nhé.";
+      }
+      if (q.includes("chuyển") || q.includes("gặp người") || q.includes("nhân viên") || q.includes("admin") || q.includes("hỗ trợ")) {
+        setTimeout(() => {
+          const freshChats = getChats();
+          const freshChat = freshChats.find(c => c.id === activeChatId);
+          if (freshChat && freshChat.status === "ai") {
+            freshChat.status = "human";
+            freshChat.messages.push({
+              sender: "system",
+              text: "Hệ thống: Đoạn chat đã được chuyển hướng sang Nhân viên Hỗ trợ. Vui lòng chờ nhân viên tiếp nhận...",
+              timestamp: Date.now()
+            });
+            saveChats(freshChats);
+            renderMessages(activeChatId);
+            updateUI();
+          }
+        }, 500);
+        return "Tôi hiểu bạn muốn gặp nhân viên trực tiếp hỗ trợ. Tôi đang tạo yêu cầu chuyển hướng cuộc gọi đến Nhân viên tư vấn ngay lập tức, vui lòng đợi trong giây lát!";
+      }
+      if (q.includes("cảm ơn") || q.includes("thanks")) {
+        return "Dạ không có chi ạ! Rất vinh hạnh được hỗ trợ bạn. Chúc bạn có một ngày mua sắm vui vẻ tại TL Shop!";
+      }
+      return "Dạ tôi đã tiếp nhận câu hỏi của bạn. Hệ thống AI đang phân tích dữ liệu, hoặc bạn cũng có thể gõ 'gặp nhân viên' để tôi chuyển hướng cuộc gọi đến nhân viên tư vấn hỗ trợ trực tiếp nhé!";
+    }
+
+    // Capture dynamic customer typing status to localStorage
+    let customerTypingTimeout = null;
+    chatInput.addEventListener("keyup", () => {
+      if (currentRole === "customer" && activeChatId) {
+        const chats = getChats();
+        const chat = chats.find(c => c.id === activeChatId);
+        if (chat && !chat.isUserTyping) {
+          chat.isUserTyping = true;
+          saveChats(chats);
+        }
+
+        clearTimeout(customerTypingTimeout);
+        customerTypingTimeout = setTimeout(() => {
+          const freshChats = getChats();
+          const freshChat = freshChats.find(c => c.id === activeChatId);
+          if (freshChat) {
+            freshChat.isUserTyping = false;
+            saveChats(freshChats);
+          }
+        }, 1500);
+      }
+    });
+
     const sendMessage = () => {
       const text = chatInput.value.trim();
       if (!text || !activeChatId) return;
 
-      const chat = mockChats.find(c => c.id === activeChatId);
+      const chats = getChats();
+      const chat = chats.find(c => c.id === activeChatId);
+      if (!chat) return;
 
-      const senderIdentity = currentRole === "customer" ? "user" : "bot";
+      if (chat.status === "closed") {
+        alert("Đoạn chat này đã đóng hoàn tất.");
+        return;
+      }
 
-      chat.messages.push({ sender: senderIdentity, text: text });
+      const senderIdentity = currentRole === "customer" ? "user" : (chat.status === "ai" ? "bot" : "agent");
 
+      chat.messages.push({
+        sender: senderIdentity,
+        text: text,
+        timestamp: Date.now()
+      });
+      chat.lastUpdated = Date.now();
+      chat.isUserTyping = false;
+
+      saveChats(chats);
       chatInput.value = "";
       renderMessages(activeChatId);
 
-      if (currentRole === "customer") {
+      // Trigger automatic AI reply if in AI Mode on customer side
+      if (currentRole === "customer" && chat.status === "ai") {
         chatInput.disabled = true;
         sendChatBtn.disabled = true;
 
+        chatHeaderStatus.textContent = "AI đang phản hồi...";
+
         setTimeout(() => {
-          chat.messages.push({ sender: "bot", text: "Dạ cảm ơn bạn! Hệ thống đang xử lý yêu cầu..." });
-          renderMessages(activeChatId);
+          const freshChats = getChats();
+          const freshChat = freshChats.find(c => c.id === activeChatId);
+          if (freshChat && freshChat.status === "ai") {
+            const aiResponseText = generateAIAnswer(text);
+            freshChat.messages.push({
+              sender: "bot",
+              text: aiResponseText,
+              timestamp: Date.now()
+            });
+            freshChat.lastUpdated = Date.now();
+            saveChats(freshChats);
+            
+            renderMessages(activeChatId);
+          }
+
           chatInput.disabled = false;
           sendChatBtn.disabled = false;
           chatInput.focus();
-        }, 1000);
+          updateUI();
+        }, 1500);
       }
     };
 
@@ -384,8 +598,46 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === "Enter") sendMessage();
     });
 
-    updateUI();
-    updateBadge();
+    // Real-time synchronization with localStorage (Storage Event)
+    window.addEventListener("storage", (e) => {
+      if (e.key === QUEUES_KEY) {
+        if (!chatWindow.classList.contains("hidden")) {
+          updateUI();
+        }
+      }
+    });
+
+    // Helper loading wrapper
+    function loadChatSession() {
+      updateUI();
+      updateBadge();
+    }
+
+    // Load from database to sync
+    function syncWithDatabase() {
+      fetch("live-chat/api.php")
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.queues && data.queues.length > 0) {
+            localStorage.setItem(QUEUES_KEY, JSON.stringify(data.queues));
+          } else {
+            if (!localStorage.getItem(QUEUES_KEY)) {
+              localStorage.setItem(QUEUES_KEY, JSON.stringify(INITIAL_QUEUES));
+              saveChats(INITIAL_QUEUES);
+            }
+          }
+          loadChatSession();
+        })
+        .catch(err => {
+          console.warn("Database load failed, fallback to local:", err);
+          if (!localStorage.getItem(QUEUES_KEY)) {
+            localStorage.setItem(QUEUES_KEY, JSON.stringify(INITIAL_QUEUES));
+          }
+          loadChatSession();
+        });
+    }
+
+    syncWithDatabase();
   }
 
 });
