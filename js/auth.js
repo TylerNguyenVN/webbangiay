@@ -183,6 +183,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Toggle password visibility
+  const togglePasswordBtns = document.querySelectorAll(".toggle-password");
+  togglePasswordBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const input = btn.previousElementSibling;
+      if (input && (input.type === "password" || input.type === "text")) {
+        if (input.type === "password") {
+          input.type = "text";
+          btn.innerHTML = '<i data-lucide="eye-off"></i>';
+        } else {
+          input.type = "password";
+          btn.innerHTML = '<i data-lucide="eye"></i>';
+        }
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }
+    });
+  });
+
 });
 
 // Hàm callback nhận JWT token từ Google

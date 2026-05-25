@@ -170,7 +170,7 @@
   background: #1f2937;
   border: 1px solid #374151;
   border-radius: 8px;
-  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  padding: 0.75rem 2.75rem;
   color: white;
   font-family: var(--font-sans);
   font-size: 0.875rem;
@@ -186,6 +186,40 @@
 
 .input-field input::placeholder {
   color: #6b7280;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.toggle-password:hover {
+  color: white;
+}
+
+.input-field .toggle-password i,
+.input-field .toggle-password svg {
+  position: static;
+  left: auto;
+  color: inherit;
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.toggle-password:active svg {
+  transform: scale(0.85);
 }
 
 .auth-actions {
@@ -310,6 +344,14 @@ body.auth-page.light-theme {
 .light-theme .input-field i,
 .light-theme .input-field svg {
   color: #9ca3af;
+}
+
+.light-theme .toggle-password {
+  color: #9ca3af;
+}
+
+.light-theme .toggle-password:hover {
+  color: #111827;
 }
 
 .light-theme .remember-me {

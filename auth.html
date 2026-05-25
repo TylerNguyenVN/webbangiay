@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Đăng nhập | Nike Elite</title>
+  <title>Đăng nhập | TL Shop</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +30,7 @@
     <div class="auth-left">
       <div class="auth-branding">
         <a href="index.html" class="brand-link">
-          <span class="brand-text">Nike Elite</span>
+          <span class="brand-text">TL Shop</span>
           <span class="brand-dot emerald"></span>
         </a>
         <p class="auth-slogan">Bước chân dẫn đầu xu hướng. Đăng nhập để trải nghiệm những đặc quyền đẳng cấp nhất.</p>
@@ -42,7 +42,7 @@
         <!-- LOGIN FORM -->
         <div id="login-form-wrapper" class="form-wrapper active">
           <h2 class="auth-title">Đăng nhập</h2>
-          <p class="auth-subtitle">Chào mừng bạn trở lại với Nike Elite</p>
+          <p class="auth-subtitle">Chào mừng bạn trở lại với TL Shop</p>
 
           <form id="login-form">
             <div class="input-group">
@@ -58,6 +58,9 @@
               <div class="input-field">
                 <i data-lucide="lock"></i>
                 <input type="password" id="login-password" placeholder="Nhập mật khẩu" required />
+                <button type="button" class="toggle-password" tabindex="-1">
+                  <i data-lucide="eye"></i>
+                </button>
               </div>
             </div>
 
@@ -74,13 +77,16 @@
 
           <p class="auth-switch">Chưa có tài khoản? <a href="#" id="go-to-register">Đăng ký ngay</a></p>
 
-          <div style="text-align: center; margin-top: 20px; margin-bottom: 15px; color: rgba(255,255,255,0.5); font-size: 0.85rem;">
+          <div
+            style="text-align: center; margin-top: 20px; margin-bottom: 15px; color: rgba(255,255,255,0.5); font-size: 0.85rem;">
             <span>HOẶC</span>
           </div>
 
           <!-- Nút Đăng nhập Google -->
-          <div id="g_id_onload" data-client_id="182083006593-oi9dkbtljvrghoqfpvkhm2aqathflste.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup"
-            data-callback="handleGoogleCredentialResponse" data-auto_prompt="false">
+          <div id="g_id_onload"
+            data-client_id="182083006593-oi9dkbtljvrghoqfpvkhm2aqathflste.apps.googleusercontent.com"
+            data-context="signin" data-ux_mode="popup" data-callback="handleGoogleCredentialResponse"
+            data-auto_prompt="false">
           </div>
           <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
             data-text="signin_with" data-size="large" data-logo_alignment="left"
@@ -91,7 +97,7 @@
         <!-- REGISTER FORM -->
         <div id="register-form-wrapper" class="form-wrapper">
           <h2 class="auth-title">Tạo tài khoản</h2>
-          <p class="auth-subtitle">Gia nhập cộng đồng Nike Elite ngay hôm nay</p>
+          <p class="auth-subtitle">Gia nhập cộng đồng TL Shop ngay hôm nay</p>
 
           <form id="register-form">
             <div class="input-group">
@@ -131,6 +137,9 @@
               <div class="input-field">
                 <i data-lucide="lock"></i>
                 <input type="password" id="register-password" placeholder="Tạo mật khẩu" required />
+                <button type="button" class="toggle-password" tabindex="-1">
+                  <i data-lucide="eye"></i>
+                </button>
               </div>
             </div>
 
@@ -139,6 +148,9 @@
               <div class="input-field">
                 <i data-lucide="check-circle"></i>
                 <input type="password" id="register-repassword" placeholder="Nhập lại mật khẩu" required />
+                <button type="button" class="toggle-password" tabindex="-1">
+                  <i data-lucide="eye"></i>
+                </button>
               </div>
             </div>
 

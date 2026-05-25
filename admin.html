@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nike Elite - Admin Console</title>
-  
+  <title>TL Shop - Admin Dashboard</title>
+
   <!-- CSS -->
   <link rel="stylesheet" href="css/admin.css">
-  
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body class="admin-body">
 
   <!-- LEFT SIDEBAR -->
   <aside class="admin-sidebar">
     <div class="admin-brand">
-      <h1>NIKE ELITE</h1>
-      <p>Premium Management</p>
+      <h1>TL Shop</h1>
+      <p>Admin Dashboard</p>
     </div>
 
     <nav class="admin-nav">
@@ -70,18 +72,18 @@
 
   <!-- MAIN AREA -->
   <main class="admin-main">
-    
+
     <!-- ============================================== -->
     <!-- DASHBOARD SECTION                              -->
     <!-- ============================================== -->
     <section id="admin-dashboard" class="view-section active">
-      
+
       <!-- Header Row -->
       <div class="header-row">
         <div class="header-title-wrapper">
           <span class="header-label">Admin Console</span>
           <h2 class="header-title">Tổng quan kinh doanh</h2>
-          <p class="header-desc">Hiệu suất và chỉ số chính trên dòng sản phẩm cao cấp Nike Elite.</p>
+          <p class="header-desc">Hiệu suất và chỉ số chính trên dòng sản phẩm cao cấp TL Shop.</p>
         </div>
         <div class="header-tools">
           <div class="search-box">
@@ -127,14 +129,16 @@
           <div class="metric-bg-icon"><i data-lucide="users"></i></div>
         </div>
 
-        <div class="metric-card interactive" onclick="document.querySelector('.nav-item[data-target=\'admin-ai\']').click()">
+        <div class="metric-card interactive"
+          onclick="document.querySelector('.nav-item[data-target=\'admin-ai\']').click()">
           <span class="metric-label">Tỷ lệ phản hồi Chatbot</span>
           <p class="metric-val">85%</p>
           <div class="metric-trend trend-up">
             <i data-lucide="check-circle" style="width:13px;height:13px;"></i>
             <span>Tối ưu</span>
           </div>
-          <div style="width:100%; background:#f3f4f6; height:6px; border-radius:99px; margin-top:1rem; overflow:hidden;">
+          <div
+            style="width:100%; background:#f3f4f6; height:6px; border-radius:99px; margin-top:1rem; overflow:hidden;">
             <div style="background:linear-gradient(to right, #14b8a6, #053225); width:85%; height:100%;"></div>
           </div>
           <div class="metric-bg-icon"><i data-lucide="bot"></i></div>
@@ -146,7 +150,7 @@
         <div class="chart-header">
           <div style="display:flex; flex-direction:column; gap:0.25rem;">
             <h3 class="chart-title">
-              Biểu đồ doanh thu 
+              Biểu đồ doanh thu
               <span class="chart-badge">Sát thực tế</span>
             </h3>
             <p class="chart-desc">Phân tích lưu lượng doanh số dòng sản phẩm cao cấp.</p>
@@ -159,16 +163,21 @@
 
         <div class="svg-chart-wrapper">
           <div class="chart-grid-lines">
-            <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line solid"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line solid"></div>
           </div>
-          
+
           <div id="chart-svg-wrap" class="chart-svg"></div>
-          
+
           <div id="chart-labels-wrap" class="chart-x-labels"></div>
         </div>
-        
+
         <div class="chart-info">
-          Dữ liệu được cập nhật liên tục thông qua trung tâm đồng bộ. Đỉnh điểm doanh thu ghi nhận vào thời điểm hôm nay.
+          Dữ liệu được cập nhật liên tục thông qua trung tâm đồng bộ. Đỉnh điểm doanh thu ghi nhận vào thời điểm hôm
+          nay.
         </div>
       </div>
 
@@ -178,18 +187,20 @@
     <!-- AI CHATBOT TRAINING SECTION                    -->
     <!-- ============================================== -->
     <section id="admin-ai" class="view-section">
-      
+
       <!-- Header Row -->
       <div class="header-row">
         <div class="header-title-wrapper">
           <span class="header-label" style="color:#047857;">AI AGENT TRAINING MODULE</span>
           <h2 class="header-title">
             Bảng điều khiển Nghiệp vụ AI
-            <span class="badge-tag"><i data-lucide="sparkles" style="width:11px;height:11px;color:#d97706;"></i> Gemini Activated</span>
+            <span class="badge-tag"><i data-lucide="sparkles" style="width:11px;height:11px;color:#d97706;"></i> Gemini
+              Activated</span>
           </h2>
-          <p class="header-desc">Phục hồi các câu hỏi chưa lý giải, gắn thẻ chất lượng kiến thức và đồng bộ hóa thư viện.</p>
+          <p class="header-desc">Phục hồi các câu hỏi chưa lý giải, gắn thẻ chất lượng kiến thức và đồng bộ hóa thư
+            viện.</p>
         </div>
-        
+
         <div class="gauge-container">
           <div class="gauge-info">
             <span class="gauge-label">Model Readiness</span>
@@ -198,22 +209,25 @@
               <span class="sub">chỉ tiêu kiến thức</span>
             </div>
           </div>
-          <div class="gauge-bar-bg"><div class="gauge-bar-fill"></div></div>
+          <div class="gauge-bar-bg">
+            <div class="gauge-bar-fill"></div>
+          </div>
         </div>
       </div>
 
       <!-- AI Grid Split -->
       <div class="ai-grid">
-        
+
         <!-- Left: List -->
         <div class="panel">
           <div class="panel-header">
             <h3 class="panel-title">Unresolved Queries</h3>
-            <button style="border:none;background:transparent;color:#047857;font-size:0.75rem;font-weight:600;display:flex;align-items:center;gap:0.25rem;cursor:pointer;">
+            <button
+              style="border:none;background:transparent;color:#047857;font-size:0.75rem;font-weight:600;display:flex;align-items:center;gap:0.25rem;cursor:pointer;">
               <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Reset
             </button>
           </div>
-          
+
           <div id="query-list-wrap" class="query-list">
             <!-- Rendered by JS -->
           </div>
@@ -229,12 +243,15 @@
 
         <!-- Right: Editor -->
         <div class="panel editor-panel">
-          
-          <div style="display:flex; align-items:center; gap:0.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem;">
+
+          <div
+            style="display:flex; align-items:center; gap:0.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem;">
             <i data-lucide="bot" style="color:#047857;"></i>
             <div style="display:flex;flex-direction:column;">
-              <h3 style="margin:0;font-family:var(--font-display);font-size:1.125rem;color:#053225;font-weight:700;">Knowledge Injection Workspace</h3>
-              <span style="font-size:0.75rem;color:#6b7280;">Xác thực chuẩn hóa dải tri thức để nạp dữ liệu lõi cho Chatbot.</span>
+              <h3 style="margin:0;font-family:var(--font-display);font-size:1.125rem;color:#053225;font-weight:700;">
+                Knowledge Injection Workspace</h3>
+              <span style="font-size:0.75rem;color:#6b7280;">Xác thực chuẩn hóa dải tri thức để nạp dữ liệu lõi cho
+                Chatbot.</span>
             </div>
           </div>
 
@@ -285,4 +302,5 @@
   </script>
   <script src="js/admin.js"></script>
 </body>
+
 </html>
