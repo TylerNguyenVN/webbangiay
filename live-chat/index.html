@@ -126,6 +126,8 @@
               <h3 id="header-title" class="font-semibold text-sm tracking-wide">Trợ Lý AI Smart</h3>
               <!-- Status Badge -->
               <span id="header-badge" class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-500/20 uppercase tracking-widest">AI</span>
+              <!-- Escalation Button (Get Human Help) -->
+              <button id="btn-get-human" onclick="escalateToHuman()" class="bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/20 text-[10px] font-bold px-2 py-0.5 rounded-md transition-all cursor-pointer">Gặp Nhân Viên</button>
             </div>
             <p id="header-status" class="text-slate-400 text-xs flex items-center gap-1">
               Sẵn sàng hỗ trợ 24/7
@@ -177,65 +179,166 @@
   <script>
     // Database Storage Keys
     const QUEUES_KEY = "live_chat_queues";
-    const ACTIVE_CHAT_ID = "chat_active";
+    let ACTIVE_CHAT_ID = "chat_active"; // Initial default fallback
+    let currentUserProfile = null; // Stored user profile
 
-    // Setup initial Mock database in LocalStorage if it doesn't exist
-    function initDatabase() {
-      if (!localStorage.getItem(QUEUES_KEY)) {
-        const initialQueues = [
-          {
-            id: ACTIVE_CHAT_ID,
-            userName: "Nguyễn Văn Minh (Khách)",
-            userAvatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256",
-            userEmail: "minh.nguyen@gmail.com",
-            userPhone: "0987-654-321",
-            status: "ai", // "ai", "human", "closed"
-            agentName: "Tyler (Support)",
-            isTyping: false,
-            isUserTyping: false,
-            messages: [
-              { sender: "bot", text: "Xin chào! Tôi là Trợ lý AI của TL Shop. Tôi có thể giúp gì cho bạn hôm nay?", timestamp: Date.now() }
-            ],
-            lastUpdated: Date.now()
-          },
-          {
-            id: "chat_2",
-            userName: "Lê Minh Anh",
-            userAvatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&q=80&w=256",
-            userEmail: "minhanh.le@gmail.com",
-            userPhone: "0912-345-678",
-            status: "human", // escalated
-            agentName: "",
-            isTyping: false,
-            isUserTyping: false,
-            messages: [
-              { sender: "user", text: "Cho mình hỏi mẫu giày Nike Air Zoom Mercurial có được bảo hành không?", timestamp: Date.now() - 360000 },
-              { sender: "bot", text: "Tất cả sản phẩm tại TL Shop được bảo hành chính hãng 6 tháng ạ. Để hỗ trợ tốt hơn tôi xin chuyển nối đến nhân viên nhé.", timestamp: Date.now() - 300000 }
-            ],
-            lastUpdated: Date.now() - 300000
-          },
-          {
-            id: "chat_3",
-            userName: "Trần Thị Lan",
-            userAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=256",
-            userEmail: "lantran.cpa@yahoo.com",
-            userPhone: "0905-111-222",
-            status: "closed",
-            agentName: "Lan Anh",
-            isTyping: false,
-            isUserTyping: false,
-            messages: [
-              { sender: "user", text: "Shop giao nhanh lắm nha, đóng gói cực kỳ xịn.", timestamp: Date.now() - 7200000 },
-              { sender: "agent", text: "Dạ vâng, cảm ơn chị Lan đã tin tưởng ủng hộ TL Shop ạ! Chúc chị một ngày tốt lành.", timestamp: Date.now() - 7100000 }
-            ],
-            lastUpdated: Date.now() - 7100000
-          }
-        ];
-        localStorage.setItem(QUEUES_KEY, JSON.stringify(initialQueues));
-      }
+    // Setup Shared BroadcastChannel for Real-Time synchronization
+    const chatChannel = new BroadcastChannel("chat_system");
+
+    // ==========================================
+    // DATABASE / SESSION USER INTEGRATION SYSTEM
+    // ==========================================
+    
+    // OPTION A: Server-Side Rendering (SSR)
+    // To implement Option A in PHP, your backend index.php would dynamically render session variables:
+    /*
+    window.currentUser = {
+      id: "<?php echo $_SESSION['user_id'] ?? ''; ?>",
+      name: "<?php echo $_SESSION['username'] ?? ''; ?>",
+      email: "<?php echo $_SESSION['email'] ?? ''; ?>",
+      phone: "<?php echo $_SESSION['phone'] ?? ''; ?>",
+      avatar: "<?php echo $_SESSION['avatar'] ?? ''; ?>"
+    };
+    */
+    
+    if (!window.currentUser) {
+      window.currentUser = null;
     }
 
-    initDatabase();
+    // OPTION B: API Fetching from Database Session Endpoint
+    async function fetchCurrentLoggedInUser() {
+      try {
+        const response = await fetch("api.php?action=get_logged_in_user");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.user) {
+            return data.user;
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch user session from API, trying local storage fallback:", err);
+      }
+      
+      // Fallback: Check local storage for logged-in user in front-end
+      try {
+        const localUser = localStorage.getItem("nike_current_user");
+        if (localUser) {
+          return JSON.parse(localUser);
+        }
+      } catch (e) {}
+
+      return null;
+    }
+
+    // Initialize User & Chat Session dynamically based on database / guest fallback
+    async function initUserAndChat() {
+      // 1. Try Option A (Server-side rendering)
+      if (window.currentUser && window.currentUser.name) {
+        currentUserProfile = window.currentUser;
+      }
+      
+      // 2. Try Option B (API Fetching)
+      if (!currentUserProfile) {
+        const fetchedUser = await fetchCurrentLoggedInUser();
+        if (fetchedUser) {
+          currentUserProfile = {
+            id: fetchedUser.id || fetchedUser.email || "user_" + Date.now(),
+            name: fetchedUser.username || fetchedUser.name || fetchedUser.email,
+            email: fetchedUser.email || "",
+            phone: fetchedUser.phone || "",
+            avatar: fetchedUser.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256"
+          };
+        }
+      }
+
+      // 3. Fallback: Guest User Profile (Khách vãng lai #ID)
+      if (!currentUserProfile) {
+        let guestProfile = JSON.parse(localStorage.getItem("live_chat_guest_profile"));
+        if (!guestProfile) {
+          const randId = Math.floor(1000 + Math.random() * 9000);
+          guestProfile = {
+            id: "guest_" + randId,
+            name: "Khách vãng lai #" + randId,
+            email: "guest_" + randId + "@nike.com",
+            phone: "",
+            avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256"
+          };
+          localStorage.setItem("live_chat_guest_profile", JSON.stringify(guestProfile));
+        }
+        currentUserProfile = guestProfile;
+      }
+
+      ACTIVE_CHAT_ID = "chat_" + currentUserProfile.id;
+      console.log("Chat system initialized for user:", currentUserProfile, "Chat ID:", ACTIVE_CHAT_ID);
+    }
+
+    // Listen to BroadcastChannel signals from Dashboard (Real-Time Agent events!)
+    chatChannel.onmessage = (event) => {
+      const { type, chatId, message, agentName, isTyping } = event.data;
+      if (chatId !== ACTIVE_CHAT_ID) return;
+
+      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+      const session = queues.find(q => q.id === ACTIVE_CHAT_ID);
+      if (!session) return;
+
+      console.log("Client received broadcast event:", type, event.data);
+
+      switch (type) {
+        case "AGENT_MESSAGE":
+          // Add agent reply instantly
+          session.messages.push(message);
+          session.lastUpdated = Date.now();
+          session.isTyping = false;
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          renderLocalSession();
+          break;
+
+        case "AGENT_TAKE_OVER":
+          session.status = "human";
+          session.agentName = agentName || "Tyler Nguyen";
+          session.messages.push({
+            sender: "system",
+            text: `Nhân viên ${session.agentName} đã tiếp quản cuộc trò chuyện này.`,
+            timestamp: Date.now()
+          });
+          session.lastUpdated = Date.now();
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          renderLocalSession();
+          break;
+
+        case "AGENT_RETURN_BOT":
+          session.status = "ai";
+          session.isTyping = false;
+          session.messages.push({
+            sender: "system",
+            text: "Cuộc trò chuyện đã được chuyển lại cho Trợ lý AI.",
+            timestamp: Date.now()
+          });
+          session.lastUpdated = Date.now();
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          renderLocalSession();
+          break;
+
+        case "AGENT_CLOSE_TICKET":
+          session.status = "closed";
+          session.isTyping = false;
+          session.messages.push({
+            sender: "system",
+            text: "Cuộc trò chuyện đã được đóng hoàn tất.",
+            timestamp: Date.now()
+          });
+          session.lastUpdated = Date.now();
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          renderLocalSession();
+          break;
+
+        case "AGENT_TYPING":
+          session.isTyping = isTyping;
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          renderLocalSession();
+          break;
+      }
+    };
 
     // DOM Elements
     const chatWindow = document.getElementById("chat-window");
@@ -300,17 +403,66 @@
     }
 
     // Load Chat Session from LocalStorage and Database
-    function loadChatSession() {
+    async function loadChatSession() {
+      if (!currentUserProfile) {
+        await initUserAndChat();
+      }
+
       fetch("api.php")
         .then(res => res.json())
         .then(data => {
-          if (data.success && data.queues && data.queues.length > 0) {
-            localStorage.setItem(QUEUES_KEY, JSON.stringify(data.queues));
+          let queues = [];
+          if (data.success && data.queues) {
+            queues = data.queues;
+          } else {
+            queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
           }
+
+          // Dynamic user chat session generation
+          let session = queues.find(q => q.id === ACTIVE_CHAT_ID);
+          if (!session) {
+            session = {
+              id: ACTIVE_CHAT_ID,
+              userName: currentUserProfile.name,
+              userAvatar: currentUserProfile.avatar,
+              userEmail: currentUserProfile.email,
+              userPhone: currentUserProfile.phone,
+              status: "ai", 
+              agentName: "Tyler (Support)",
+              isTyping: false,
+              isUserTyping: false,
+              messages: [],
+              lastUpdated: Date.now()
+            };
+            queues.push(session);
+            saveQueuesState(queues);
+          }
+
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
           renderLocalSession();
         })
         .catch(err => {
           console.warn("DB load failed, using local copy:", err);
+          
+          let queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+          let session = queues.find(q => q.id === ACTIVE_CHAT_ID);
+          if (!session) {
+            session = {
+              id: ACTIVE_CHAT_ID,
+              userName: currentUserProfile.name,
+              userAvatar: currentUserProfile.avatar,
+              userEmail: currentUserProfile.email,
+              userPhone: currentUserProfile.phone,
+              status: "ai", 
+              agentName: "Tyler (Support)",
+              isTyping: false,
+              isUserTyping: false,
+              messages: [],
+              lastUpdated: Date.now()
+            };
+            queues.push(session);
+            localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          }
           renderLocalSession();
         });
     }
@@ -346,11 +498,14 @@
 
     // Update the Chat Header
     function updateHeaderUI(session) {
+      const getHumanBtn = document.getElementById("btn-get-human");
+      
       if (session.status === "ai") {
         headerTitle.textContent = "Trợ Lý AI Smart";
         headerStatus.innerHTML = '<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span> Sẵn sàng phản hồi 24/7</span>';
         headerBadge.textContent = "AI";
         headerBadge.className = "bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-500/20 uppercase tracking-widest";
+        if (getHumanBtn) getHumanBtn.classList.remove("hidden");
         
         // Show Bot Icon
         avatarImage.classList.add("hidden");
@@ -359,14 +514,29 @@
         avatarIcon.setAttribute("data-lucide", "bot");
         if(window.lucide) lucide.createIcons();
       } 
+      else if (session.status === "human_requested") {
+        headerTitle.textContent = "Đang kết nối...";
+        headerStatus.innerHTML = '<span class="flex items-center gap-1 text-amber-400"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span> Đang chờ tiếp nhận...</span>';
+        headerBadge.textContent = "Handoff";
+        headerBadge.className = "bg-amber-500/10 text-amber-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-amber-500/20 uppercase tracking-widest";
+        if (getHumanBtn) getHumanBtn.classList.add("hidden");
+        
+        // Show Handoff icon
+        avatarImage.classList.add("hidden");
+        avatarIcon.classList.remove("hidden");
+        avatarContainer.className = "w-10 h-10 rounded-full bg-amber-950 flex items-center justify-center shadow-inner overflow-hidden border border-amber-500/20";
+        avatarIcon.setAttribute("data-lucide", "help-circle");
+        if(window.lucide) lucide.createIcons();
+      }
       else if (session.status === "human") {
         headerTitle.textContent = session.agentName || "Nhân Viên Hỗ Trợ";
         headerStatus.innerHTML = '<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span> Đang trực tuyến</span>';
         headerBadge.textContent = "Staff";
         headerBadge.className = "bg-blue-500/10 text-blue-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-blue-500/20 uppercase tracking-widest";
+        if (getHumanBtn) getHumanBtn.classList.add("hidden");
 
         // Show Agent Profile Avatar
-        avatarImage.src = session.userAvatar; // use nice placeholder avatar
+        avatarImage.src = session.userAvatar; 
         avatarImage.classList.remove("hidden");
         avatarIcon.classList.add("hidden");
         avatarContainer.className = "w-10 h-10 rounded-full bg-slate-200 shadow-inner overflow-hidden border border-white/20";
@@ -376,6 +546,7 @@
         headerStatus.innerHTML = '<span class="flex items-center gap-1 text-slate-500">Vé hỗ trợ đã được đóng</span>';
         headerBadge.textContent = "Đóng";
         headerBadge.className = "bg-rose-500/10 text-rose-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-rose-500/20 uppercase tracking-widest";
+        if (getHumanBtn) getHumanBtn.classList.add("hidden");
         
         avatarImage.classList.add("hidden");
         avatarIcon.classList.remove("hidden");
@@ -392,11 +563,21 @@
       messages.forEach(msg => {
         const isUser = msg.sender === "user";
         const isBot = msg.sender === "bot";
+        const isSystem = msg.sender === "system";
         
         const messageRow = document.createElement("div");
-        messageRow.className = `flex w-full flex-col ${isUser ? 'items-end' : 'items-start'}`;
+        messageRow.className = `flex w-full flex-col ${isSystem ? 'items-center my-2' : isUser ? 'items-end' : 'items-start'}`;
 
-        let avatarSrc = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=256";
+        if (isSystem) {
+          messageRow.innerHTML = `
+            <div class="bg-slate-200/60 text-slate-500 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+              ${msg.text}
+            </div>
+          `;
+          chatMessages.appendChild(messageRow);
+          return;
+        }
+
         let senderName = "Hỗ Trợ";
         
         if (isBot) {
@@ -471,6 +652,42 @@
       typingContainer.classList.add("hidden");
     }
 
+    // Broadcast customer typing events dynamically
+    let customerTypingTimeout = null;
+    chatInput.addEventListener("keyup", () => {
+      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+      const session = queues.find(q => q.id === ACTIVE_CHAT_ID);
+      
+      if (session && session.status === "human" && !session.isUserTyping) {
+        session.isUserTyping = true;
+        localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+        
+        // Broadcast typing signal
+        chatChannel.postMessage({
+          type: "CUSTOMER_TYPING",
+          chatId: ACTIVE_CHAT_ID,
+          isTyping: true
+        });
+      }
+
+      clearTimeout(customerTypingTimeout);
+      customerTypingTimeout = setTimeout(() => {
+        const freshQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+        const freshSession = freshQueues.find(q => q.id === ACTIVE_CHAT_ID);
+        if (freshSession && freshSession.isUserTyping) {
+          freshSession.isUserTyping = false;
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(freshQueues));
+
+          // Broadcast stopped typing signal
+          chatChannel.postMessage({
+            type: "CUSTOMER_TYPING",
+            chatId: ACTIVE_CHAT_ID,
+            isTyping: false
+          });
+        }
+      }, 1500);
+    });
+
     // Handle user sending message
     function handleUserSend(e) {
       e.preventDefault();
@@ -496,36 +713,122 @@
 
       session.messages.push(newMsg);
       session.lastUpdated = Date.now();
+      session.isUserTyping = false;
       
       // Update and save
       saveQueuesState(queues);
-      chatInput.value = "";
       
+      // Broadcast customer message to Admin Dashboard in Real-Time with active database-backed username!
+      chatChannel.postMessage({
+        type: "CUSTOMER_MESSAGE",
+        chatId: ACTIVE_CHAT_ID,
+        userName: currentUserProfile.name,
+        userAvatar: currentUserProfile.avatar,
+        userEmail: currentUserProfile.email,
+        userPhone: currentUserProfile.phone,
+        message: newMsg
+      });
+
+      chatInput.value = "";
       loadChatSession();
 
       // Trigger AI reply automatically if in AI Mode
       if (session.status === "ai") {
         showTypingIndicator("AI đang trả lời...", "bot");
         
-        // Simulating smart AI response after a small delay
+        // Broadcast AI is typing to Admin Dashboard
+        chatChannel.postMessage({
+          type: "AGENT_TYPING",
+          chatId: ACTIVE_CHAT_ID,
+          isTyping: true
+        });
+
         setTimeout(() => {
-          const aiResponseText = generateAIAnswer(text);
-          
-          const updatedQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
-          const currentSession = updatedQueues.find(q => q.id === ACTIVE_CHAT_ID);
-          
-          if (currentSession && currentSession.status === "ai") {
-            currentSession.messages.push({
-              sender: "bot",
-              text: aiResponseText,
-              timestamp: Date.now()
-            });
-            currentSession.lastUpdated = Date.now();
-            saveQueuesState(updatedQueues);
+          // Query the database-driven AI Knowledge Base first
+          fetch("api.php?action=query_ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question: text })
+          })
+          .then(res => res.json())
+          .then(data => {
+            let aiResponseText = "";
+            if (data.success && data.answer) {
+              aiResponseText = data.answer; // Database-matched trained response
+            } else {
+              aiResponseText = generateAIAnswer(text); // Fallback to templates
+            }
+
+            const updatedQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+            const currentSession = updatedQueues.find(q => q.id === ACTIVE_CHAT_ID);
             
-            hideTypingIndicator();
-            loadChatSession();
-          }
+            if (currentSession && currentSession.status === "ai") {
+              const botMsg = {
+                sender: "bot",
+                text: aiResponseText,
+                timestamp: Date.now()
+              };
+              currentSession.messages.push(botMsg);
+              currentSession.lastUpdated = Date.now();
+              saveQueuesState(updatedQueues);
+              
+              // Broadcast Bot Reply to Admin Dashboard
+              chatChannel.postMessage({
+                type: "CUSTOMER_MESSAGE",
+                chatId: ACTIVE_CHAT_ID,
+                userName: "Trợ Lý AI",
+                userAvatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=256",
+                message: botMsg
+              });
+
+              // Broadcast AI stopped typing
+              chatChannel.postMessage({
+                type: "AGENT_TYPING",
+                chatId: ACTIVE_CHAT_ID,
+                isTyping: false
+              });
+
+              hideTypingIndicator();
+              loadChatSession();
+            }
+          })
+          .catch(err => {
+            console.error("AI matching failed, fallback to rules:", err);
+            const aiResponseText = generateAIAnswer(text);
+            
+            const updatedQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+            const currentSession = updatedQueues.find(q => q.id === ACTIVE_CHAT_ID);
+            
+            if (currentSession && currentSession.status === "ai") {
+              const botMsg = {
+                sender: "bot",
+                text: aiResponseText,
+                timestamp: Date.now()
+              };
+              currentSession.messages.push(botMsg);
+              currentSession.lastUpdated = Date.now();
+              saveQueuesState(updatedQueues);
+
+              // Broadcast Bot Reply to Admin Dashboard
+              chatChannel.postMessage({
+                type: "CUSTOMER_MESSAGE",
+                chatId: ACTIVE_CHAT_ID,
+                userName: "Trợ Lý AI",
+                userAvatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=256",
+                message: botMsg
+              });
+
+              // Broadcast AI stopped typing
+              chatChannel.postMessage({
+                type: "AGENT_TYPING",
+                chatId: ACTIVE_CHAT_ID,
+                isTyping: false
+              });
+              
+              hideTypingIndicator();
+              loadChatSession();
+            }
+          });
         }, 1500);
       }
     }
@@ -556,25 +859,36 @@
       return "Dạ tôi đã tiếp nhận câu hỏi của bạn. Hệ thống AI đang phân tích dữ liệu, hoặc bạn cũng có thể gõ 'gặp nhân viên' để tôi chuyển hướng cuộc gọi đến nhân viên tư vấn hỗ trợ trực tiếp nhé!";
     }
 
-    // Escalate to human handoff dynamically from the Client
+    // Escalate to human handoff dynamically from the Client (Get Human Help)
     function escalateToHuman() {
       const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
       const session = queues.find(q => q.id === ACTIVE_CHAT_ID);
       
       if (session && session.status === "ai") {
-        session.status = "human";
+        session.status = "human_requested"; // State to indicate handoff requested!
         session.lastUpdated = Date.now();
         session.messages.push({
           sender: "system",
-          text: "Hệ thống: Đoạn chat đã được chuyển hướng sang Nhân viên Hỗ trợ. Vui lòng chờ nhân viên tiếp nhận...",
+          text: "Yêu cầu gặp nhân viên: Đang chờ nhân viên hỗ trợ tiếp nhận cuộc trò chuyện...",
           timestamp: Date.now()
         });
         saveQueuesState(queues);
+        
+        // Broadcast escalation signal to Admin Dashboard with real database-backed payload!
+        chatChannel.postMessage({
+          type: "HANDOFF_REQUEST",
+          chatId: ACTIVE_CHAT_ID,
+          userName: currentUserProfile.name,
+          userAvatar: currentUserProfile.avatar,
+          userEmail: currentUserProfile.email,
+          userPhone: currentUserProfile.phone
+        });
+
         loadChatSession();
       }
     }
 
-    // Listen to LocalStorage changes from Dashboard tab (Real-time Sync!)
+    // Listen to LocalStorage changes from Dashboard tab (Backup Sync!)
     window.addEventListener("storage", (e) => {
       if (e.key === QUEUES_KEY) {
         loadChatSession();

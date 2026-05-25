@@ -123,44 +123,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  const mockChats = [
-    {
-      id: 1,
-      customerName: "Minh Quân",
-      avatar: "user",
-      unread: 1,
-      time: "10:30",
-      messages: [
-        { sender: "user", text: "Chào bạn, mẫu Elite màu đen còn size 42 không?" },
-        { sender: "bot", text: "Dạ mẫu này hiện đang còn hàng ở kho trung tâm ạ. Bạn muốn đặt ship hỏa tốc không?" },
-        { sender: "user", text: "Cho mình hỏi thêm về chính sách đổi trả?" }
-      ]
-    },
-    {
-      id: 2,
-      customerName: "Hoàng Yến",
-      avatar: "star",
-      unread: 0,
-      time: "09:15",
-      messages: [
-        { sender: "user", text: "Giày đi êm lắm shop ơi!" },
-        { sender: "bot", text: "Cảm ơn bạn đã tin tưởng ủng hộ Nike Elite ạ!" }
-      ]
-    },
-    {
-      id: 3,
-      customerName: "Trần Sơn",
-      avatar: "user",
-      unread: 2,
-      time: "Hôm qua",
-      messages: [
-        { sender: "user", text: "Cho mình hỏi đơn hàng #VN8821 bao giờ giao tới?" },
-        { sender: "user", text: "Mình kiểm tra thấy trạng thái đang ở kho phân loại từ hôm qua rồi." }
-      ]
-    }
-  ];
 
   const QUEUES_KEY = "live_chat_queues";
+  const chatChannel = new BroadcastChannel("chat_system");
   
   const getChats = () => {
     return JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
@@ -175,55 +140,69 @@ document.addEventListener("DOMContentLoaded", () => {
     }).catch(err => console.error("Database sync save failed:", err));
   };
 
-  const INITIAL_QUEUES = [
-    {
-      id: "chat_active",
-      userName: "Nguyễn Văn Minh (Khách)",
-      userAvatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256",
-      userEmail: "minh.nguyen@gmail.com",
-      userPhone: "0987-654-321",
-      status: "ai",
-      agentName: "Tyler (Support)",
-      isTyping: false,
-      isUserTyping: false,
-      messages: [
-        { sender: "bot", text: "Xin chào! Tôi là Trợ lý AI của TL Shop. Tôi có thể giúp gì cho bạn hôm nay?", timestamp: Date.now() }
-      ],
-      lastUpdated: Date.now()
-    },
-    {
-      id: "chat_2",
-      userName: "Lê Minh Anh",
-      userAvatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&q=80&w=256",
-      userEmail: "minhanh.le@gmail.com",
-      userPhone: "0912-345-678",
-      status: "human",
-      agentName: "",
-      isTyping: false,
-      isUserTyping: false,
-      messages: [
-        { sender: "user", text: "Cho mình hỏi mẫu giày Nike Air Zoom Mercurial có được bảo hành không?", timestamp: Date.now() - 360000 },
-        { sender: "bot", text: "Tất cả sản phẩm tại TL Shop được bảo hành chính hãng 6 tháng ạ. Để hỗ trợ tốt hơn tôi xin chuyển nối đến nhân viên nhé.", timestamp: Date.now() - 300000 }
-      ],
-      lastUpdated: Date.now() - 300000
-    },
-    {
-      id: "chat_3",
-      userName: "Trần Thị Lan",
-      userAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=256",
-      userEmail: "lantran.cpa@yahoo.com",
-      userPhone: "0905-111-222",
-      status: "closed",
-      agentName: "Lan Anh",
-      isTyping: false,
-      isUserTyping: false,
-      messages: [
-        { sender: "user", text: "Shop giao nhanh lắm nha, đóng gói cực kỳ xịn.", timestamp: Date.now() - 7200000 },
-        { sender: "agent", text: "Dạ vâng, cảm ơn chị Lan đã tin tưởng ủng hộ TL Shop ạ! Chúc chị một ngày tốt lành.", timestamp: Date.now() - 7100000 }
-      ],
-      lastUpdated: Date.now() - 7100000
+  const INITIAL_QUEUES = [];
+
+  let currentUserProfile = null;
+
+  async function fetchCurrentLoggedInUser() {
+    try {
+      const response = await fetch("live-chat/api.php?action=get_logged_in_user");
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.user) {
+          return data.user;
+        }
+      }
+    } catch (err) {
+      console.warn("Could not fetch user session from API:", err);
     }
-  ];
+    
+    try {
+      const localUser = localStorage.getItem("nike_current_user");
+      if (localUser) {
+        return JSON.parse(localUser);
+      }
+    } catch (e) {}
+
+    return null;
+  }
+
+  async function initUserAndChat() {
+    if (window.currentUser && window.currentUser.name) {
+      currentUserProfile = window.currentUser;
+    }
+    
+    if (!currentUserProfile) {
+      const fetchedUser = await fetchCurrentLoggedInUser();
+      if (fetchedUser) {
+        currentUserProfile = {
+          id: fetchedUser.id || fetchedUser.email || "user_" + Date.now(),
+          name: fetchedUser.username || fetchedUser.name || fetchedUser.email,
+          email: fetchedUser.email || "",
+          phone: fetchedUser.phone || "",
+          avatar: fetchedUser.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256"
+        };
+      }
+    }
+
+    if (!currentUserProfile) {
+      let guestProfile = JSON.parse(localStorage.getItem("live_chat_guest_profile"));
+      if (!guestProfile) {
+        const randId = Math.floor(1000 + Math.random() * 9000);
+        guestProfile = {
+          id: "guest_" + randId,
+          name: "Khách vãng lai #" + randId,
+          email: "guest_" + randId + "@nike.com",
+          phone: "",
+          avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256"
+        };
+        localStorage.setItem("live_chat_guest_profile", JSON.stringify(guestProfile));
+      }
+      currentUserProfile = guestProfile;
+    }
+
+    activeChatId = "chat_" + currentUserProfile.id;
+  }
 
   // (Handled dynamically on syncWithDatabase below)
 
@@ -262,7 +241,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const chats = getChats();
     
     if (currentRole === "customer") {
-      activeChatId = "chat_active";
+      if (currentUserProfile) {
+        activeChatId = "chat_" + currentUserProfile.id;
+      } else {
+        activeChatId = "chat_active";
+      }
       viewChatList.classList.remove("active");
       viewChatList.classList.add("hidden");
 
@@ -278,6 +261,13 @@ document.addEventListener("DOMContentLoaded", () => {
           chatHeaderStatus.textContent = "Sẵn sàng hỗ trợ 24/7";
           if (window.lucide) {
             chatHeaderIcon.setAttribute("data-lucide", "bot");
+            lucide.createIcons();
+          }
+        } else if (activeChat.status === "human_requested") {
+          chatHeaderTitle.textContent = "Đang kết nối...";
+          chatHeaderStatus.textContent = "Đang chờ nhân viên hỗ trợ...";
+          if (window.lucide) {
+            chatHeaderIcon.setAttribute("data-lucide", "help-circle");
             lucide.createIcons();
           }
         } else if (activeChat.status === "human") {
@@ -512,24 +502,38 @@ document.addEventListener("DOMContentLoaded", () => {
       return "Dạ tôi đã tiếp nhận câu hỏi của bạn. Hệ thống AI đang phân tích dữ liệu, hoặc bạn cũng có thể gõ 'gặp nhân viên' để tôi chuyển hướng cuộc gọi đến nhân viên tư vấn hỗ trợ trực tiếp nhé!";
     }
 
-    // Capture dynamic customer typing status to localStorage
+    // Broadcast customer typing status in real-time
     let customerTypingTimeout = null;
     chatInput.addEventListener("keyup", () => {
       if (currentRole === "customer" && activeChatId) {
         const chats = getChats();
         const chat = chats.find(c => c.id === activeChatId);
-        if (chat && !chat.isUserTyping) {
+        if (chat && chat.status === "human" && !chat.isUserTyping) {
           chat.isUserTyping = true;
           saveChats(chats);
+
+          // Broadcast typing signal
+          chatChannel.postMessage({
+            type: "CUSTOMER_TYPING",
+            chatId: activeChatId,
+            isTyping: true
+          });
         }
 
         clearTimeout(customerTypingTimeout);
         customerTypingTimeout = setTimeout(() => {
           const freshChats = getChats();
           const freshChat = freshChats.find(c => c.id === activeChatId);
-          if (freshChat) {
+          if (freshChat && freshChat.isUserTyping) {
             freshChat.isUserTyping = false;
             saveChats(freshChats);
+
+            // Broadcast stopped typing signal
+            chatChannel.postMessage({
+              type: "CUSTOMER_TYPING",
+              chatId: activeChatId,
+              isTyping: false
+            });
           }
         }, 1500);
       }
@@ -549,18 +553,26 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const senderIdentity = currentRole === "customer" ? "user" : (chat.status === "ai" ? "bot" : "agent");
-
-      chat.messages.push({
+      const newMsg = {
         sender: senderIdentity,
         text: text,
         timestamp: Date.now()
-      });
+      };
+
+      chat.messages.push(newMsg);
       chat.lastUpdated = Date.now();
       chat.isUserTyping = false;
 
       saveChats(chats);
       chatInput.value = "";
       renderMessages(activeChatId);
+
+      // Broadcast customer message instantly to Admin Dashboard!
+      chatChannel.postMessage({
+        type: "CUSTOMER_MESSAGE",
+        chatId: activeChatId,
+        message: newMsg
+      });
 
       // Trigger automatic AI reply if in AI Mode on customer side
       if (currentRole === "customer" && chat.status === "ai") {
@@ -569,26 +581,100 @@ document.addEventListener("DOMContentLoaded", () => {
 
         chatHeaderStatus.textContent = "AI đang phản hồi...";
 
-        setTimeout(() => {
-          const freshChats = getChats();
-          const freshChat = freshChats.find(c => c.id === activeChatId);
-          if (freshChat && freshChat.status === "ai") {
-            const aiResponseText = generateAIAnswer(text);
-            freshChat.messages.push({
-              sender: "bot",
-              text: aiResponseText,
-              timestamp: Date.now()
-            });
-            freshChat.lastUpdated = Date.now();
-            saveChats(freshChats);
-            
-            renderMessages(activeChatId);
-          }
+        // Broadcast AI is typing to Admin Dashboard
+        chatChannel.postMessage({
+          type: "AGENT_TYPING",
+          chatId: activeChatId,
+          isTyping: true
+        });
 
-          chatInput.disabled = false;
-          sendChatBtn.disabled = false;
-          chatInput.focus();
-          updateUI();
+        setTimeout(() => {
+          // Query the trained knowledge database first
+          fetch("live-chat/api.php?action=query_ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question: text })
+          })
+          .then(res => res.json())
+          .then(data => {
+            let aiResponseText = "";
+            if (data.success && data.answer) {
+              aiResponseText = data.answer; // Database-matched trained response
+            } else {
+              aiResponseText = generateAIAnswer(text); // Fallback to templates
+            }
+
+            const freshChats = getChats();
+            const freshChat = freshChats.find(c => c.id === activeChatId);
+            if (freshChat && freshChat.status === "ai") {
+              const botMsg = {
+                sender: "bot",
+                text: aiResponseText,
+                timestamp: Date.now()
+              };
+              freshChat.messages.push(botMsg);
+              freshChat.lastUpdated = Date.now();
+              saveChats(freshChats);
+              
+              // Broadcast Bot Reply to Admin Dashboard
+              chatChannel.postMessage({
+                type: "CUSTOMER_MESSAGE",
+                chatId: activeChatId,
+                message: botMsg
+              });
+
+              // Broadcast AI stopped typing
+              chatChannel.postMessage({
+                type: "AGENT_TYPING",
+                chatId: activeChatId,
+                isTyping: false
+              });
+
+              renderMessages(activeChatId);
+            }
+
+            chatInput.disabled = false;
+            sendChatBtn.disabled = false;
+            chatInput.focus();
+            updateUI();
+          })
+          .catch(err => {
+            console.error("AI matching error, fallback to templates:", err);
+            const freshChats = getChats();
+            const freshChat = freshChats.find(c => c.id === activeChatId);
+            if (freshChat && freshChat.status === "ai") {
+              const aiResponseText = generateAIAnswer(text);
+              const botMsg = {
+                sender: "bot",
+                text: aiResponseText,
+                timestamp: Date.now()
+              };
+              freshChat.messages.push(botMsg);
+              freshChat.lastUpdated = Date.now();
+              saveChats(freshChats);
+              
+              // Broadcast Bot Reply to Admin Dashboard
+              chatChannel.postMessage({
+                type: "CUSTOMER_MESSAGE",
+                chatId: activeChatId,
+                message: botMsg
+              });
+
+              // Broadcast AI stopped typing
+              chatChannel.postMessage({
+                type: "AGENT_TYPING",
+                chatId: activeChatId,
+                isTyping: false
+              });
+
+              renderMessages(activeChatId);
+            }
+
+            chatInput.disabled = false;
+            sendChatBtn.disabled = false;
+            chatInput.focus();
+            updateUI();
+          });
         }, 1500);
       }
     };
@@ -598,7 +684,74 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === "Enter") sendMessage();
     });
 
-    // Real-time synchronization with localStorage (Storage Event)
+    // Listen to BroadcastChannel signals from Dashboard (Real-Time sync!)
+    chatChannel.onmessage = (event) => {
+      const { type, chatId, message, agentName, isTyping } = event.data;
+      if (chatId !== "chat_active") return;
+
+      const queues = getChats();
+      const session = queues.find(c => c.id === "chat_active");
+      if (!session) return;
+
+      console.log("Root Client received broadcast event:", type, event.data);
+
+      switch (type) {
+        case "AGENT_MESSAGE":
+          session.messages.push(message);
+          session.lastUpdated = Date.now();
+          session.isTyping = false;
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          updateUI();
+          break;
+
+        case "AGENT_TAKE_OVER":
+          session.status = "human";
+          session.agentName = agentName || "Tyler Nguyen";
+          session.messages.push({
+            sender: "system",
+            text: `Nhân viên ${session.agentName} đã tiếp quản cuộc trò chuyện này.`,
+            timestamp: Date.now()
+          });
+          session.lastUpdated = Date.now();
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          updateUI();
+          break;
+
+        case "AGENT_RETURN_BOT":
+          session.status = "ai";
+          session.isTyping = false;
+          session.messages.push({
+            sender: "system",
+            text: "Cuộc trò chuyện đã được chuyển lại cho Trợ lý AI.",
+            timestamp: Date.now()
+          });
+          session.lastUpdated = Date.now();
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          updateUI();
+          break;
+
+        case "AGENT_CLOSE_TICKET":
+          session.status = "closed";
+          session.isTyping = false;
+          session.messages.push({
+            sender: "system",
+            text: "Cuộc trò chuyện đã được đóng hoàn tất.",
+            timestamp: Date.now()
+          });
+          session.lastUpdated = Date.now();
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          updateUI();
+          break;
+
+        case "AGENT_TYPING":
+          session.isTyping = isTyping;
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          updateUI();
+          break;
+      }
+    };
+
+    // Real-time backup synchronization with localStorage (Storage Event)
     window.addEventListener("storage", (e) => {
       if (e.key === QUEUES_KEY) {
         if (!chatWindow.classList.contains("hidden")) {
@@ -614,24 +767,65 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Load from database to sync
-    function syncWithDatabase() {
+    async function syncWithDatabase() {
+      if (!currentUserProfile) {
+        await initUserAndChat();
+      }
+
       fetch("live-chat/api.php")
         .then(res => res.json())
         .then(data => {
-          if (data.success && data.queues && data.queues.length > 0) {
-            localStorage.setItem(QUEUES_KEY, JSON.stringify(data.queues));
+          let queues = [];
+          if (data.success && data.queues) {
+            queues = data.queues;
           } else {
-            if (!localStorage.getItem(QUEUES_KEY)) {
-              localStorage.setItem(QUEUES_KEY, JSON.stringify(INITIAL_QUEUES));
-              saveChats(INITIAL_QUEUES);
-            }
+            queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
           }
+
+          // Dynamic user chat session generation
+          let session = queues.find(q => q.id === activeChatId);
+          if (!session) {
+            session = {
+              id: activeChatId,
+              userName: currentUserProfile.name,
+              userAvatar: currentUserProfile.avatar,
+              userEmail: currentUserProfile.email,
+              userPhone: currentUserProfile.phone,
+              status: "ai", 
+              agentName: "Tyler (Support)",
+              isTyping: false,
+              isUserTyping: false,
+              messages: [],
+              lastUpdated: Date.now()
+            };
+            queues.push(session);
+            saveChats(queues);
+          }
+
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
           loadChatSession();
         })
         .catch(err => {
           console.warn("Database load failed, fallback to local:", err);
-          if (!localStorage.getItem(QUEUES_KEY)) {
-            localStorage.setItem(QUEUES_KEY, JSON.stringify(INITIAL_QUEUES));
+          
+          let queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+          let session = queues.find(q => q.id === activeChatId);
+          if (!session) {
+            session = {
+              id: activeChatId,
+              userName: currentUserProfile.name,
+              userAvatar: currentUserProfile.avatar,
+              userEmail: currentUserProfile.email,
+              userPhone: currentUserProfile.phone,
+              status: "ai", 
+              agentName: "Tyler (Support)",
+              isTyping: false,
+              isUserTyping: false,
+              messages: [],
+              lastUpdated: Date.now()
+            };
+            queues.push(session);
+            localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
           }
           loadChatSession();
         });

@@ -183,7 +183,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const editorCategory = document.getElementById("editor-category");
   const editorAnswer = document.getElementById("editor-answer");
   
-  let activeQueryId = unresolvedQueries[0].id;
+  let activeQueryId = unresolvedQueries.length > 0 ? unresolvedQueries[0].id : null;
+
+  // DB Sync helper for unresolved queries list
+  const saveUnresolvedState = () => {
+    fetch("live-chat/api.php?action=save_unresolved", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ queries: unresolvedQueries })
+    }).catch(err => console.error("Failed to save unresolved queries to DB:", err));
+  };
+
+  const syncUnresolvedFromDB = () => {
+    fetch("live-chat/api.php?action=get_unresolved")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.queries) {
+          unresolvedQueries.length = 0; // Clear array
+          data.queries.forEach(q => unresolvedQueries.push(q));
+          if (unresolvedQueries.length > 0) {
+            activeQueryId = unresolvedQueries[0].id;
+          } else {
+            activeQueryId = null;
+          }
+        }
+        renderQueries();
+        loadActiveQuery();
+      })
+      .catch(err => {
+        console.warn("DB load for unresolved queries failed, using fallback:", err);
+        renderQueries();
+        loadActiveQuery();
+      });
+  };
 
   function renderQueries() {
     if (!queryListWrap) return;
@@ -233,8 +265,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (editorAnswer) editorAnswer.value = q.answer || "";
   }
 
-  renderQueries();
-  loadActiveQuery();
+  // Load unresolved list from MySQL
+  syncUnresolvedFromDB();
 
   const btnDraft = document.getElementById("btn-ai-draft");
   if (btnDraft) {
@@ -243,12 +275,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (window.lucide) window.lucide.createIcons();
       
       setTimeout(() => {
-        if (editorAnswer) {
-          editorAnswer.value = "Hệ thống đang trích xuất dữ liệu Nike Elite... Chào bạn, cảm ơn bạn đã gửi câu hỏi. Bộ phận kỹ thuật sẽ sớm có câu trả lời chi tiết cho thắc mắc này.";
+        const q = unresolvedQueries.find(x => x.id === activeQueryId);
+        if (editorAnswer && q) {
+          editorAnswer.value = `Dạ chào bạn! Đối với câu hỏi "${q.query}", TL Shop có chính sách hỗ trợ keo chỉ bảo hành 6 tháng và đổi size 7 ngày miễn phí ạ. Bạn tham khảo thêm nhé!`;
         }
         btnDraft.innerHTML = `<i data-lucide="bot" style="width:15px;height:15px;"></i> Generate AI Draft`;
         if (window.lucide) window.lucide.createIcons();
-        showAdminNotification("Đã tạo nháp từ Gemini AI!");
+        showAdminNotification("Đã tạo nháp phản hồi tối ưu bằng Gemini AI!");
       }, 1500);
     });
   }
@@ -256,13 +289,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSave = document.getElementById("btn-ai-save");
   if (btnSave) {
     btnSave.addEventListener("click", () => {
-      const qIndex = unresolvedQueries.findIndex(x => x.id === activeQueryId);
-      if (qIndex !== -1) {
-        unresolvedQueries[qIndex].answer = editorAnswer.value;
-        unresolvedQueries[qIndex].confidence = "Healthy";
-        unresolvedQueries[qIndex].category = editorCategory.value;
-        renderQueries();
-        showAdminNotification("Đã cập nhật tri thức thành công!");
+      const q = unresolvedQueries.find(x => x.id === activeQueryId);
+      if (q) {
+        q.answer = editorAnswer.value;
+        q.confidence = "Healthy";
+        q.category = editorCategory.value;
+        
+        // Push knowledge injection to database!
+        fetch("live-chat/api.php?action=inject_knowledge", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: q.query,
+            category: q.category,
+            answer: q.answer
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            saveUnresolvedState(); // save unresolved state list
+            renderQueries();
+            showAdminNotification("Đã nạp tri thức và huấn luyện AI thành công vào MySQL CSDL!");
+          } else {
+            showAdminNotification("Lỗi nạp tri thức: " + data.message);
+          }
+        })
+        .catch(err => {
+          console.error("AI Injection Error:", err);
+          showAdminNotification("Lỗi kết nối máy chủ nạp tri thức!");
+        });
       }
     });
   }
@@ -283,14 +339,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         activeQueryId = newId;
         inputSim.value = "";
+        saveUnresolvedState(); // persist new unresolved question
         renderQueries();
         loadActiveQuery();
-        showAdminNotification("Đã mô phỏng câu hỏi mới từ web client!");
+        showAdminNotification("Đã mô phỏng câu hỏi mới gửi về từ Web Client!");
       }
     });
   }
 
   function showAdminNotification(msg) {
-    alert("Admin System: " + msg); // Simplified notification for pure JS demo without building complex popup system again
+    alert("Hệ thống Admin: " + msg);
   }
 });

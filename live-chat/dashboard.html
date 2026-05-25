@@ -108,7 +108,7 @@
   <section class="w-80 bg-slate-900 border-r border-slate-800/80 flex flex-col flex-shrink-0">
     <div class="h-16 px-4 border-b border-slate-800/60 flex items-center justify-between">
       <h2 class="font-bold text-lg text-white tracking-wide">Hàng Đợi Hỗ Trợ</h2>
-      <button onclick="resetQueues()" title="Đặt lại dữ liệu mẫu" class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-all cursor-pointer">
+      <button onclick="resetQueues()" title="Đặt lại dữ liệu" class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-all cursor-pointer">
         <i data-lucide="refresh-cw" class="w-4 h-4"></i>
       </button>
     </div>
@@ -133,7 +133,7 @@
           <span id="badge-human-count" class="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
         </div>
         <div id="queue-human-list" class="flex flex-col gap-2">
-          <!-- Inject human active queues -->
+          <!-- Inject human active queues dynamically -->
         </div>
       </div>
 
@@ -146,7 +146,7 @@
           <span id="badge-bot-count" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
         </div>
         <div id="queue-bot-list" class="flex flex-col gap-2">
-          <!-- Inject bot handled active queues -->
+          <!-- Inject bot handled active queues dynamically -->
         </div>
       </div>
 
@@ -159,7 +159,7 @@
           <span id="badge-closed-count" class="bg-slate-800 text-slate-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
         </div>
         <div id="queue-closed-list" class="flex flex-col gap-2">
-          <!-- Inject closed queues -->
+          <!-- Inject closed queues dynamically -->
         </div>
       </div>
 
@@ -254,7 +254,7 @@
         </form>
         <div class="flex justify-between items-center text-[10px] text-slate-500 px-1">
           <span id="typing-state-msg">Đang kết nối cổng đồng bộ thời gian thực...</span>
-          <span class="flex items-center gap-1"><i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-400"></i> Sync Active (Cross-tab)</span>
+          <span class="flex items-center gap-1"><i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-400"></i> Sync Active (BroadcastChannel)</span>
         </div>
       </div>
 
@@ -265,10 +265,94 @@
   <script>
     // Database storage keys
     const QUEUES_KEY = "live_chat_queues";
-    const ACTIVE_CHAT_ID = "chat_active";
-
-    let activeSelectedId = ACTIVE_CHAT_ID;
+    let activeSelectedId = null; // Start with null to clear workspace initially
     let typingTimeout = null;
+
+    // Initialize BroadcastChannel connection bridge (chat_system)
+    const chatChannel = new BroadcastChannel("chat_system");
+
+    // Listen to BroadcastChannel signals from Client Chat Widget (Real-Time Customer events!)
+    chatChannel.onmessage = (event) => {
+      const { type, chatId, userName, userAvatar, userEmail, userPhone, message, isTyping } = event.data;
+      console.log("Dashboard received broadcast event:", type, event.data);
+
+      const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+      let chat = queues.find(c => c.id === chatId);
+
+      // DYNAMIC ACCOUNT DETECTION: If user isn't in active chat list, dynamically generate them!
+      if (!chat && chatId) {
+        chat = {
+          id: chatId,
+          userName: userName || "Khách vãng lai",
+          userAvatar: userAvatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256",
+          userEmail: userEmail || "",
+          userPhone: userPhone || "",
+          status: "ai",
+          agentName: "Tyler (Support)",
+          isTyping: false,
+          isUserTyping: false,
+          messages: [],
+          lastUpdated: Date.now()
+        };
+        queues.push(chat);
+      }
+
+      if (!chat) return;
+
+      switch (type) {
+        case "CUSTOMER_MESSAGE":
+          // Dynamically append message
+          chat.messages.push(message);
+          chat.lastUpdated = Date.now();
+          chat.isUserTyping = false;
+          
+          saveQueuesState(queues);
+          renderQueuesList();
+
+          if (activeSelectedId === chatId) {
+            renderActiveWorkspace();
+          }
+          break;
+
+        case "HANDOFF_REQUEST":
+          // User clicked "Get Human Help" (gặp nhân viên)
+          chat.status = "human_requested";
+          chat.lastUpdated = Date.now();
+          chat.messages.push({
+            sender: "system",
+            text: "Yêu cầu gặp nhân viên: Đang chờ nhân viên hỗ trợ tiếp nhận cuộc trò chuyện...",
+            timestamp: Date.now()
+          });
+          
+          saveQueuesState(queues);
+          renderQueuesList();
+
+          if (activeSelectedId === chatId) {
+            renderActiveWorkspace();
+          }
+          break;
+
+        case "CUSTOMER_TYPING":
+          chat.isUserTyping = isTyping;
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          
+          if (activeSelectedId === chatId) {
+            const typingIndicator = document.getElementById("user-typing-indicator");
+            if (isTyping) {
+              typingIndicator.classList.remove("hidden");
+            } else {
+              typingIndicator.classList.add("hidden");
+            }
+          }
+          break;
+
+        case "AGENT_TYPING":
+          // Handle AI bot typing indicator broadcast updates from client
+          chat.isTyping = isTyping;
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          break;
+      }
+    };
 
     // Helper function to save queues to both localStorage and MySQL DB
     function saveQueuesState(queues) {
@@ -285,7 +369,7 @@
       fetch("api.php")
         .then(res => res.json())
         .then(data => {
-          if (data.success && data.queues && data.queues.length > 0) {
+          if (data.success && data.queues) {
             localStorage.setItem(QUEUES_KEY, JSON.stringify(data.queues));
           }
           renderQueuesList();
@@ -331,7 +415,9 @@
             <div class="relative flex-shrink-0">
               <img src="${chat.userAvatar}" alt="Avatar" class="w-9 h-9 rounded-full object-cover">
               ${chat.status === 'human' ? `
-                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-500 border border-slate-900 rounded-full animate-pulse"></span>
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-blue-500 border border-slate-900 rounded-full animate-pulse"></span>
+              ` : chat.status === 'human_requested' ? `
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-500 border border-slate-900 rounded-full animate-ping"></span>
               ` : chat.status === 'ai' ? `
                 <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border border-slate-900 rounded-full"></span>
               ` : `
@@ -354,7 +440,7 @@
           renderActiveWorkspace();
         });
 
-        if (chat.status === "human") {
+        if (chat.status === "human" || chat.status === "human_requested") {
           humanCount++;
           humanList.appendChild(chatEl);
         } else if (chat.status === "ai") {
@@ -397,10 +483,12 @@
       document.getElementById("active-user-meta").textContent = `Email: ${chat.userEmail} • SĐT: ${chat.userPhone}`;
       
       const statusBadge = document.getElementById("active-user-status");
-      statusBadge.textContent = chat.status === 'human' ? 'Needs Help' : chat.status === 'ai' ? 'Bot Handling' : 'Closed';
+      statusBadge.textContent = chat.status === 'human' ? 'Needs Help' : chat.status === 'human_requested' ? 'Handoff Alert' : chat.status === 'ai' ? 'Bot Handling' : 'Closed';
       
       if (chat.status === "human") {
-        statusBadge.className = "px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase border border-amber-500/20 bg-amber-500/10 text-amber-400";
+        statusBadge.className = "px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase border border-blue-500/20 bg-blue-500/10 text-blue-400";
+      } else if (chat.status === "human_requested") {
+        statusBadge.className = "px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase border border-amber-500/20 bg-amber-500/10 text-amber-400 animate-pulse";
       } else if (chat.status === "ai") {
         statusBadge.className = "px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase border border-emerald-500/20 bg-emerald-500/10 text-emerald-400";
       } else {
@@ -429,8 +517,9 @@
         sendBtn.disabled = true;
       } 
       else if (chat.status === "ai") {
-        btnTakeOver.disabled = false;
-        btnTakeOver.className = "bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2 rounded-lg shadow-lg flex items-center gap-1.5 transition-all cursor-pointer transform hover:scale-[1.02] active:scale-95";
+        // Disabled until user escalates (Handoff Request)
+        btnTakeOver.disabled = true;
+        btnTakeOver.className = "bg-slate-800 text-slate-500 font-semibold text-xs px-4 py-2 rounded-lg cursor-not-allowed border border-slate-800/80 opacity-50";
         
         btnReturnBot.disabled = true;
         btnReturnBot.className = "bg-slate-800 text-slate-500 font-semibold text-xs px-4 py-2 rounded-lg cursor-not-allowed border border-slate-800/80 opacity-50";
@@ -439,9 +528,24 @@
         btnCloseTicket.className = "bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs px-4 py-2 rounded-lg border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer";
         
         inputForm.disabled = true;
-        inputForm.placeholder = "Nhấp 'Tiếp quản (Handoff)' để bắt đầu chat trực tiếp.";
+        inputForm.placeholder = "AI đang hỗ trợ. Chờ khách hàng nhấp 'Gặp nhân viên'...";
         sendBtn.disabled = true;
       } 
+      else if (chat.status === "human_requested") {
+        // Handoff Alert is active: Handoff/Takeover button is lit up and pulsing in gold/amber!
+        btnTakeOver.disabled = false;
+        btnTakeOver.className = "bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold text-xs px-4 py-2 rounded-lg shadow-lg flex items-center gap-1.5 transition-all cursor-pointer transform hover:scale-[1.02] active:scale-95 animate-pulse";
+        
+        btnReturnBot.disabled = true;
+        btnReturnBot.className = "bg-slate-800 text-slate-500 font-semibold text-xs px-4 py-2 rounded-lg cursor-not-allowed border border-slate-800/80 opacity-50";
+        
+        btnCloseTicket.disabled = false;
+        btnCloseTicket.className = "bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs px-4 py-2 rounded-lg border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer";
+        
+        inputForm.disabled = true;
+        inputForm.placeholder = "Khách hàng yêu cầu hỗ trợ. Nhấn 'Tiếp quản (Handoff)' để chat.";
+        sendBtn.disabled = true;
+      }
       else { // status === "human" (agent taken over)
         btnTakeOver.disabled = true;
         btnTakeOver.className = "bg-slate-800 text-slate-500 font-semibold text-xs px-4 py-2 rounded-lg cursor-not-allowed border border-slate-800/80 opacity-50";
@@ -553,7 +657,7 @@
       handleAgentTyping();
     }
 
-    // Sync typing status to Client widget
+    // Sync typing status to Client widget via BroadcastChannel
     function handleAgentTyping() {
       const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
       const chat = queues.find(c => c.id === activeSelectedId);
@@ -561,7 +665,14 @@
       if (chat && chat.status === "human") {
         if (!chat.isTyping) {
           chat.isTyping = true;
-          saveQueuesState(queues);
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          
+          // Broadcast typing status
+          chatChannel.postMessage({
+            type: "AGENT_TYPING",
+            chatId: activeSelectedId,
+            isTyping: true
+          });
         }
 
         // Clear previous timeout and set a new one to turn off typing indicator
@@ -569,9 +680,16 @@
         typingTimeout = setTimeout(() => {
           const freshQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
           const freshChat = freshQueues.find(c => c.id === activeSelectedId);
-          if (freshChat) {
+          if (freshChat && freshChat.isTyping) {
             freshChat.isTyping = false;
-            saveQueuesState(freshQueues);
+            localStorage.setItem(QUEUES_KEY, JSON.stringify(freshQueues));
+
+            // Broadcast stopped typing status
+            chatChannel.postMessage({
+              type: "AGENT_TYPING",
+              chatId: activeSelectedId,
+              isTyping: false
+            });
           }
         }, 1500);
       }
@@ -590,18 +708,28 @@
       if (!chat || chat.status !== "human") return;
 
       // Add Agent Message
-      chat.messages.push({
+      const newMsg = {
         sender: "agent",
         text: text,
         timestamp: Date.now()
-      });
+      };
+      
+      chat.messages.push(newMsg);
       chat.lastUpdated = Date.now();
       chat.isTyping = false; // reset typing state
 
       saveQueuesState(queues);
+
+      // Broadcast Agent Message to Client Widget in Real-Time!
+      chatChannel.postMessage({
+        type: "AGENT_MESSAGE",
+        chatId: activeSelectedId,
+        message: newMsg
+      });
+
       input.value = "";
       
-      loadQueues();
+      renderQueuesList();
       renderActiveWorkspace();
     }
 
@@ -610,7 +738,7 @@
       const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
       const chat = queues.find(c => c.id === activeSelectedId);
 
-      if (chat && chat.status === "ai") {
+      if (chat && (chat.status === "human_requested" || chat.status === "ai")) {
         chat.status = "human";
         chat.agentName = "Tyler Nguyen";
         chat.messages.push({
@@ -622,7 +750,14 @@
 
         saveQueuesState(queues);
         
-        loadQueues();
+        // Broadcast Take Over event to Client Widget!
+        chatChannel.postMessage({
+          type: "AGENT_TAKE_OVER",
+          chatId: activeSelectedId,
+          agentName: "Tyler Nguyen"
+        });
+
+        renderQueuesList();
         renderActiveWorkspace();
       }
     }
@@ -643,8 +778,17 @@
         chat.lastUpdated = Date.now();
 
         saveQueuesState(queues);
+
+        // Broadcast Return Bot event to Client Widget!
+        chatChannel.postMessage({
+          type: "AGENT_RETURN_BOT",
+          chatId: activeSelectedId
+        });
         
-        loadQueues();
+        // Clear active chat on admin side and return workspace to empty state!
+        activeSelectedId = null;
+
+        renderQueuesList();
         renderActiveWorkspace();
       }
     }
@@ -667,23 +811,34 @@
         chat.lastUpdated = Date.now();
 
         saveQueuesState(queues);
+
+        // Broadcast Close Ticket event to Client Widget!
+        chatChannel.postMessage({
+          type: "AGENT_CLOSE_TICKET",
+          chatId: activeSelectedId
+        });
         
-        loadQueues();
+        renderQueuesList();
         renderActiveWorkspace();
       }
     }
 
-    // Reset Queues to Initial Data
+    // Starts clean with 0 mock users as requested! Users are generated 100% dynamically on broadcasts
+    const INITIAL_QUEUES = [];
+
+    // Reset Queues to Initial Data in both localStorage and MySQL CSDL
     function resetQueues() {
-      if(!confirm("Đặt lại toàn bộ cơ sở dữ liệu về trạng thái mẫu ban đầu?")) return;
-      localStorage.removeItem(QUEUES_KEY);
-      location.reload();
+      if(!confirm("Xóa toàn bộ tin nhắn test và khôi phục hàng đợi trống?")) return;
+      saveQueuesState(INITIAL_QUEUES);
+      setTimeout(() => {
+        location.reload();
+      }, 300);
     }
 
-    // Listen to LocalStorage updates from Client widget tab (Real-time Sync!)
+    // Listen to LocalStorage updates from Client widget tab (Backup Sync!)
     window.addEventListener("storage", (e) => {
       if (e.key === QUEUES_KEY) {
-        loadQueues();
+        renderQueuesList();
         renderActiveWorkspace();
       }
     });
@@ -694,7 +849,7 @@
     lucide.createIcons();
 
     // Visual synchronization status indicator text
-    document.getElementById("typing-state-msg").textContent = "Cổng đồng bộ LocalStorage hoạt động ổn định.";
+    document.getElementById("typing-state-msg").textContent = "Cổng chat_system hoạt động ổn định.";
   </script>
 </body>
 
