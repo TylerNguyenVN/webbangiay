@@ -1236,6 +1236,7 @@ button {
   font-weight: 600;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   border: none;
+  border-radius: 9999px;
 }
 
 .light-theme .hero-cta:hover {
