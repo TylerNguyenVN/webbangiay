@@ -6,17 +6,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --color-elite-primary: #006637;
-  --color-elite-dark: #004b23;
-  --color-elite-light: #e6f3ec;
-  --color-elite-bg: #f8f6f2;
-  --color-elite-charcoal: #1e1c19;
-  --color-elite-text: #2b2824;
-  --color-elite-muted: #78716c;
-  --color-elite-border: #e7e5e4;
-  --color-elite-amber-bg: #faf2e1;
-  --color-elite-amber-text: #a26210;
-  --color-elite-amber-brand: #d2821e;
+  --color-elite-primary: #059669;
+  --color-elite-dark: #047857;
+  --color-elite-light: #ecfdf5;
+  --color-elite-bg: #f5f4ef;
+  --color-elite-charcoal: #111827;
+  --color-elite-text: #374151;
+  --color-elite-muted: #6b7280;
+  --color-elite-border: #e5e7eb;
+  --color-elite-amber-bg: #fef3c7;
+  --color-elite-amber-text: #b45309;
+  --color-elite-amber-brand: #d97706;
   
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Space Grotesk', sans-serif;
@@ -73,10 +73,10 @@
   top: 0;
   z-index: 50;
   width: 100%;
-  background-color: rgba(248, 246, 242, 0.9);
+  background-color: rgba(245, 244, 239, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(231, 229, 228, 0.6);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.6);
   padding: 1rem 1.5rem;
   box-sizing: border-box;
   transition: all 0.3s ease;

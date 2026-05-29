@@ -107,7 +107,10 @@
   <!-- Middle Column: Chat Queue Area -->
   <section class="w-80 bg-slate-900 border-r border-slate-800/80 flex flex-col flex-shrink-0">
     <div class="h-16 px-4 border-b border-slate-800/60 flex items-center justify-between">
-      <h2 class="font-bold text-lg text-white tracking-wide">Hàng Đợi Hỗ Trợ</h2>
+      <div>
+        <h2 class="font-bold text-sm text-white tracking-wide">Hàng Đợi Hỗ Trợ</h2>
+        <span id="processing-chats-count" class="text-[10px] text-amber-500 font-semibold uppercase tracking-wider block mt-0.5">Cần xử lý: 0 Chats</span>
+      </div>
       <button onclick="resetQueues()" title="Đặt lại dữ liệu" class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-all cursor-pointer">
         <i data-lucide="refresh-cw" class="w-4 h-4"></i>
       </button>
@@ -117,15 +120,29 @@
     <div class="p-3 border-b border-slate-800/40">
       <div class="relative">
         <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-500"></i>
-        <input type="text" placeholder="Tìm kiếm cuộc trò chuyện..." class="w-full bg-slate-950 border border-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs pl-9 pr-4 py-2 rounded-lg outline-none transition-all duration-250 text-slate-200">
+        <input type="text" id="queue-search-input" oninput="renderQueuesList()" placeholder="Tìm kiếm cuộc trò chuyện..." class="w-full bg-slate-950 border border-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs pl-9 pr-4 py-2 rounded-lg outline-none transition-all duration-250 text-slate-200">
       </div>
+    </div>
+
+    <!-- Tab Filters -->
+    <div class="px-3 py-2 border-b border-slate-800/60 flex items-center gap-1.5 bg-slate-950/20">
+      <button onclick="setTab('all')" id="tab-all" class="flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold text-center transition-all duration-150 cursor-pointer bg-slate-800 text-white border border-slate-700/60">
+        Tất cả
+      </button>
+      <button onclick="setTab('unread')" id="tab-unread" class="flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold text-center transition-all duration-150 cursor-pointer text-slate-400 hover:text-white hover:bg-slate-800/40 flex items-center justify-center gap-1">
+        Chưa đọc
+        <span id="tab-badge-unread" class="bg-red-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-full hidden">0</span>
+      </button>
+      <button onclick="setTab('completed')" id="tab-completed" class="flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold text-center transition-all duration-150 cursor-pointer text-slate-400 hover:text-white hover:bg-slate-800/40">
+        Hoàn tất
+      </button>
     </div>
 
     <!-- Scrollable Queues Lists -->
     <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-5 p-3">
       
       <!-- 1. Needs Human Help Column -->
-      <div>
+      <div id="col-human-wrapper">
         <div class="flex items-center justify-between px-2 mb-2">
           <span class="text-[11px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1.5">
             <span class="w-2 h-2 bg-amber-500 rounded-full animate-ping"></span> Cần Nhân Viên Hỗ Trợ
@@ -138,7 +155,7 @@
       </div>
 
       <!-- 2. Bot Handling Column -->
-      <div>
+      <div id="col-bot-wrapper">
         <div class="flex items-center justify-between px-2 mb-2">
           <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
             <span class="w-2 h-2 bg-emerald-400 rounded-full"></span> Trợ Lý AI Đang Xử Lý
@@ -151,7 +168,7 @@
       </div>
 
       <!-- 3. Closed Tickets -->
-      <div>
+      <div id="col-closed-wrapper">
         <div class="flex items-center justify-between px-2 mb-2">
           <span class="text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
             Đã Hoàn Tất
@@ -267,6 +284,25 @@
     const QUEUES_KEY = "live_chat_queues";
     let activeSelectedId = null; // Start with null to clear workspace initially
     let typingTimeout = null;
+    let currentTab = "all"; // Options: 'all', 'unread', 'completed'
+
+    function setTab(tab) {
+      currentTab = tab;
+      
+      const tabs = ["all", "unread", "completed"];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (!btn) return;
+        
+        if (t === tab) {
+          btn.className = "flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold text-center transition-all duration-150 cursor-pointer bg-slate-800 text-white border border-slate-700/60 flex items-center justify-center gap-1";
+        } else {
+          btn.className = "flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold text-center transition-all duration-150 cursor-pointer text-slate-400 hover:text-white hover:bg-slate-800/40 flex items-center justify-center gap-1";
+        }
+      });
+      
+      renderQueuesList();
+    }
 
     // Initialize BroadcastChannel connection bridge (chat_system)
     const chatChannel = new BroadcastChannel("chat_system");
@@ -291,6 +327,8 @@
           agentName: "Tyler (Support)",
           isTyping: false,
           isUserTyping: false,
+          isRead: false,
+          unreadCount: 0,
           messages: [],
           lastUpdated: Date.now()
         };
@@ -305,6 +343,15 @@
           chat.messages.push(message);
           chat.lastUpdated = Date.now();
           chat.isUserTyping = false;
+          
+          // Đánh dấu chưa đọc nếu admin không mở chat này
+          if (activeSelectedId === chatId) {
+            chat.isRead = true;
+            chat.unreadCount = 0;
+          } else {
+            chat.isRead = false;
+            chat.unreadCount = (chat.unreadCount || 0) + 1;
+          }
           
           saveQueuesState(queues);
           renderQueuesList();
@@ -323,6 +370,15 @@
             text: "Yêu cầu gặp nhân viên: Đang chờ nhân viên hỗ trợ tiếp nhận cuộc trò chuyện...",
             timestamp: Date.now()
           });
+          
+          // Đánh dấu chưa đọc nếu admin không mở chat này
+          if (activeSelectedId === chatId) {
+            chat.isRead = true;
+            chat.unreadCount = 0;
+          } else {
+            chat.isRead = false;
+            chat.unreadCount = (chat.unreadCount || 0) + 1;
+          }
           
           saveQueuesState(queues);
           renderQueuesList();
@@ -364,13 +420,33 @@
       }).catch(err => console.error("Database save error:", err));
     }
 
+    function mergeQueues(local, server) {
+      const merged = [...server];
+      local.forEach(localChat => {
+        const serverChatIdx = merged.findIndex(c => c.id === localChat.id);
+        if (serverChatIdx === -1) {
+          merged.push(localChat);
+        } else {
+          const serverChat = merged[serverChatIdx];
+          const localTime = localChat.lastUpdated || 0;
+          const serverTime = serverChat.lastUpdated || 0;
+          if (localTime > serverTime || localChat.messages.length > serverChat.messages.length) {
+            merged[serverChatIdx] = localChat;
+          }
+        }
+      });
+      return merged;
+    }
+
     // Load and Categorize Queues from LocalStorage & DB
     function loadQueues() {
       fetch("api.php")
         .then(res => res.json())
         .then(data => {
           if (data.success && data.queues) {
-            localStorage.setItem(QUEUES_KEY, JSON.stringify(data.queues));
+            const localQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+            const merged = mergeQueues(localQueues, data.queues);
+            localStorage.setItem(QUEUES_KEY, JSON.stringify(merged));
           }
           renderQueuesList();
         })
@@ -395,7 +471,84 @@
       let botCount = 0;
       let closedCount = 0;
 
+      // Đọc từ khóa tìm kiếm
+      const searchInput = document.getElementById("queue-search-input");
+      const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
+      // Tính toán tổng số lượng tin nhắn chưa đọc đối với các vé chưa đóng
+      const totalUnreadCount = queues.filter(chat => {
+        const isRead = chat.isRead !== undefined ? chat.isRead : true;
+        const unreadCount = chat.unreadCount !== undefined ? chat.unreadCount : 0;
+        return chat.status !== 'closed' && (!isRead || unreadCount > 0);
+      }).length;
+
+      // Cập nhật Badge đỏ trên Tab "Chưa đọc"
+      const tabBadgeUnread = document.getElementById("tab-badge-unread");
+      if (tabBadgeUnread) {
+        if (totalUnreadCount > 0) {
+          tabBadgeUnread.textContent = totalUnreadCount;
+          tabBadgeUnread.classList.remove("hidden");
+        } else {
+          tabBadgeUnread.classList.add("hidden");
+        }
+      }
+
+      // Cập nhật text "Cần xử lý: X Chats" ở phía trên
+      const processingCountEl = document.getElementById("processing-chats-count");
+      if (processingCountEl) {
+        processingCountEl.textContent = `Cần xử lý: ${totalUnreadCount} Chats`;
+      }
+
+      // Quản lý hiển thị các cột (column wrappers) dựa trên tab đang chọn
+      const colHuman = document.getElementById("col-human-wrapper");
+      const colBot = document.getElementById("col-bot-wrapper");
+      const colClosed = document.getElementById("col-closed-wrapper");
+
+      if (currentTab === "unread") {
+        if (colHuman) colHuman.classList.remove("hidden");
+        if (colBot) colBot.classList.remove("hidden");
+        if (colClosed) colClosed.classList.add("hidden");
+      } else if (currentTab === "completed") {
+        if (colHuman) colHuman.classList.add("hidden");
+        if (colBot) colBot.classList.add("hidden");
+        if (colClosed) colClosed.classList.remove("hidden");
+      } else {
+        // all
+        if (colHuman) colHuman.classList.remove("hidden");
+        if (colBot) colBot.classList.remove("hidden");
+        if (colClosed) colClosed.classList.remove("hidden");
+      }
+
       queues.forEach(chat => {
+        // Khởi tạo các trường quản lý trạng thái đọc nếu chưa có
+        if (chat.isRead === undefined) chat.isRead = true;
+        if (chat.unreadCount === undefined) chat.unreadCount = 0;
+
+        // 1. Lọc theo từ khóa tìm kiếm
+        if (searchTerm) {
+          const nameMatch = chat.userName && chat.userName.toLowerCase().includes(searchTerm);
+          const emailMatch = chat.userEmail && chat.userEmail.toLowerCase().includes(searchTerm);
+          const phoneMatch = chat.userPhone && chat.userPhone.toLowerCase().includes(searchTerm);
+          if (!nameMatch && !emailMatch && !phoneMatch) {
+            return; // Ẩn nếu không khớp tìm kiếm
+          }
+        }
+
+        // 2. Lọc theo Tab được chọn
+        let isVisible = true;
+        if (currentTab === "unread") {
+          // Tab Chưa đọc: Chỉ hiển thị chat chưa đọc
+          isVisible = chat.status !== "closed" && (!chat.isRead || chat.unreadCount > 0);
+        } else if (currentTab === "completed") {
+          // Tab Hoàn tất: Chỉ hiện closed chats
+          isVisible = chat.status === "closed";
+        } else {
+          // Tab Tất cả: Hiện tất cả
+          isVisible = true;
+        }
+
+        if (!isVisible) return;
+
         const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].text : "Không có tin nhắn nào.";
         const lastTime = chat.messages.length > 0 
           ? new Date(chat.messages[chat.messages.length - 1].timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -406,7 +559,7 @@
         const chatEl = document.createElement("div");
         chatEl.className = `p-3 rounded-xl cursor-pointer transition-all duration-200 ${
           isActive 
-            ? 'bg-slate-800 border border-slate-700/80 shadow-md' 
+            ? 'bg-slate-800 border border-slate-700/80 shadow-md animate-[pulse_4s_infinite]' 
             : 'bg-slate-900/60 hover:bg-slate-800/40 border border-slate-900'
         }`;
         
@@ -426,8 +579,13 @@
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex items-center justify-between">
-                <h4 class="text-xs font-bold text-white truncate">${chat.userName}</h4>
-                <span class="text-[9px] text-slate-500">${lastTime}</span>
+                <div class="flex items-center gap-1.5 min-w-0 flex-1">
+                  <h4 class="text-xs font-bold text-white truncate">${chat.userName}</h4>
+                  ${chat.unreadCount > 0 ? `
+                    <span class="bg-red-500 text-white text-[9px] font-extrabold h-4 px-1 rounded-full flex items-center justify-center animate-pulse flex-shrink-0 min-w-[16px] shadow-sm shadow-red-500/30">${chat.unreadCount}</span>
+                  ` : ''}
+                </div>
+                <span class="text-[9px] text-slate-500 flex-shrink-0 pl-1">${lastTime}</span>
               </div>
               <p class="text-[11px] text-slate-400 truncate mt-0.5">${lastMsg}</p>
             </div>
@@ -436,8 +594,14 @@
 
         chatEl.addEventListener("click", () => {
           activeSelectedId = chat.id;
-          loadQueues();
+          
+          // Đánh dấu đã đọc khi admin nhấp vào
+          chat.isRead = true;
+          chat.unreadCount = 0;
+          
+          saveQueuesState(queues);
           renderActiveWorkspace();
+          renderQueuesList();
         });
 
         if (chat.status === "human" || chat.status === "human_requested") {
@@ -717,6 +881,10 @@
       chat.messages.push(newMsg);
       chat.lastUpdated = Date.now();
       chat.isTyping = false; // reset typing state
+      
+      // Đảm bảo đã đọc
+      chat.isRead = true;
+      chat.unreadCount = 0;
 
       saveQueuesState(queues);
 
@@ -747,6 +915,10 @@
           timestamp: Date.now()
         });
         chat.lastUpdated = Date.now();
+        
+        // Đảm bảo đã đọc khi tiếp quản
+        chat.isRead = true;
+        chat.unreadCount = 0;
 
         saveQueuesState(queues);
         

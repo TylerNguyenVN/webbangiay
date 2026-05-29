@@ -143,7 +143,7 @@ if ($method === 'GET') {
         exit;
     }
 
-    // Mặc định lấy queues tin nhắn
+    // Mặc định lấy queues tin nhắn hoặc lọc qua parameters
     $stmt = $pdo->prepare("SELECT data_value FROM chat_data WHERE data_key = 'queues_state' LIMIT 1");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -151,6 +151,23 @@ if ($method === 'GET') {
     $queues = [];
     if ($result) {
         $queues = json_decode($result['data_value'], true);
+    }
+    
+    // Hỗ trợ lọc qua query parameters (?filter=unread hoặc ?status=unread hoặc ?status=closed)
+    $filter = $_GET['filter'] ?? $_GET['status'] ?? '';
+    if ($filter === 'unread') {
+        $queues = array_filter($queues, function($chat) {
+            $isRead = isset($chat['isRead']) ? $chat['isRead'] : true;
+            $unreadCount = isset($chat['unreadCount']) ? $chat['unreadCount'] : 0;
+            $status = isset($chat['status']) ? $chat['status'] : '';
+            return ($status !== 'closed') && (!$isRead || $unreadCount > 0);
+        });
+        $queues = array_values($queues);
+    } elseif ($filter === 'closed' || $filter === 'completed') {
+        $queues = array_filter($queues, function($chat) {
+            return isset($chat['status']) && $chat['status'] === 'closed';
+        });
+        $queues = array_values($queues);
     }
     
     echo json_encode(["success" => true, "queues" => $queues]);

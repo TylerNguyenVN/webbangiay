@@ -115,10 +115,10 @@
           <button class="icon-btn" title="Yêu thích">
             <i data-lucide="heart"></i>
           </button>
-          <button class="icon-btn" title="Giỏ hàng">
+          <a href="nike-elite.html?screen=cart" class="icon-btn" title="Giỏ hàng" style="text-decoration: none;">
             <i data-lucide="shopping-bag"></i>
             <span class="badge cart-count emerald">2</span>
-          </button>
+          </a>
           <div class="util-divider"></div>
           <div id="auth-status-light" class="auth-status-container">
             <a href="auth.html" class="admin-btn" style="text-decoration:none;">
@@ -159,7 +159,8 @@
             <h1 class="hero-title">TỐC ĐỘ ĐỊNH HÌNH <br /><span class="emerald-text">TƯƠNG LAI.</span></h1>
             <p class="hero-subtitle">Trải nghiệm sự kết hợp hoàn hảo giữa thiết kế đương đại và hiệu suất đỉnh cao. Khám
               phá chuẩn mực mới của sự thanh lịch thể thao.</p>
-            <button class="buy-btn hero-cta" data-price="5200000" data-name="Nike Air Zoom Sport">
+            <button class="buy-btn hero-cta" data-price="5200000" data-name="Nike Air Zoom Sport"
+              data-slug="nike-mercurial-vapor-16-elite">
               KHÁM PHÁ NGAY <i data-lucide="arrow-up-right"></i>
             </button>
           </div>
@@ -181,8 +182,8 @@
               </div>
               <div class="row-bottom">
                 <span class="product-price emerald-text">4,699,000 ₫</span>
-                <button class="buy-btn add-btn text-only" data-price="4,699,000" data-name="Nike Air Max 90 By You">Mua
-                  ngay <i data-lucide="chevron-right"></i></button>
+                <button class="buy-btn add-btn text-only" data-price="4,699,000" data-name="Nike Air Max 90 By You"
+                  data-slug="nike-air-max-tw">Mua ngay <i data-lucide="chevron-right"></i></button>
               </div>
             </div>
             <div class="product-row-img">
@@ -200,8 +201,8 @@
               </div>
               <div class="row-bottom">
                 <span class="product-price emerald-text">3,999,000 ₫</span>
-                <button class="buy-btn add-btn text-only" data-price="6100000" data-name="Air Jordan 1 High">Mua
-                  ngay <i data-lucide="chevron-right"></i></button>
+                <button class="buy-btn add-btn text-only" data-price="6100000" data-name="Air Jordan 1 High"
+                  data-slug="nike-mercurial-elite-sb">Mua ngay <i data-lucide="chevron-right"></i></button>
               </div>
             </div>
             <div class="product-row-img">
@@ -330,7 +331,8 @@
             Control Panel</div>
           <div class="admin-stats">
             <div class="stat-item">Trực tuyến: <span class="stat-val">2 Staffs</span></div>
-            <div class="stat-item">Cần xử lý: <span class="stat-val text-red">3 Chats</span></div>
+            <div class="stat-item">Cần xử lý: <span class="stat-val text-red" id="widget-processing-count">3
+                Chats</span></div>
           </div>
           <div class="admin-filters">
             <button class="filter-btn active">Tất cả</button>

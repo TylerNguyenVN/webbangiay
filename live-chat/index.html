@@ -431,6 +431,8 @@
               agentName: "Tyler (Support)",
               isTyping: false,
               isUserTyping: false,
+              isRead: true,
+              unreadCount: 0,
               messages: [],
               lastUpdated: Date.now()
             };
@@ -457,6 +459,8 @@
               agentName: "Tyler (Support)",
               isTyping: false,
               isUserTyping: false,
+              isRead: true,
+              unreadCount: 0,
               messages: [],
               lastUpdated: Date.now()
             };
@@ -715,6 +719,10 @@
       session.lastUpdated = Date.now();
       session.isUserTyping = false;
       
+      // Mark as unread for Admin
+      session.isRead = false;
+      session.unreadCount = (session.unreadCount || 0) + 1;
+      
       // Update and save
       saveQueuesState(queues);
       
@@ -770,6 +778,11 @@
               };
               currentSession.messages.push(botMsg);
               currentSession.lastUpdated = Date.now();
+              
+              // Mark as unread for Admin (AI replies)
+              currentSession.isRead = false;
+              currentSession.unreadCount = (currentSession.unreadCount || 0) + 1;
+              
               saveQueuesState(updatedQueues);
               
               // Broadcast Bot Reply to Admin Dashboard
@@ -807,6 +820,11 @@
               };
               currentSession.messages.push(botMsg);
               currentSession.lastUpdated = Date.now();
+              
+              // Mark as unread for Admin (AI replies fallback)
+              currentSession.isRead = false;
+              currentSession.unreadCount = (currentSession.unreadCount || 0) + 1;
+              
               saveQueuesState(updatedQueues);
 
               // Broadcast Bot Reply to Admin Dashboard

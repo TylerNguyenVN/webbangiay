@@ -220,10 +220,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Header adjustments
     if (currentScreen === "confirmation") {
-      brandLogoText.innerHTML = `Nike Football Elite <span class="starbucks-sub font-light">x Starbucks</span>`;
+      brandLogoText.innerHTML = `TL Shop Elite <span class="starbucks-sub font-light">x Starbucks</span>`;
       brandLogoText.className = "starbucks-collab";
     } else {
-      brandLogoText.textContent = "NIKE ELITE";
+      brandLogoText.textContent = "TL Shop";
       brandLogoText.className = "nike-logo-text";
     }
 
@@ -999,9 +999,9 @@ Cảm ơn bạn đã gia nhập Elite Squad. Chúc bạn thi đấu thăng hoa!
   // 8. EVENT BINDINGS FOR CORE TAB ROUTER TABS
   // ==============================================
   
-  // Header Logo click routes to Product Screen
+  // Header Logo click routes to Homepage index.html
   if (headerLogoBtn) {
-    headerLogoBtn.addEventListener("click", () => setScreen("product"));
+    headerLogoBtn.addEventListener("click", () => window.location.href = "index.html");
   }
 
   // Top header navbar navigation triggers
@@ -1018,10 +1018,130 @@ Cảm ơn bạn đã gia nhập Elite Squad. Chúc bạn thi đấu thăng hoa!
   if (hudBtnTracker) hudBtnTracker.addEventListener("click", () => setScreen("tracker"));
 
   // ==============================================
-  // 9. APP INITIALIZATION RUNS
+  // 9. DYNAMIC DATABASE LOADER (Senior Fullstack Architect)
+  // ==============================================
+
+  // Helper function to dynamically bind hover/leave effects to thumbnails
+  function bindThumbnailEvents() {
+    if (!productThumbGrid) return;
+    
+    productThumbGrid.querySelectorAll(".thumb-card").forEach(card => {
+      card.addEventListener("mouseenter", () => {
+        const targetUrl = card.getAttribute("data-url");
+        prodMainImg.setAttribute("src", targetUrl);
+      });
+      card.addEventListener("mouseleave", () => {
+        const activeCard = productThumbGrid.querySelector(".thumb-card.active");
+        if (activeCard) {
+          prodMainImg.setAttribute("src", activeCard.getAttribute("data-url"));
+        } else {
+          prodMainImg.setAttribute("src", PRODUCTS[0].image);
+        }
+      });
+    });
+  }
+
+  // Helper function to paint fetched database product details in DOM elements
+  function updateProductShowroomUI(prod) {
+    const tagBadge = document.getElementById("prod-tag-badge");
+    const categoryText = document.getElementById("prod-category-text");
+    const nameText = document.getElementById("prod-name-text");
+    const priceText = document.getElementById("prod-price-text");
+    const descBody = document.getElementById("prod-desc-body");
+    const deliveryBody = document.getElementById("prod-delivery-body");
+
+    if (tagBadge) tagBadge.textContent = prod.tag;
+    if (prodMainImg) prodMainImg.setAttribute("src", prod.image);
+    if (categoryText) categoryText.textContent = prod.category;
+    if (nameText) nameText.textContent = prod.name;
+    if (priceText) priceText.textContent = prod.price.toLocaleString("vi-VN") + " đ";
+    if (descBody) descBody.textContent = prod.description;
+    if (deliveryBody) deliveryBody.textContent = prod.deliveryInfo;
+
+    // Render specifications accordion
+    if (prodSpecsBody) {
+      prodSpecsBody.innerHTML = prod.specifications.map(spec => `
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid #f5f5f4; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="font-weight: 700; color: var(--color-elite-muted); font-size: 11px; text-transform: uppercase;">${spec.label}</span>
+          <span style="grid-column: span 2; font-size: 12.5px; color: var(--color-elite-charcoal);">${spec.value}</span>
+        </div>
+      `).join("");
+    }
+
+    // Dynamic sizes buttons list
+    if (productSizeGrid) {
+      productSizeGrid.innerHTML = prod.sizes.map((size, idx) => `
+        <button type="button" class="size-btn ${idx === 1 ? 'selected' : ''}">${size}</button>
+      `).join("");
+      currentSelectedSize = prod.sizes[1] || prod.sizes[0] || "US 8";
+    }
+
+    // Dynamic thumbnails gallery
+    if (productThumbGrid) {
+      if (prod.additionalImages && prod.additionalImages.length > 0) {
+        productThumbGrid.innerHTML = prod.additionalImages.map((imgUrl, idx) => `
+          <div class="thumb-card" data-url="${imgUrl}">
+            <img src="${imgUrl}" alt="Detail view ${idx + 1}" referrerPolicy="no-referrer">
+          </div>
+        `).join("");
+        bindThumbnailEvents();
+      } else {
+        productThumbGrid.innerHTML = "";
+      }
+    }
+  }
+
+  // Dynamic async loader via Fetch API
+  async function loadDynamicProduct() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id') || 'nike-mercurial-vapor-16-elite'; // Default fallback
+
+    try {
+      const response = await fetch(`api/get_product.php?id=${productId}`);
+      if (!response.ok) throw new Error("API product query failure");
+      
+      const data = await response.json();
+      if (data.success && data.product) {
+        const prod = data.product;
+        
+        // Update PRODUCTS[0] reference in-memory to keep full state machines synced
+        PRODUCTS[0] = {
+          id: prod.slug,
+          name: prod.name,
+          category: prod.category,
+          tag: prod.tag,
+          price: parseFloat(prod.price),
+          image: prod.image,
+          additionalImages: prod.images,
+          sizes: prod.sizes,
+          description: prod.description,
+          specifications: prod.specifications,
+          deliveryInfo: prod.delivery_info
+        };
+        
+        updateProductShowroomUI(PRODUCTS[0]);
+      }
+    } catch (err) {
+      console.warn("MySQL products database connection inactive or query error. Displaying static memory catalog as fallback:", err);
+      // Fallback fallback is already painted
+      updateProductShowroomUI(PRODUCTS[0]);
+    }
+  }
+
+  // ==============================================
+  // 10. APP INITIALIZATION RUNS
   // ==============================================
   
-  // Set up first view initially
-  setScreen("product");
+  // Set up first view initially based on URL parameters
+  const initUrlParams = new URLSearchParams(window.location.search);
+  const initialScreen = initUrlParams.get('screen') || 'product';
+  if (['product', 'cart', 'confirmation', 'tracker'].includes(initialScreen)) {
+    setScreen(initialScreen);
+  } else {
+    setScreen("product");
+  }
+
+  // Call dynamic mysql loader asynchronously
+  loadDynamicProduct();
 
 });

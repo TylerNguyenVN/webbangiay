@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nike Elite Series - Showroom & Post-Purchase Posture</title>
+  <title>TL Shop - Chi tiết sản phẩm & Giỏ hàng</title>
   
   <!-- Preconnect and Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   
-  <!-- Link Custom Premium Stylesheet -->
+  <!-- Link Main Homepage Stylesheet and Custom Details Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/nike-elite.css">
   
   <!-- Lucide Icons -->
@@ -18,38 +19,108 @@
 <body class="nike-body">
 
   <!-- GLOBAL APPNIGHT HEADER -->
-  <header class="nike-header">
-    <div class="nike-header-inner">
-      <!-- BRAND LOGO -->
-      <button type="button" class="nike-logo-btn" id="header-logo-btn">
-        <span class="nike-logo-text" id="brand-logo-text">NIKE ELITE</span>
+  <header class="main-header">
+    <div class="brand" id="header-logo-btn" style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
+      <span class="brand-text" id="brand-logo-text">TL Shop</span>
+      <span class="brand-dot emerald"></span>
+    </div>
+
+    <nav class="nav-links">
+      <div class="nav-item">
+        <a href="index.html#new" class="nav-link">Mới và Nổi bật</a>
+        <div class="mega-menu">
+          <div class="mega-col">
+            <h4>Dòng Sản Phẩm</h4>
+            <a href="index.html#new">Air Force 1</a>
+            <a href="index.html#new">Air Max</a>
+            <a href="index.html#new">Air Jordan</a>
+            <a href="index.html#new">Dunk</a>
+          </div>
+          <div class="mega-col">
+            <h4>Giày Thể Thao</h4>
+            <a href="index.html#new">Chạy Bộ (Pegasus)</a>
+            <a href="index.html#new">Bóng Đá (Mercurial, Phantom)</a>
+            <a href="index.html#new">Tập Luyện (Metcon)</a>
+            <a href="index.html#new">Bóng Rổ (LeBron)</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="index.html#men" class="nav-link">Nam</a>
+        <div class="mega-menu">
+          <div class="mega-col">
+            <h4>Dòng Sản Phẩm</h4>
+            <a href="index.html#men">Air Force 1</a>
+            <a href="index.html#men">Air Max</a>
+            <a href="index.html#men">Air Jordan</a>
+            <a href="index.html#men">Dunk</a>
+          </div>
+          <div class="mega-col">
+            <h4>Giày Thể Thao</h4>
+            <a href="index.html#men">Chạy Bộ (Pegasus)</a>
+            <a href="index.html#men">Bóng Đá (Mercurial, Phantom)</a>
+            <a href="index.html#men">Tập Luyện (Metcon)</a>
+            <a href="index.html#men">Bóng Rổ (LeBron)</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="index.html#women" class="nav-link">Nữ</a>
+        <div class="mega-menu">
+          <div class="mega-col">
+            <h4>Dòng Sản Phẩm</h4>
+            <a href="index.html#women">Air Force 1</a>
+            <a href="index.html#women">Air Max</a>
+            <a href="index.html#women">Air Jordan</a>
+            <a href="index.html#women">Dunk</a>
+          </div>
+          <div class="mega-col">
+            <h4>Giày Thể Thao</h4>
+            <a href="index.html#women">Chạy Bộ (Pegasus)</a>
+            <a href="index.html#women">Tập Luyện & Gym (Metcon)</a>
+            <a href="index.html#women">Quần Vợt</a>
+            <a href="index.html#women">Bóng Rổ</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="index.html#kids" class="nav-link">Trẻ em</a>
+        <div class="mega-menu">
+          <div class="mega-col">
+            <h4>Dòng Sản Phẩm</h4>
+            <a href="index.html#kids">Air Force 1</a>
+            <a href="index.html#kids">Air Max</a>
+            <a href="index.html#kids">Air Jordan</a>
+            <a href="index.html#kids">Dunk</a>
+          </div>
+          <div class="mega-col">
+            <h4>Giày Thể Thao</h4>
+            <a href="index.html#kids">Chạy Bộ</a>
+            <a href="index.html#kids">Bóng Đá</a>
+            <a href="index.html#kids">Bóng Rổ</a>
+          </div>
+        </div>
+      </div>
+      <a href="index.html#sale" class="nav-link">Sale</a>
+      <a href="index.html#about" class="nav-link">Về chúng tôi</a>
+    </nav>
+
+    <div class="utilities">
+      <button id="search-trigger-btn" class="icon-btn" title="Tìm kiếm">
+        <i data-lucide="search"></i>
       </button>
-
-      <!-- MID NAVIGATION LINKS -->
-      <nav class="nike-nav">
-        <button type="button" class="nike-nav-btn active" id="nav-btn-product">Showroom</button>
-        <button type="button" class="nike-nav-btn" id="nav-btn-tracker">Training & Tracking</button>
-        <button type="button" class="nike-nav-btn" id="nav-btn-cart">Squad Cart</button>
-        <button type="button" class="nike-nav-btn" id="nav-btn-rewards" onclick="alert('Tính năng tích lũy điểm Elite Rewards đang được cập nhật!')">Elite Rewards</button>
-      </nav>
-
-      <!-- RIGHT METRICS / CONTROL ICONS -->
-      <div class="nike-actions">
-        <!-- Wishlist Icon -->
-        <button type="button" class="nike-action-btn" id="header-wishlist-btn" title="Sản phẩm yêu thích" onclick="alert('Đã thêm sản phẩm vào danh sách yêu thích.')">
-          <i data-lucide="heart" style="width: 22px; height: 22px;"></i>
-          <span class="nike-action-badge" style="background-color: #ef4444; width: 8px; height: 8px; top: 2px; right: 2px; border-radius: 50%;"></span>
-        </button>
-
-        <!-- Cart Icon with count badge -->
-        <button type="button" class="nike-action-btn" id="header-cart-btn" title="Giỏ hàng của bạn">
-          <i data-lucide="shopping-bag" style="width: 22px; height: 22px;"></i>
-          <span class="nike-action-badge pulse" id="header-cart-count">2</span>
-        </button>
-
-        <!-- Profile Icon -->
-        <button type="button" class="nike-action-btn" id="header-profile-btn" title="Tài khoản & Theo dõi">
-          <i data-lucide="user" style="width: 22px; height: 22px;"></i>
+      <button class="icon-btn" id="header-wishlist-btn" title="Yêu thích" onclick="alert('Đã thêm sản phẩm vào danh sách yêu thích.')">
+        <i data-lucide="heart"></i>
+      </button>
+      <button class="icon-btn" id="header-cart-btn" title="Giỏ hàng">
+        <i data-lucide="shopping-bag"></i>
+        <span class="badge cart-count emerald" id="header-cart-count">2</span>
+      </button>
+      <div class="util-divider"></div>
+      <div id="auth-status-light" class="auth-status-container">
+        <button id="header-profile-btn" class="admin-btn" style="text-decoration:none; display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="user"></i>
+          <span>Tài khoản</span>
         </button>
       </div>
     </div>
@@ -583,7 +654,7 @@
       <!-- Navigation tabs -->
       <button type="button" class="hud-btn active" id="hud-btn-product" title="Xem showroom chi tiết sản phẩm">
         <i data-lucide="compass" style="width: 15px; height: 15px;"></i>
-        <span>Sản phẩm</span>
+        <span>Chi tiết sản phẩm</span>
       </button>
 
       <button type="button" class="hud-btn" id="hud-btn-cart" title="Xem giỏ hàng & thanh toán">
@@ -598,65 +669,73 @@
 
       <button type="button" class="hud-btn" id="hud-btn-tracker" title="Xem theo dõi tiến trình giao vận">
         <i data-lucide="truck" style="width: 15px; height: 15px;"></i>
-        <span>Theo dõi</span>
+        <span>Theo dõi đơn hàng</span>
       </button>
 
     </div>
   </div>
 
   <!-- FOOTER NAVIGATION -->
-  <footer class="nike-footer">
-    <div class="nike-footer-cols">
-      
-      <!-- Big brand pitches -->
-      <div>
-        <h2 class="footer-heading">NIKE ELITE</h2>
-        <p class="footer-desc" id="footer-pitch-desc">
-          Precision-engineered for the modern athlete. Bridging technical rigor and organic premium comfort.
-        </p>
+  <footer class="main-footer nike-style-footer">
+    <div class="footer-top-container">
+      <div class="footer-col">
+        <a href="#" class="footer-heading">TÌM CỬA HÀNG</a>
+        <a href="#" class="footer-heading">TRỞ THÀNH HỘI VIÊN</a>
+        <a href="#" class="footer-heading">ĐĂNG KÝ NHẬN EMAIL</a>
+        <a href="#" class="footer-heading">PHẢN HỒI</a>
       </div>
-
-      <!-- Support links -->
-      <div>
-        <h3 class="footer-subheading">Hỗ trợ</h3>
-        <ul class="footer-links">
-          <li><a href="#" class="footer-link-a" id="footer-support-link1">Tình trạng đơn hàng</a></li>
-          <li><a href="#" class="footer-link-a" id="footer-support-link2">Chính sách vận chuyển</a></li>
-          <li><a href="#" class="footer-link-a" id="footer-support-link3">Trả hàng & hoàn tiền</a></li>
-        </ul>
+      <div class="footer-col">
+        <span class="footer-heading-sm">TRỢ GIÚP</span>
+        <a href="#">Tình trạng đơn hàng</a>
+        <a href="#">Giao hàng</a>
+        <a href="#">Đổi trả</a>
+        <a href="#">Tùy chọn thanh toán</a>
+        <a href="#">Liên hệ</a>
       </div>
-
-      <!-- Company links -->
-      <div>
-        <h3 class="footer-subheading">Công ty</h3>
-        <ul class="footer-links">
-          <li><a href="#" class="footer-link-a" id="footer-company-link1">Về chúng tôi</a></li>
-          <li><a href="#" class="footer-link-a" id="footer-company-link2">Elite Lab</a></li>
-          <li><a href="#" class="footer-link-a" id="footer-company-link3">Bền vững</a></li>
-        </ul>
+      <div class="footer-col">
+        <span class="footer-heading-sm">VỀ CHÚNG TÔI</span>
+        <a href="#">Tin tức</a>
+        <a href="#">Nghề nghiệp</a>
+        <a href="#">Nhà đầu tư</a>
+        <a href="#">Bền vững</a>
       </div>
-
-      <!-- Legal links -->
-      <div>
-        <h3 class="footer-subheading">Pháp lý</h3>
-        <ul class="footer-links">
-          <li><a href="#" class="footer-link-a">Chính sách bảo mật</a></li>
-          <li><a href="#" class="footer-link-a">Điều khoản dịch vụ</a></li>
-          <li><a href="#" class="footer-link-a">Cài đặt Cookie</a></li>
-        </ul>
+      <div class="footer-col social-col" style="flex-direction: row; gap: 1rem; align-items: center; display: flex;">
+        <a href="#" class="social-icon" title="Facebook"
+          style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; transition: transform 0.2s;"
+          onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook"
+            style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.05);">
+        </a>
+        <a href="#" class="social-icon" title="Instagram"
+          style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; transition: transform 0.2s;"
+          onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram"
+            style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.25);">
+        </a>
+        <a href="#" class="social-icon" title="Zalo"
+          style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; transition: transform 0.2s;"
+          onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" alt="Zalo"
+            style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.05);">
+        </a>
+        <a href="#" class="social-icon" title="YouTube"
+          style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; transition: transform 0.2s;"
+          onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a0/YouTube_social_red_circle_%282017%29.svg"
+            alt="YouTube" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.05);">
+        </a>
       </div>
-
     </div>
-
-    <!-- Footer base metrics & copyright -->
-    <div class="footer-bottom">
-      <div>
-        © 2026 NIKE ELITE. ALL RIGHTS RESERVED.
+    <div class="footer-bottom-container">
+      <div class="footer-bottom-left">
+        <span class="location"><i data-lucide="map-pin"></i> Việt Nam</span>
+        <span class="copyright">© 2026 TL Shop, Inc. All Rights Reserved</span>
       </div>
-      <div class="footer-meta-stats">
-        <span>CO_ID: a279763a</span>
-        <span>● ONLINE</span>
-        <span>EST. 2026</span>
+      <div class="footer-bottom-links">
+        <a href="#">Hướng dẫn</a>
+        <a href="#">Điều khoản bán hàng</a>
+        <a href="#">Điều khoản sử dụng</a>
+        <a href="#">Chính sách bảo mật</a>
       </div>
     </div>
   </footer>

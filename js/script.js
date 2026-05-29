@@ -67,6 +67,14 @@ document.addEventListener("DOMContentLoaded", () => {
   buyBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
+      
+      // Dynamic Redirection if slug exists
+      const slug = btn.getAttribute("data-slug");
+      if (slug) {
+        window.location.href = `nike-elite.html?id=${slug}`;
+        return;
+      }
+
       const price = parseFloat(btn.getAttribute("data-price"));
       const name = btn.getAttribute("data-name");
 
@@ -179,6 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   } catch(e) {}
   let activeChatId = null;
+  let widgetTab = "all"; // 'all', 'unread', 'completed'
 
   const chatbotToggleBtn = document.getElementById("chatbot-toggle-btn");
   const chatWindow = document.getElementById("chat-window");
@@ -307,18 +316,48 @@ document.addEventListener("DOMContentLoaded", () => {
     let totalUnread = 0;
     const chats = getChats();
 
+    // Tính toán số lượng cần xử lý cho Widget Admin Panel
+    const systemUnreadCount = chats.filter(chat => {
+      const isRead = chat.isRead !== undefined ? chat.isRead : true;
+      const unreadCount = chat.unreadCount !== undefined ? chat.unreadCount : (chat.unread || 0);
+      return chat.status !== 'closed' && (!isRead || unreadCount > 0);
+    }).length;
+
+    const widgetProcessingEl = document.getElementById("widget-processing-count");
+    if (widgetProcessingEl) {
+      widgetProcessingEl.textContent = `${systemUnreadCount} Chats`;
+    }
+
     chats.forEach(chat => {
+      // Khởi tạo các trường quản lý đọc/chưa đọc nếu chưa có
+      if (chat.isRead === undefined) chat.isRead = true;
+      if (chat.unreadCount === undefined) chat.unreadCount = chat.unread || 0;
+
+      // Tính tổng tin nhắn chưa đọc cho badge ngoài
       totalUnread += (chat.unread || 0);
+
+      // Bộ lọc theo tab của widget
+      let isVisible = true;
+      if (widgetTab === "unread") {
+        isVisible = chat.status !== "closed" && (!chat.isRead || chat.unreadCount > 0);
+      } else if (widgetTab === "completed") {
+        isVisible = chat.status === "closed";
+      } else {
+        isVisible = true;
+      }
+
+      if (!isVisible) return;
+
       const lastMsg = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].text : "Không có tin nhắn.";
 
       const el = document.createElement("div");
-      el.className = `chat-list-item ${(chat.unread || 0) > 0 ? "unread" : ""}`;
+      el.className = `chat-list-item ${(chat.unread || 0) > 0 || !chat.isRead ? "unread" : ""}`;
       el.innerHTML = `
         <div class="item-avatar"><i data-lucide="user"></i></div>
         <div class="item-info">
           <div class="item-header">
             <h4 class="item-name">${chat.userName}</h4>
-            <span class="item-time">${chat.status === "human" ? "Cần hỗ trợ" : chat.status === "ai" ? "AI" : "Đóng"}</span>
+            <span class="item-time">${chat.status === "human" ? "Cần hỗ trợ" : chat.status === "closed" ? "Đóng" : ""}</span>
           </div>
           <p class="item-preview">${lastMsg}</p>
         </div>
@@ -327,6 +366,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       el.addEventListener("click", () => {
         chat.unread = 0;
+        chat.unreadCount = 0;
+        chat.isRead = true;
+        saveChats(chats);
+        
         activeChatId = chat.id;
         updateUI();
         updateBadge();
@@ -429,6 +472,21 @@ document.addEventListener("DOMContentLoaded", () => {
         activeChatId = null;
         updateUI();
         updateBadge();
+      });
+    });
+
+    // Lắng nghe sự kiện click trên các nút lọc admin của widget
+    const filterBtns = document.querySelectorAll(".admin-filters .filter-btn");
+    filterBtns.forEach((btn, idx) => {
+      btn.addEventListener("click", () => {
+        filterBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        
+        if (idx === 0) widgetTab = 'all';
+        else if (idx === 1) widgetTab = 'unread';
+        else widgetTab = 'completed';
+        
+        renderChatList();
       });
     });
 
@@ -642,20 +700,87 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     chatChannel.onmessage = (event) => {
-      const { type, chatId, message, agentName, isTyping } = event.data;
-      if (chatId !== "chat_active") return;
-
-      const queues = getChats();
-      const session = queues.find(c => c.id === "chat_active");
-      if (!session) return;
-
+      const { type, chatId, message, agentName, isTyping, userName, userAvatar, userEmail, userPhone } = event.data;
       console.log("Root Client received broadcast event:", type, event.data);
 
+      const queues = getChats();
+      let session = queues.find(c => c.id === chatId);
+
+      // Nếu là Admin và nhận được tin nhắn mới từ khách hàng mới chưa có trong list
+      if (!session && chatId && currentRole !== "customer") {
+        session = {
+          id: chatId,
+          userName: userName || "Khách vãng lai",
+          userAvatar: userAvatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256",
+          userEmail: userEmail || "",
+          userPhone: userPhone || "",
+          status: "ai",
+          agentName: "Tyler (Support)",
+          isTyping: false,
+          isUserTyping: false,
+          isRead: false,
+          unreadCount: 0,
+          messages: [],
+          lastUpdated: Date.now()
+        };
+        queues.push(session);
+      }
+
+      if (!session) return;
+
       switch (type) {
+        case "CUSTOMER_MESSAGE":
+          session.messages.push(message);
+          session.lastUpdated = Date.now();
+          session.isUserTyping = false;
+          
+          if (currentRole !== "customer") {
+            if (activeChatId === chatId) {
+              session.isRead = true;
+              session.unreadCount = 0;
+            } else {
+              session.isRead = false;
+              session.unreadCount = (session.unreadCount || 0) + 1;
+            }
+          }
+          
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          updateUI();
+          break;
+
+        case "HANDOFF_REQUEST":
+          session.status = "human_requested";
+          session.lastUpdated = Date.now();
+          session.messages.push({
+            sender: "system",
+            text: "Yêu cầu gặp nhân viên: Đang chờ nhân viên hỗ trợ tiếp nhận cuộc trò chuyện...",
+            timestamp: Date.now()
+          });
+          
+          if (currentRole !== "customer") {
+            if (activeChatId === chatId) {
+              session.isRead = true;
+              session.unreadCount = 0;
+            } else {
+              session.isRead = false;
+              session.unreadCount = (session.unreadCount || 0) + 1;
+            }
+          }
+          
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          updateUI();
+          break;
+
         case "AGENT_MESSAGE":
           session.messages.push(message);
           session.lastUpdated = Date.now();
           session.isTyping = false;
+          
+          if (currentRole === "customer") {
+            session.isRead = true;
+            session.unreadCount = 0;
+          }
+          
           localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
           updateUI();
           break;
@@ -704,6 +829,12 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
           updateUI();
           break;
+
+        case "CUSTOMER_TYPING":
+          session.isUserTyping = isTyping;
+          localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
+          updateUI();
+          break;
       }
     };
 
@@ -720,6 +851,24 @@ document.addEventListener("DOMContentLoaded", () => {
       updateBadge();
     }
 
+    function mergeQueues(local, server) {
+      const merged = [...server];
+      local.forEach(localChat => {
+        const serverChatIdx = merged.findIndex(c => c.id === localChat.id);
+        if (serverChatIdx === -1) {
+          merged.push(localChat);
+        } else {
+          const serverChat = merged[serverChatIdx];
+          const localTime = localChat.lastUpdated || 0;
+          const serverTime = serverChat.lastUpdated || 0;
+          if (localTime > serverTime || localChat.messages.length > serverChat.messages.length) {
+            merged[serverChatIdx] = localChat;
+          }
+        }
+      });
+      return merged;
+    }
+
     async function syncWithDatabase() {
       if (!currentUserProfile) {
         await initUserAndChat();
@@ -728,11 +877,11 @@ document.addEventListener("DOMContentLoaded", () => {
       fetch("live-chat/api.php")
         .then(res => res.json())
         .then(data => {
-          let queues = [];
+          const localQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+          let queues = localQueues;
+          
           if (data.success && data.queues) {
-            queues = data.queues;
-          } else {
-            queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
+            queues = mergeQueues(localQueues, data.queues);
           }
 
           let session = queues.find(q => q.id === activeChatId);
@@ -747,6 +896,8 @@ document.addEventListener("DOMContentLoaded", () => {
               agentName: "Tyler (Support)",
               isTyping: false,
               isUserTyping: false,
+              isRead: true,
+              unreadCount: 0,
               messages: [],
               lastUpdated: Date.now()
             };
@@ -773,6 +924,8 @@ document.addEventListener("DOMContentLoaded", () => {
               agentName: "Tyler (Support)",
               isTyping: false,
               isUserTyping: false,
+              isRead: true,
+              unreadCount: 0,
               messages: [],
               lastUpdated: Date.now()
             };

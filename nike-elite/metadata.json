@@ -1,6 +1,0 @@
-{
-  "name": "Nike Elite",
-  "description": "Ứng dụng mua sắm và theo dõi đơn hàng Nike Elite cao cấp",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
