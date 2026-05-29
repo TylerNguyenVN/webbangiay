@@ -2,131 +2,373 @@
 <html lang="vi">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TL SHOP</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TL Shop </title>
 
-    <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
-<body>
+<body class="app-body">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
+  <div id="main-content" class="main-content">
 
-        <h2>TL SHOP</h2>
+    <div id="screen-light" class="screen-view light-theme show">
+      <header class="main-header">
+        <div class="brand">
+          <span class="brand-text">TL Shop</span>
+          <span class="brand-dot emerald"></span>
+        </div>
 
-        <ul>
-            <li> Trang chủ</li>
-            <li> Sản phẩm</li>
-            <li> Đặt hàng</li>
-            <li> Đơn hàng</li>
-            <li> Khách hàng</li>
-            <li> Cài đặt</li>
-        </ul>
+        <nav class="nav-links">
+          <div class="nav-item">
+            <a href="#new" class="nav-link">Mới và Nổi bật</a>
+            <div class="mega-menu">
+              <div class="mega-col">
+                <h4>Dòng Sản Phẩm</h4>
+                <a href="#">Air Force 1</a>
+                <a href="#">Air Max</a>
+                <a href="#">Air Jordan</a>
+                <a href="#">Dunk</a>
+              </div>
+              <div class="mega-col">
+                <h4>Giày Thể Thao</h4>
+                <a href="#">Chạy Bộ (Pegasus)</a>
+                <a href="#">Bóng Đá (Mercurial, Phantom)</a>
+                <a href="#">Tập Luyện (Metcon)</a>
+                <a href="#">Bóng Rổ (LeBron)</a>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item">
+            <a href="#men" class="nav-link">Nam</a>
+            <div class="mega-menu">
+              <div class="mega-col">
+                <h4>Dòng Sản Phẩm</h4>
+                <a href="#">Air Force 1</a>
+                <a href="#">Air Max</a>
+                <a href="#">Air Jordan</a>
+                <a href="#">Dunk</a>
+              </div>
+              <div class="mega-col">
+                <h4>Giày Thể Thao</h4>
+                <a href="#">Chạy Bộ (Pegasus)</a>
+                <a href="#">Bóng Đá (Mercurial, Phantom)</a>
+                <a href="#">Tập Luyện (Metcon)</a>
+                <a href="#">Bóng Rổ (LeBron)</a>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item">
+            <a href="#women" class="nav-link">Nữ</a>
+            <div class="mega-menu">
+              <div class="mega-col">
+                <h4>Dòng Sản Phẩm</h4>
+                <a href="#">Air Force 1</a>
+                <a href="#">Air Max</a>
+                <a href="#">Air Jordan</a>
+                <a href="#">Dunk</a>
+              </div>
+              <div class="mega-col">
+                <h4>Giày Thể Thao</h4>
+                <a href="#">Chạy Bộ (Pegasus)</a>
+                <a href="#">Tập Luyện & Gym (Metcon)</a>
+                <a href="#">Quần Vợt</a>
+                <a href="#">Bóng Rổ</a>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item">
+            <a href="#kids" class="nav-link">Trẻ em</a>
+            <div class="mega-menu">
+              <div class="mega-col">
+                <h4>Dòng Sản Phẩm</h4>
+                <a href="#">Air Force 1</a>
+                <a href="#">Air Max</a>
+                <a href="#">Air Jordan</a>
+                <a href="#">Dunk</a>
+              </div>
+              <div class="mega-col">
+                <h4>Giày Thể Thao</h4>
+                <a href="#">Chạy Bộ</a>
+                <a href="#">Bóng Đá</a>
+                <a href="#">Bóng Rổ</a>
+              </div>
+            </div>
+          </div>
+          <a href="#sale" class="nav-link">Sale</a>
+          <a href="#about" class="nav-link">Về chúng tôi</a>
+        </nav>
+
+        <div class="utilities">
+          <button id="search-trigger-btn" class="icon-btn" title="Tìm kiếm">
+            <i data-lucide="search"></i>
+          </button>
+          <button class="icon-btn" title="Yêu thích">
+            <i data-lucide="heart"></i>
+          </button>
+          <button class="icon-btn" title="Giỏ hàng">
+            <i data-lucide="shopping-bag"></i>
+            <span class="badge cart-count emerald">2</span>
+          </button>
+          <div class="util-divider"></div>
+          <div id="auth-status-light" class="auth-status-container">
+            <a href="auth.html" class="admin-btn" style="text-decoration:none;">
+              <i data-lucide="log-in"></i>
+              <span>Đăng nhập</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <div id="search-overlay" class="search-overlay hidden">
+        <div class="search-overlay-container">
+          <div class="search-input-wrapper">
+            <i data-lucide="search" class="search-icon-lg"></i>
+            <input type="text" id="search-input-field" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+            <button id="close-search-btn" class="icon-btn close-search"><i data-lucide="x"></i></button>
+          </div>
+          <div class="search-suggestions">
+            <p>Gợi ý tìm kiếm:</p>
+            <div class="suggestion-tags">
+              <a href="#">Air Force 1</a>
+              <a href="#">Jordan</a>
+              <a href="#">Air Max</a>
+              <a href="#">Blazer</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="hero-section light-hero">
+        <div class="light-hero-container">
+          <div class="light-hero-bg">
+            <div class="light-hero-glow"></div>
+            <img src="https://i.pinimg.com/1200x/a5/28/b4/a528b41b751bda231e92b86ce7a93491.jpg" alt="Nike Speed">
+          </div>
+          <div class="light-hero-content">
+            <span class="hero-tag">BỘ SƯU TẬP MỚI</span>
+            <h1 class="hero-title">TỐC ĐỘ ĐỊNH HÌNH <br /><span class="emerald-text">TƯƠNG LAI.</span></h1>
+            <p class="hero-subtitle">Trải nghiệm sự kết hợp hoàn hảo giữa thiết kế đương đại và hiệu suất đỉnh cao. Khám
+              phá chuẩn mực mới của sự thanh lịch thể thao.</p>
+            <button class="buy-btn hero-cta" data-price="5200000" data-name="Nike Air Zoom Sport">
+              KHÁM PHÁ NGAY <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="products-section light-products">
+        <div class="section-header center">
+          <h2 class="section-title lg">Bộ sưu tập Nổi bật</h2>
+          <div class="title-divider"></div>
+        </div>
+        <div class="product-list">
+          <div class="product-row">
+            <div class="product-row-info">
+              <div class="row-top">
+                <span class="card-badge grey">Mới</span>
+                <h3 class="product-name">Nike Air Max 90 By You</h3>
+                <p class="product-desc">Custom Women's Shoes.</p>
+              </div>
+              <div class="row-bottom">
+                <span class="product-price emerald-text">4,699,000 ₫</span>
+                <button class="buy-btn add-btn text-only" data-price="4,699,000" data-name="Nike Air Max 90 By You">Mua
+                  ngay <i data-lucide="chevron-right"></i></button>
+              </div>
+            </div>
+            <div class="product-row-img">
+              <img
+                src="https://api.nike.com/customization/images/v2?vn=1&bi=345f3c0d-9e53-4d5f-9ed1-9e7244063d8c&bs=1769104669166&bgc=f5f5f5&qlt=90&wid=864&designs=PgaIEAAFUEAMAFuCaBdA9gbIAwBQC-A1AMkDvAWAKoCWAWQLUUB7ASQBUCpAZALIDbALRV4BhCgFEAcAA4AgwCqZAGYBseAAoBVgP8A+gNYACAAcAHgIhYAZgHoAywCaA4QEgTATh0B1nQD4AOgByAPcAegCKAAIAeQCLMHQAawDVANcArwCgNAYAVAD8AM8AvADiIAC4lswAMmoAMQChAEEA4wA2AO0yACptABgAPABbWAA1AAu8ACYQWAAkOgCAAD0AkgD+5QADALSMaABG1QDFbQBjAFMAEwAIBABEABSWAPrAAJE3ACsA5AAWAEeAFH3AA4ACGtH8AJkAIQA+wBdgBQoNWADSAB5zABKQQSdQABotbACABphAB4qyKfQAzTsAQBPmgAZgAdBACjoABFgOlSLZ-ACMRQwAQA5QBzgDIABOqHKaMIhgAAgCFACeAFzggDaADAAJUAGgAKQAJAzIshMuVMlIAO4A3ABN5wAG6oACt+FI8gBugBLJAAqO85hRrDQ-gA3gCGTQAIAB5WMAQQAInNqkUis6APkAfu4N2OMWE7wA32IKAAEg0AGAIEXuAHgAA6upMAQjCAAzhQArxaNi1AgCHHTlSAApPduEMfgBG5HjABHcDUZCIETlACZXQA-i0AEYkAG8AJcABoASFWjXUALAAMQArJYAAUyiX2PwREEACnjxBAA7EUADpiyPAAG+8WjPsoNwAGVFkkAC2PYGN0ADDAC5dYAF-MKyABOAAuy4AJ73EePhFgAozKFA+AA89YFFmHeACBSC4VIKCWGoODcCm9xEWoACdxx-AAPnJADG1gdqCWwAFrwikAAvRgBMwAD1LQUcongAJSeECBTOAAaAA8XkACT-ADMuZqZgAvqs4I7DxZHao4ACzFzIh51FSX4AB1KESqFIAAL0AOANB0xx1gAF1sZw9gAUgA6kkAwGQA00ymretRGiJY8oYUCEahtgcAB+PITpYGgAK7aUUABzfQADkAGoANjQj21iZjkAA-ByhgAjgAccKADEPXLcsjpAnWV7CB1AAllieGBKREBAZAxH8aDsDicg0EgDRIBOsJTQM1RyAA0F+dDdMAPUdu8ixXgAIS8bbVE1agpLOerdAA0lKQYAGHvEWKY3iYbZyB2TSNkC6wAG00K6dYYUCJhETZaAALHqggESNqswoAModHN+6KOwZGYk0bjpnoTUmAkKR6s+iXsMAADBe2agAbn0DSauldD7siinqgZPXVEROyWHS6ygmQnCI4pVN6IiAbrg0ix+FT8ZqEyRA5ci5TprhSbCoFcqKX8ACtWiI0OTTlBRciav1uE6AAXW2ESKQApupLQ5Y6RSqjeuF-DsGAeS0OSUmgAxnOqADmegph2sZzQaRZM3NFw-D1cfjMIBTsuy1iDQAzu9chDsw3CQURBYZDoTNBAAXj8nhGjL8Wd3oCSR4wRodWZKBaEMPiggk6odXQbYYXSYChhcMQoAAx0CJRVqejpklMNywefOxULBNwAB9GI5GB1MVoZ7eMSCrABjKHPu8FMVMix1mOD2I0+MAB2Uk0jeglDsZaSZTwIFPJHZE8C-iDQDHodkUpHh6nGOqDQGA2jdAMNpCUN5YbOGABaD0PspIRGUDsWEAB0ZQC00gpC-LGaE4xFKDRlK6dSNw6RHgyACHkuFRhgACAtG8R4phXB8AZRK-AjycHGHINIBkmrjC0AAdyoEeVYkEzjv3BKyawyI7KMXSvCQKIAaCw1sAkFMwAiiORQDQHK6wLwUWOAWWGTMABnE5HRBggJBAMkTmBSEjgAFgNAARPwrDRSEAUAoDIF+ewHUqAQAOAgIMZo+h6EggaL8Mt2RUwNLBWGjoDCQVfHqfCEs-BkBlH8AgGgEjsm4IFOs5QAA72o-goRiH4GgBp9zFUGgAIveDIH2HQwJuAKTQbUkFhBNEUlJNJiNuF5ANI5P4oyMAkDyMiY4xxIlMj1BLQKR48AoDqZwDsZEylBA9FU0EsYNCIl4AAUp4sueKgTjjLmWgADrSTQNAcxIIoVfHHKgccvgAkiqMxy6UhxBm6NCA0EplDMFhnAIGARRmIzMRRKgaT3gQsiREPwgTkQxHSqMmURYclMzjh2Up1QfC1JQosNolS+iggWuyZ8WApIBgye8eKyg2wyxZTLfskSxDalVREWCE4gxymWkCPAkctBwD2tqCcqpuDLSgEAA"
+                alt="Nike Air Max 90 By You">
+            </div>
+          </div>
+          <div class="product-row">
+            <div class="product-row-info">
+              <div class="row-top">
+                <span class="card-badge grey">Độc quyền</span>
+                <h3 class="product-name">Air Jordan 1 High</h3>
+                <p class="product-desc">Phong cách tối giản, nâng tầm đẳng cấp.</p>
+              </div>
+              <div class="row-bottom">
+                <span class="product-price emerald-text">3,999,000 ₫</span>
+                <button class="buy-btn add-btn text-only" data-price="6100000" data-name="Air Jordan 1 High">Mua
+                  ngay <i data-lucide="chevron-right"></i></button>
+              </div>
+            </div>
+            <div class="product-row-img">
+              <img src="https://i.pinimg.com/736x/2d/e6/1a/2de61a5c9b3e7c8757c90b99b954659d.jpg"
+                alt="Air Jordan 1 High">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="macro-section">
+        <div class="macro-container">
+          <div class="macro-info">
+            <div class="macro-tag">
+              <i data-lucide="sparkles"></i> DI SẢN & ĐỔI MỚI
+            </div>
+            <h2>Đỉnh Cao Kỹ Thuật</h2>
+            <p>Mỗi sản phẩm là một tác phẩm nghệ thuật, kết hợp giữa kỹ nghệ truyền thống và công nghệ tiên tiến nhất.
+              Chúng tôi tinh chỉnh từng chi tiết để mang đến trải nghiệm thoải mái và đẳng cấp không thể trộn lẫn đối
+              với kỷ nguyên tốc độ sắp tới.</p>
+            <a href="#" class="macro-link">Tìm hiểu về chất liệu <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div class="macro-image">
+            <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800"
+              alt="Macro details">
+            <div class="macro-overlay"></div>
+            <span class="macro-badge">Microfiber Leather Macro Focus</span>
+          </div>
+        </div>
+      </section>
+
+      <footer class="main-footer nike-style-footer">
+        <div class="footer-top-container">
+          <div class="footer-col">
+            <a href="#" class="footer-heading">TÌM CỬA HÀNG</a>
+            <a href="#" class="footer-heading">TRỞ THÀNH HỘI VIÊN</a>
+            <a href="#" class="footer-heading">ĐĂNG KÝ NHẬN EMAIL</a>
+            <a href="#" class="footer-heading">PHẢN HỒI</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-heading-sm">TRỢ GIÚP</span>
+            <a href="#">Tình trạng đơn hàng</a>
+            <a href="#">Giao hàng</a>
+            <a href="#">Đổi trả</a>
+            <a href="#">Tùy chọn thanh toán</a>
+            <a href="#">Liên hệ</a>
+          </div>
+          <div class="footer-col">
+            <span class="footer-heading-sm">VỀ CHÚNG TÔI</span>
+            <a href="#">Tin tức</a>
+            <a href="#">Nghề nghiệp</a>
+            <a href="#">Nhà đầu tư</a>
+            <a href="#">Bền vững</a>
+          </div>
+          <div class="footer-col social-col" style="flex-direction: row; gap: 1rem; align-items: center;">
+            <a href="#" class="social-icon" title="Facebook"
+              style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; transition: transform 0.2s;"
+              onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook"
+                style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.05);">
+            </a>
+            <a href="#" class="social-icon" title="Instagram"
+              style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; transition: transform 0.2s;"
+              onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram"
+                style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.25);">
+            </a>
+            <a href="#" class="social-icon" title="Zalo"
+              style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; transition: transform 0.2s;"
+              onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" alt="Zalo"
+                style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.05);">
+            </a>
+            <a href="#" class="social-icon" title="YouTube"
+              style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; transition: transform 0.2s;"
+              onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/a/a0/YouTube_social_red_circle_%282017%29.svg"
+                alt="YouTube" style="width: 100%; height: 100%; object-fit: cover; transform: scale(1.05);">
+            </a>
+          </div>
+        </div>
+        <div class="footer-bottom-container">
+          <div class="footer-bottom-left">
+            <span class="location"><i data-lucide="map-pin"></i> Việt Nam</span>
+            <span class="copyright">© 2026 TL Shop, Inc. All Rights Reserved</span>
+          </div>
+          <div class="footer-bottom-links">
+            <a href="#">Hướng dẫn</a>
+            <a href="#">Điều khoản bán hàng</a>
+            <a href="#">Điều khoản sử dụng</a>
+            <a href="#">Chính sách bảo mật</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div id="notification-container" class="notification-container"></div>
+
+  <div id="chatbox-widget" class="chatbot-widget">
+
+    <div id="chat-window" class="chat-window hidden">
+
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <button id="chat-back-btn" class="chat-back-btn hidden">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <div class="bot-avatar">
+            <i id="chat-header-icon" data-lucide="message-circle"></i>
+            <span class="bot-status-dot"></span>
+          </div>
+          <div>
+            <h4 id="chat-header-title" class="bot-name">Hỗ trợ trực tuyến</h4>
+            <span id="chat-header-status" class="bot-status">Sẵn sàng hỗ trợ</span>
+          </div>
+        </div>
+        <button id="close-chat-btn" class="close-chat-btn">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div id="view-chat-list" class="chat-view hidden">
+        <div id="admin-panel" class="admin-panel hidden">
+          <div class="admin-panel-title"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Admin
+            Control Panel</div>
+          <div class="admin-stats">
+            <div class="stat-item">Trực tuyến: <span class="stat-val">2 Staffs</span></div>
+            <div class="stat-item">Cần xử lý: <span class="stat-val text-red">3 Chats</span></div>
+          </div>
+          <div class="admin-filters">
+            <button class="filter-btn active">Tất cả</button>
+            <button class="filter-btn">Chưa đọc</button>
+            <button class="filter-btn">Hoàn tất</button>
+          </div>
+        </div>
+
+        <div class="chat-list-items" id="chat-list-items">
+        </div>
+      </div>
+
+      <div id="view-chat-detail" class="chat-view active">
+        <div id="chat-messages" class="chat-messages">
+        </div>
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off" />
+          <button id="send-chat-btn" class="send-chat-btn">
+            <i data-lucide="send" style="width:16px;height:16px;"></i>
+          </button>
+        </div>
+      </div>
 
     </div>
+    <button id="chatbot-toggle-btn" class="chatbot-toggle-btn">
+      <div class="bot-icon-wrapper">
+        <i data-lucide="message-circle" style="color:white; width:28px; height:28px;"></i>
+      </div>
+      <span id="chat-badge" class="chat-badge hidden">0</span>
+      <span class="toggle-ping"></span>
+    </button>
+  </div>
 
-    <!-- MAIN -->
-    <div class="main">
-
-        <!-- TOPBAR -->
-        <div class="topbar">
-
-            <h1>Hệ Thống Quản Lý Shop</h1>
-
-            <input type="text" placeholder="Tìm kiếm sản phẩm...">
-
-        </div>
-
-        <!-- DASHBOARD -->
-        <div class="dashboard">
-
-            <div class="card">
-                <h3>Tổng sản phẩm</h3>
-                <p>120</p>
-            </div>
-
-            <div class="card">
-                <h3>Đơn hôm nay</h3>
-                <p>35</p>
-            </div>
-
-            <div class="card">
-                <h3>Doanh thu</h3>
-                <p>25 triệu</p>
-            </div>
-
-            <div class="card">
-                <h3>Khách hàng</h3>
-                <p>560</p>
-            </div>
-
-        </div>
-
-        <!-- TABLE -->
-        <div class="table-container">
-
-            <h2>Danh Sách Sản Phẩm</h2>
-
-            <table>
-
-                <tr>
-                    <th>Mã SP</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Hành động</th>
-                </tr>
-
-                <tr>
-                    <td>SP001</td>
-                    <td>Áo Hoodie</td>
-                    <td>350.000đ</td>
-                    <td>10</td>
-
-                    <td>
-                        <button class="edit">Sửa</button>
-                        <button class="delete">Xóa</button>
-                        <button class="buy">Đặt hàng</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>SP002</td>
-                    <td>Áo Thun</td>
-                    <td>220.000đ</td>
-                    <td>20</td>
-
-                    <td>
-                        <button class="edit">Sửa</button>
-                        <button class="delete">Xóa</button>
-                        <button class="buy">Đặt hàng</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>SP003</td>
-                    <td>Quần Jean</td>
-                    <td>450.000đ</td>
-                    <td>15</td>
-
-                    <td>
-                        <button class="edit">Sửa</button>
-                        <button class="delete">Xóa</button>
-                        <button class="buy">Đặt hàng</button>
-                    </td>
-                </tr>
-
-            </table>
-
-        </div>
-
-    </div>
-
-    <script src="script.js"></script>
-
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="js/script.js"></script>
 </body>
 
 </html>
-```
