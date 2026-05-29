@@ -218,14 +218,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Smooth scroll to top of window
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    // Header adjustments
-    if (currentScreen === "confirmation") {
-      brandLogoText.innerHTML = `TL Shop Elite <span class="starbucks-sub font-light">x Starbucks</span>`;
-      brandLogoText.className = "starbucks-collab";
-    } else {
-      brandLogoText.textContent = "TL Shop";
-      brandLogoText.className = "nike-logo-text";
-    }
+    // Header adjustments - Always keep the standard TL Shop logo
+    brandLogoText.textContent = "TL Shop";
+    brandLogoText.className = "nike-logo-text";
 
     // Toggle screen active visibility classes
     const screens = [

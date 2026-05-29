@@ -103,11 +103,16 @@
 
 .nike-logo-text {
   font-family: var(--font-display);
-  font-weight: 900;
   font-size: 1.5rem;
-  letter-spacing: -0.04em;
-  color: var(--color-elite-primary);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  font-style: italic;
+  color: #111827;
   transition: transform 0.2s ease;
+}
+
+.nike-body .brand-dot {
+  background-color: var(--color-elite-primary);
 }
 
 .nike-logo-btn:hover .nike-logo-text {
@@ -1779,16 +1784,7 @@
   }
 }
 
-.footer-heading {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 1.5rem;
-  letter-spacing: 0.08em;
-  color: #ffffff;
-  text-transform: uppercase;
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
+/* .footer-heading removed to inherit from style.css */
 
 .footer-subheading {
   font-size: 11px;
