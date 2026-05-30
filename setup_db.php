@@ -35,6 +35,17 @@ try {
     $pdo->exec($sqlCreateTable);
     echo "<h3 style='color: blue;'>2. Đã tạo bảng 'users' (hoặc đã tồn tại).</h3>";
 
+    // Tự động tạo sẵn tài khoản Admin mặc định
+    $adminUsername = 'Admin';
+    $adminEmail = 'admin';
+    $adminPassword = '123';
+    $adminHash = password_hash($adminPassword, PASSWORD_DEFAULT);
+
+    $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+    $stmt->execute([$adminUsername, $adminEmail, $adminHash]);
+    echo "<h3 style='color: blue;'>2.5. Đã tự động tạo sẵn tài khoản Admin mặc định (admin / 123).</h3>";
+
+
     // 3. Tạo Bảng Categories
     $pdo->exec("DROP TABLE IF EXISTS categories");
     $sqlCreateCategories = "

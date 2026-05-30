@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Dynamic Redirection if slug exists
       const slug = btn.getAttribute("data-slug");
       if (slug) {
-        window.location.href = `nike-elite.html?id=${slug}`;
+        window.location.href = `product-detail.html?id=${slug}`;
         return;
       }
 

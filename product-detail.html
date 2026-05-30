@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nike Elite - Chi Tiết Sản Phẩm | TL Shop</title>
+  
+  <!-- Preconnect and Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Link Main Homepage Stylesheet and Custom Details Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/nike-elite.css">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="nike-body light-theme">
+
+  <!-- GLOBAL HEADER PLACEHOLDER -->
+  <div id="header-placeholder"></div>
+
+  <!-- CORE SCREEN CONTENT -->
+  <main class="nike-main">
+    <div class="nike-container" style="padding: 2.5rem 1.5rem 1.5rem 1.5rem;">
+      
+      <!-- ============================================== -->
+      <!-- SCREEN 1: PRODUCT DETAIL SCREEN -->
+      <!-- ============================================== -->
+      <section class="nike-screen active" id="screen-product">
+        <div class="grid-cols-12">
+          
+          <!-- Left Column: Images (Span 7) -->
+          <div class="col-span-7" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- Main big image view -->
+            <div class="image-showcase">
+              <span class="nike-badge-green" id="prod-tag-badge" style="position: absolute; top: 1rem; left: 1rem; z-index: 10;">
+                ELITE PERFORMANCE
+              </span>
+              <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=1200" alt="Nike Mercurial Vapor 16 Elite" id="prod-main-img" referrerPolicy="no-referrer">
+            </div>
+
+            <!-- Bottom ratings & detail thumbs -->
+            <div class="grid-cols-12">
+              <!-- Review ratings card (Span 6) -->
+              <div class="col-span-6 rating-card">
+                <div>
+                  <div class="stars" style="margin-bottom: 0.5rem;">
+                    <i data-lucide="star" class="star-icon"></i>
+                    <i data-lucide="star" class="star-icon"></i>
+                    <i data-lucide="star" class="star-icon"></i>
+                    <i data-lucide="star" class="star-icon"></i>
+                    <i data-lucide="star" class="star-icon"></i>
+                  </div>
+                  <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span style="font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: #1c1917;">4.8</span>
+                    <span style="font-size: 12px; color: var(--color-elite-muted);">/ 5 (128 reviews)</span>
+                  </div>
+                </div>
+                <div style="border-top: 1px solid #f5f5f4; padding-top: 1rem;">
+                  <p style="margin: 0 0 0.5rem 0; font-size: 12.5px; font-style: italic; color: #44403c; line-height: 1.5;">
+                    "Incredible touch on the ball. The lockdown is unmatched."
+                  </p>
+                  <p style="margin: 0; font-size: 10px; font-weight: 750; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-elite-muted);">
+                    — M. Jordan
+                  </p>
+                </div>
+              </div>
+
+              <!-- Thumbnails detailing list (Span 6) -->
+              <div class="col-span-6 thumb-grid" id="product-thumbnails">
+                <div class="thumb-card active" data-url="https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=1200">
+                  <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=1200" alt="Main View" referrerPolicy="no-referrer">
+                </div>
+                <div class="thumb-card" data-url="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=600">
+                  <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=600" alt="Detail view 1" referrerPolicy="no-referrer">
+                </div>
+                <div class="thumb-card" data-url="https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?auto=format&fit=crop&q=80&w=600">
+                  <img src="https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?auto=format&fit=crop&q=80&w=600" alt="Detail view 2" referrerPolicy="no-referrer">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Action Details (Span 5) -->
+          <div class="col-span-5" style="display: flex; flex-direction: column; justify-content: space-between; gap: 2rem;">
+            <div>
+              <!-- Category tag -->
+              <p class="product-category-tag" id="prod-category-text">FOOTBALL / ELITE SERIES</p>
+
+              <!-- Main Title -->
+              <h1 class="product-title" id="prod-name-text">NIKE MERCURIAL VAPOR 16 ELITE</h1>
+
+              <!-- Price tag -->
+              <p class="product-price-tag" id="prod-price-text">6.499.000 đ</p>
+
+              <!-- Size selection -->
+              <div style="margin-bottom: 2rem;">
+                <div class="size-selector-header">
+                  <span>Chọn Size (US)</span>
+                  <button type="button" class="size-guide-btn" onclick="alert('Size Chart: US 7 = 40, US 8 = 41, US 9 = 42.5, US 10 = 44, US 11 = 45')">Size Guide</button>
+                </div>
+                <!-- Size Grid buttons -->
+                <div class="size-grid" id="product-size-grid">
+                  <button type="button" class="size-btn">US 7</button>
+                  <button type="button" class="size-btn selected">US 8</button>
+                  <button type="button" class="size-btn">US 9</button>
+                  <button type="button" class="size-btn">US 10</button>
+                  <button type="button" class="size-btn">US 11</button>
+                  <button type="button" class="size-btn">US 12</button>
+                  <button type="button" class="size-btn">US 13</button>
+                  <button type="button" class="size-btn">US 14</button>
+                </div>
+              </div>
+
+              <!-- Core buttons actions -->
+              <div style="display: flex; gap: 0.75rem; margin-bottom: 2.5rem;">
+                <button type="button" class="add-to-cart-big-btn" id="prod-add-to-cart-btn">
+                  THÊM VÀO GIỎ HÀNG
+                </button>
+                <button type="button" class="wishlist-btn" id="prod-wishlist-btn" title="Yêu thích">
+                  <i data-lucide="heart" style="width: 22px; height: 22px;"></i>
+                </button>
+              </div>
+
+              <!-- Accordion Details List -->
+              <div class="accordion-list">
+                <!-- ACCORDION 1: Description -->
+                <div class="accordion-item open" id="acc-description">
+                  <button type="button" class="accordion-trigger">
+                    <span>Giới thiệu sản phẩm</span>
+                    <i data-lucide="chevron-down" style="width: 18px; height: 18px;"></i>
+                  </button>
+                  <div class="accordion-body" id="prod-desc-body">
+                    Được thiết kế dành cho những cầu thủ nhanh nhất trên sân, Nike Mercurial Vapor 16 Elite sở hữu thiết kế siêu nhẹ kết hợp cùng upper từ chất liệu Flyknit ôm chân tối đa. Bộ đế kéo bám chuyên nghiệp tăng tốc bức phá và chuyển hướng mượt mà trên sân cỏ tự nhiên. Sợi dệt bền bỉ cao cấp mang lại cảm giác khóa chân an toàn trong suốt thời gian thi đấu bùng nổ.
+                  </div>
+                </div>
+
+                <!-- ACCORDION 2: Delivery -->
+                <div class="accordion-item" id="acc-delivery">
+                  <button type="button" class="accordion-trigger">
+                    <span>Giao hàng & Hoàn trả</span>
+                    <i data-lucide="chevron-down" style="width: 18px; height: 18px;"></i>
+                  </button>
+                  <div class="accordion-body" id="prod-delivery-body">
+                    Giao hàng toàn quốc từ 2-4 ngày làm việc. Đổi trả miễn phí trong vòng 30 ngày nếu sản phẩm chưa qua sử dụng.
+                  </div>
+                </div>
+
+                <!-- ACCORDION 3: Specifications -->
+                <div class="accordion-item" id="acc-specs">
+                  <button type="button" class="accordion-trigger">
+                    <span>Thông số kỹ thuật</span>
+                    <i data-lucide="chevron-down" style="width: 18px; height: 18px;"></i>
+                  </button>
+                  <div class="accordion-body">
+                    <div style="display: flex; flex-direction: column; gap: 0.65rem; padding: 0.25rem 0;" id="prod-specs-body">
+                      <!-- Sẽ được điền động bằng JavaScript -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Authenticity Guaranteed Card -->
+            <div class="authenticity-card">
+              <i data-lucide="shield-check" style="color: var(--color-elite-primary); width: 22px; height: 22px; flex-shrink: 0; margin-top: 1px;"></i>
+              <div>
+                <p style="margin: 0 0 0.15rem 0; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: var(--color-elite-primary); text-transform: uppercase;">AUTHENTICITY GUARANTEED</p>
+                <p style="margin: 0; font-size: 10.5px; color: var(--color-elite-muted); line-height: 1.4;">Verified Technical Precision. Trực tiếp ủy quyền từ nhà máy sản xuất Nike toàn cầu.</p>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- SUCCESS TOASTS NOTIFICATION ELEMENT -->
+  <div class="nike-toast-container" id="toast-container"></div>
+
+  <!-- GLOBAL FOOTER PLACEHOLDER -->
+  <div id="footer-placeholder"></div>
+
+  <!-- JavaScript Load Template & Initializations -->
+  <script>
+    // Hàm tải template tĩnh (Header, Footer)
+    async function loadTemplate(placeholderId, filePath) {
+      try {
+        const response = await fetch(filePath);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const content = await response.text();
+        document.getElementById(placeholderId).innerHTML = content;
+      } catch (error) {
+        console.error(`Failed to load ${filePath}:`, error);
+      }
+    }
+
+    // Khởi tạo các component khi tải xong trang
+    async function initPageComponents() {
+      await Promise.all([
+        loadTemplate('header-placeholder', 'components/header.html'),
+        loadTemplate('footer-placeholder', 'components/footer.html')
+      ]);
+
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Tải script xử lý tương tác chi tiết sản phẩm sau khi đã chèn xong header/footer
+      const script = document.createElement('script');
+      script.src = 'js/product-detail.js';
+      document.body.appendChild(script);
+    }
+
+    document.addEventListener("DOMContentLoaded", initPageComponents);
+  </script>
+</body>
+</html>

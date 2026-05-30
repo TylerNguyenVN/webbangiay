@@ -7,7 +7,7 @@
   <title>TL Shop - Admin Dashboard</title>
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin.css?v=1.0.1">
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -31,20 +31,29 @@
         <i data-lucide="chevron-right" style="width:14px;height:14px;color:#030712;"></i>
       </button>
 
-      <button class="nav-item">
+      <button class="nav-item" data-target="admin-categories">
         <i data-lucide="layers"></i>
         <span>Danh mục</span>
       </button>
 
-      <button class="nav-item">
+      <button class="nav-item" data-target="admin-products">
         <i data-lucide="package"></i>
         <span>Sản phẩm</span>
       </button>
 
-      <button class="nav-item">
+      <button class="nav-item" data-target="admin-orders">
         <i data-lucide="shopping-cart"></i>
         <span>Đơn hàng</span>
-        <span class="nav-badge">2</span>
+      </button>
+
+      <button class="nav-item" data-target="admin-users">
+        <i data-lucide="users"></i>
+        <span>Tài khoản</span>
+      </button>
+
+      <button class="nav-item" data-target="admin-coupons">
+        <i data-lucide="ticket"></i>
+        <span>Mã giảm giá</span>
       </button>
 
       <div class="nav-divider"></div>
@@ -288,13 +297,355 @@
 
     </section>
 
+    <!-- SECTION DANH MỤC -->
+    <section id="admin-categories" class="view-section">
+      <div class="header-row">
+        <div class="header-title-wrapper">
+          <span class="header-label">Quản lý</span>
+          <h2 class="header-title">Danh mục sản phẩm</h2>
+          <p class="header-desc">Quản lý danh sách danh mục giày đa cấp cho TL Shop.</p>
+        </div>
+      </div>
+      
+      <div class="ai-grid" style="grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+        <!-- Left: Form -->
+        <div class="panel editor-panel">
+          <h3 class="panel-title" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.75rem; margin: 0; font-weight:700;">Thêm / Sửa Danh mục</h3>
+          <form id="form-category" style="display:flex; flex-direction:column; gap: 1rem; margin-top: 1rem;">
+            <input type="hidden" id="category-id">
+            <div class="editor-field">
+              <span class="editor-label">Tên Danh mục</span>
+              <input type="text" id="category-name" class="search-input" style="width:100%; border-radius:0; padding: 0.5rem;" placeholder="Ví dụ: Giày Sneaker Nam" required>
+            </div>
+            <div class="editor-field">
+              <span class="editor-label">Slug (SEO URL)</span>
+              <input type="text" id="category-slug" class="search-input" style="width:100%; border-radius:0; padding: 0.5rem;" placeholder="Ví dụ: giay-sneaker-nam" required>
+            </div>
+            <div class="editor-field">
+              <span class="editor-label">Danh mục cha</span>
+              <select id="category-parent" class="editor-select">
+                <option value="">-- Không có danh mục cha --</option>
+              </select>
+            </div>
+            <div class="editor-field">
+              <span class="editor-label">Mô tả</span>
+              <textarea id="category-description" class="editor-textarea" style="height: 100px;" placeholder="Mô tả danh mục..."></textarea>
+            </div>
+            <div style="display:flex; gap: 0.5rem;">
+              <button type="submit" class="btn-save" style="flex:1;">Lưu danh mục</button>
+              <button type="button" id="btn-cancel-category" class="btn-draft" style="display:none;">Hủy sửa</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right: Table -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Danh sách danh mục đang có</h3>
+          </div>
+          <div style="overflow-x: auto; padding: 1rem;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên danh mục</th>
+                  <th>Slug SEO</th>
+                  <th>Danh mục cha</th>
+                  <th>Mô tả</th>
+                  <th style="text-align:right;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="table-categories-body">
+                <!-- Nạp dữ liệu tự động bằng JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION SẢN PHẨM -->
+    <section id="admin-products" class="view-section">
+      <div class="header-row">
+        <div class="header-title-wrapper">
+          <span class="header-label">Quản lý</span>
+          <h2 class="header-title">Sản phẩm & Biến thể</h2>
+          <p class="header-desc">Quản lý giày, bộ sưu tập ảnh và các kích cỡ, tồn kho.</p>
+        </div>
+        <button id="btn-open-product-modal" class="btn-save">+ Đăng sản phẩm mới</button>
+      </div>
+
+      <!-- Bảng Sản phẩm -->
+      <div class="panel" style="margin-top: 1.5rem;">
+        <div class="panel-header">
+          <h3 class="panel-title">Danh sách giày trên hệ thống</h3>
+        </div>
+        <div style="overflow-x: auto; padding: 1rem;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Ảnh</th>
+                <th>Tên sản phẩm</th>
+                <th>Danh mục</th>
+                <th>Giá bán gốc</th>
+                <th>Giá sale</th>
+                <th>Biến thể (Size | Màu | Tồn kho)</th>
+                <th>Trạng thái</th>
+                <th style="text-align:right;">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="table-products-body">
+              <!-- Nạp dữ liệu bằng JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MODAL ĐĂNG SẢN PHẨM MỚI -->
+      <div id="product-modal" class="admin-modal" style="display:none;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="modal-product-title" style="margin:0; font-family:var(--font-display); font-weight:700;">Đăng sản phẩm mới</h3>
+            <span class="close-modal" id="btn-close-product-modal" style="cursor:pointer; font-size:1.5rem; font-weight:700;">&times;</span>
+          </div>
+          <form id="form-product" style="padding: 1.5rem; display:flex; flex-direction:column; gap: 1rem;">
+            <input type="hidden" id="product-id">
+            <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div class="editor-field">
+                <span class="editor-label">Tên sản phẩm</span>
+                <input type="text" id="product-name" class="search-input" style="width:100%; padding:0.5rem;" placeholder="Ví dụ: Nike Air Force 1" required>
+              </div>
+              <div class="editor-field">
+                <span class="editor-label">Slug (SEO URL)</span>
+                <input type="text" id="product-slug" class="search-input" style="width:100%; padding:0.5rem;" placeholder="Ví dụ: nike-air-force-1" required>
+              </div>
+            </div>
+
+            <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div class="editor-field">
+                <span class="editor-label">Danh mục</span>
+                <select id="product-category" class="editor-select" style="width:100%; padding:0.5rem;" required>
+                  <!-- Nạp danh mục bằng JS -->
+                </select>
+              </div>
+              <div class="editor-field">
+                <span class="editor-label">Ảnh chính (URL)</span>
+                <input type="text" id="product-image" class="search-input" style="width:100%; padding:0.5rem;" placeholder="https://..." required>
+              </div>
+            </div>
+
+            <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div class="editor-field">
+                <span class="editor-label">Giá bán gốc (₫)</span>
+                <input type="number" id="product-price" class="search-input" style="width:100%; padding:0.5rem;" placeholder="Ví dụ: 3500000" required>
+              </div>
+              <div class="editor-field">
+                <span class="editor-label">Giá khuyến mãi (₫)</span>
+                <input type="number" id="product-sale-price" class="search-input" style="width:100%; padding:0.5rem;" placeholder="Để trống nếu không sale">
+              </div>
+            </div>
+
+            <div class="editor-field">
+              <span class="editor-label">Mô tả sản phẩm</span>
+              <textarea id="product-description" class="editor-textarea" style="height:80px;" placeholder="Mô tả giày..."></textarea>
+            </div>
+
+            <!-- PHẦN THÊM BIẾN THỂ SIZE/MÀU/TỒN KHO -->
+            <div id="product-variants-section" style="border-top:1px dashed #e5e7eb; padding-top: 1rem;">
+              <span class="editor-label" style="margin-bottom: 0.5rem; display:block; color:#047857;">Biến thể kích cỡ & Tồn kho ban đầu</span>
+              <div id="variants-container" style="display:flex; flex-direction:column; gap:0.5rem;">
+                <div class="variant-row" style="display:flex; gap:0.5rem; align-items:center;">
+                  <input type="text" class="search-input var-size" style="width: 20%; padding: 0.5rem;" placeholder="Size (VD: 42)" required>
+                  <input type="text" class="search-input var-color" style="width: 25%; padding: 0.5rem;" placeholder="Màu (VD: Đen)" required>
+                  <input type="text" class="search-input var-sku" style="width: 35%; padding: 0.5rem;" placeholder="Mã SKU (Tự động tạo nếu trống)">
+                  <input type="number" class="search-input var-stock" style="width: 20%; padding: 0.5rem;" placeholder="Tồn kho" value="10" required>
+                  <button type="button" class="btn-remove-var" onclick="this.parentElement.remove()" style="background:transparent; border:none; color:#ef4444; cursor:pointer;"><i data-lucide="trash-2"></i></button>
+                </div>
+              </div>
+              <button type="button" id="btn-add-variant-row" class="btn-draft" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; font-size: 0.75rem; border-radius:0;">+ Thêm dòng biến thể</button>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:0.5rem; border-top: 1px solid #e5e7eb; padding-top:1rem; margin-top:1rem;">
+              <button type="button" id="btn-close-product" class="btn-draft" style="border-radius:0;">Hủy</button>
+              <button type="submit" class="btn-save" style="border-radius:0;">Lưu sản phẩm</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION ĐƠN HÀNG -->
+    <section id="admin-orders" class="view-section">
+      <div class="header-row">
+        <div class="header-title-wrapper">
+          <span class="header-label">Giao dịch</span>
+          <h2 class="header-title">Quản lý Đơn hàng</h2>
+          <p class="header-desc">Theo dõi hóa đơn, đổi trạng thái giao hàng và trừ tồn kho vật lý tự động.</p>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top: 1.5rem;">
+        <div class="panel-header">
+          <h3 class="panel-title">Danh sách hóa đơn mua sắm của khách</h3>
+        </div>
+        <div style="overflow-x: auto; padding: 1rem;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Số điện thoại</th>
+                <th>Địa chỉ nhận hàng</th>
+                <th>Tổng thanh toán</th>
+                <th>P.Thức</th>
+                <th>Trạng thái vận đơn</th>
+                <th>Ngày đặt</th>
+                <th style="text-align:right;">Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="table-orders-body">
+              <!-- Nạp dữ liệu tự động bằng JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MODAL CHI TIẾT HÓA ĐƠN -->
+      <div id="order-modal" class="admin-modal" style="display:none;">
+        <div class="modal-content" style="max-width: 650px;">
+          <div class="modal-header">
+            <h3 style="margin:0; font-family:var(--font-display); font-weight:700;">Chi tiết Hóa đơn mua hàng</h3>
+            <span class="close-modal" id="btn-close-order-modal" style="cursor:pointer; font-size:1.5rem; font-weight:700;">&times;</span>
+          </div>
+          <div style="padding: 1.5rem;" id="order-details-content">
+            <!-- Nạp nội dung bằng JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION TÀI KHOẢN -->
+    <section id="admin-users" class="view-section">
+      <div class="header-row">
+        <div class="header-title-wrapper">
+          <span class="header-label">Hệ thống</span>
+          <h2 class="header-title">Quản lý Tài khoản</h2>
+          <p class="header-desc">Phân vai trò tài khoản (Customer, Staff, Admin) và Khóa/Mở khóa thành viên.</p>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top: 1.5rem;">
+        <div class="panel-header">
+          <h3 class="panel-title">Danh sách tài khoản trong cơ sở dữ liệu</h3>
+        </div>
+        <div style="overflow-x: auto; padding: 1rem;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tên người dùng</th>
+                <th>Email đăng nhập</th>
+                <th>Số điện thoại</th>
+                <th>Địa chỉ</th>
+                <th>Vai trò (Role)</th>
+                <th>Trạng thái</th>
+                <th>Ngày tham gia</th>
+                <th style="text-align:right;">Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="table-users-body">
+              <!-- Nạp bằng JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION MÃ GIẢM GIÁ -->
+    <section id="admin-coupons" class="view-section">
+      <div class="header-row">
+        <div class="header-title-wrapper">
+          <span class="header-label">Khuyến mãi</span>
+          <h2 class="header-title">Mã giảm giá (Coupons)</h2>
+          <p class="header-desc">Tạo, phân phối và quản lý thời hạn, lượt dùng của coupon toàn hệ thống.</p>
+        </div>
+      </div>
+
+      <div class="ai-grid" style="grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+        <!-- Left: Form -->
+        <div class="panel editor-panel">
+          <h3 class="panel-title" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.75rem; margin: 0; font-weight:700;">Khởi tạo mã mới</h3>
+          <form id="form-coupon" style="display:flex; flex-direction:column; gap: 1rem; margin-top: 1rem;">
+            <div class="editor-field">
+              <span class="editor-label">Mã Code (In hoa, viết liền)</span>
+              <input type="text" id="coupon-code" class="search-input" style="width:100%; border-radius:0; padding: 0.5rem;" placeholder="Ví dụ: TLSHOES100K" required>
+            </div>
+            <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div class="editor-field">
+                <span class="editor-label">Loại giảm</span>
+                <select id="coupon-type" class="editor-select" style="width:100%; padding:0.5rem;" required>
+                  <option value="fixed">Số tiền cố định (₫)</option>
+                  <option value="percentage">Phần trăm (%)</option>
+                </select>
+              </div>
+              <div class="editor-field">
+                <span class="editor-label">Giá trị giảm</span>
+                <input type="number" id="coupon-value" class="search-input" style="width:100%; border-radius:0; padding: 0.5rem;" placeholder="Ví dụ: 10 (%) hoặc 100000 (₫)" required>
+              </div>
+            </div>
+            <div class="editor-field">
+              <span class="editor-label">Giá trị đơn hàng tối thiểu áp dụng (₫)</span>
+              <input type="number" id="coupon-min-order" class="search-input" style="width:100%; border-radius:0; padding: 0.5rem;" value="0">
+            </div>
+            <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div class="editor-field">
+                <span class="editor-label">Lượt dùng tối đa</span>
+                <input type="number" id="coupon-limit" class="search-input" style="width:100%; border-radius:0; padding: 0.5rem;" placeholder="Để trống = vô hạn">
+              </div>
+              <div class="editor-field">
+                <span class="editor-label">Ngày hết hạn</span>
+                <input type="date" id="coupon-date" class="search-input" style="width:100%; border-radius:0; padding: 0.5rem;">
+              </div>
+            </div>
+            <button type="submit" class="btn-save" style="width:100%; border-radius:0;">Khởi tạo Coupon</button>
+          </form>
+        </div>
+
+        <!-- Right: Table -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Danh sách mã đang kích hoạt</h3>
+          </div>
+          <div style="overflow-x: auto; padding: 1rem;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Mã giảm giá</th>
+                  <th>Loại</th>
+                  <th>Giá trị giảm</th>
+                  <th>Đơn tối thiểu</th>
+                  <th>Lượt dùng (Đã dùng / Tối đa)</th>
+                  <th>Ngày hết hạn</th>
+                  <th>Trạng thái</th>
+                  <th style="text-align:right;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="table-coupons-body">
+                <!-- Nạp bằng JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <script>
     // Initialize icons
     lucide.createIcons();
   </script>
-  <script src="js/admin.js"></script>
+  <script src="js/admin.js?v=1.0.1"></script>
 </body>
 
 </html>
