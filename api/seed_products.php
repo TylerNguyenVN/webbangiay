@@ -80,35 +80,35 @@ try {
         ],
         [
             'slug' => 'nike-air-max-tw',
-            'name' => 'NIKE AIR MAX TW',
+            'name' => 'NIKE AIR MAX 90 BY YOU',
             'brand' => 'Nike',
-            'category' => 'LIFESTYLE / STYLISH',
-            'tag' => 'STREETSTYLE',
-            'price' => 4690000,
-            'image' => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800',
+            'category' => 'LIFESTYLE / CUSTOM SHOES',
+            'tag' => 'MỚI',
+            'price' => 4699000,
+            'image' => 'https://api.nike.com/customization/images/v2?vn=1&bi=345f3c0d-9e53-4d5f-9ed1-9e7244063d8c&bs=1769104669166&bgc=f5f5f5&qlt=90&wid=864&designs=PgaIEAAFUEAMAFuCaBdA9gbIAwBQC-A1AMkDvAWAKoCWAWQLUUB7ASQBUCpAZALIDbALRV4BhCgFEAcAA4AgwCqZAGYBseAAoBVgP8A+gNYACAAcAHgIhYAZgHoAywCaA4QEgTATh0B1nQD4AOgByAPcAegCKAAIAeQCLMHQAawDVANcArwCgNAYAVAD8AM8AvADiIAC4lswAMmoAMQChAEEA4wA2AO0yACptABgAPABbWAA1AAu8ACYQWAAkOgCAAD0AkgD+5QADALSMaABG1QDFbQBjAFMAEwAIBABEABSWAPrAAJE3ACsA5AAWAEeAFH3AA4ACGtH8AJkAIQA+wBdgBQoNWADSAB5zABKQQSdQABotbACABphAB4qyKfQAzTsAQBPmgAZgAdBACjoABFgOlSLZ-ACMRQwAQA5QBzgDIABOqHKaMIhgAAgCFACeAFzggDaADAAJUAGgAKQAJAzIshMuVMlIAO4A3ABN5wAG6oACt+FI8gBugBLJAAqO85hRrDQ-gA3gCGTQAIAB5WMAQQAInNqkUis6APkAfu4N2OMWE7wA32IKAAEg0AGAIEXuAHgAA6upMAQjCAAzhQArxaNi1AgCHHTlSAApPduEMfgBG5HjABHcDUZCIETlACZXQA-i0AEYkAG8AJcABoASFWjXUALAAMQArJYAAUyiX2PwREEACnjxBAA7EUADpiyPAAG+8WjPsoNwAGVFkkAC2PYGN0ADDAC5dYAF-MKyABOAAuy4AJ73EePhFgAozKFA+AA89YFFmHeACBSC4VIKCWGoODcCm9xEWoACdxx-AAPnJADG1gdqCWwAFrwikAAvRgBMwAD1LQUcongAJSeECBTOAAaAA8XkACT-ADMuZqZgAvqs4I7DxZHao4ACzFzIh51FSX4AB1KESqFIAAL0AOANB0xx1gAF1sZw9gAUgA6kkAwGQA00ymretRGiJY8oYUCEahtgcAB+PITpYGgAK7aUUABzfQADkAGoANjQj21iZjkAA-ByhgAjgAccKADEPXLcsjpAnWV7CB1AAllieGBKREBAZAxH8aDsDicg0EgDRIBOsJTQM1RyAA0F+dDdMAPUdu8ixXgAIS8bbVE1agpLOerdAA0lKQYAGHvEWKY3iYbZyB2TSNkC6wAG00K6dYYUCJhETZaAALHqggESNqswoAModHN+6KOwZGYk0bjpnoTUmAkKR6s+iXsMAADBe2agAbn0DSauldD7siinqgZPXVEROyWHS6ygmQnCI4pVN6IiAbrg0ix+FT8ZqEyRA5ci5TprhSbCoFcqKX8ACtWiI0OTTlBRciav1uE6AAXW2ESKQApupLQ5Y6RSqjeuF-DsGAeS0OSUmgAxnOqADmegph2sZzQaRZM3NFw-D1cfjMIBTsuy1iDQAzu9chDsw3CQURBYZDoTNBAAXj8nhGjL8Wd3oCSR4wRodWZKBaEMPiggk6odXQbYYXSYChhcMQoAAx0CJRVqejpklMNywefOxULBNwAB9GI5GB1MVoZ7eMSCrABjKHPu8FMVMix1mOD2I0+MAB2Uk0jeglDsZaSZTwIFPJHZE8C-iDQDHodkUpHh6nGOqDQGA2jdAMNpCUN5YbOGABaD0PspIRGUDsWEAB0ZQC00gpC-LGaE4xFKDRlK6dSNw6RHgyACHkuFRhgACAtG8R4phXB8AZRK-AjycHGHINIBkmrjC0AAdyoEeVYkEzjv3BKyawyI7KMXSvCQKIAaCw1sAkFMwAiiORQDQHK6wLwUWOAWWGTMABnE5HRBggJBAMkTmBSEjgAFgNAARPwrDRSEAUAoDIF+ewHUqAQAOAgIMZo+h6EggaL8Mt2RUwNLBWGjoDCQVfHqfCEs/BkBlH8AgGgEjsm4IFOs5QAA72o-goRiH4GgBp9zFUGgAIveDIH2HQwJuAKTQbUkFhBNEUlJNJiNuF5ANI5P4oyMAkDyMiY4xxIlMj1BLQKR48AoDqZwDsZEylBA9FU0EsYNCIl4AAUp4sueKgTjjLmWgADrSTQNAcxIIoVfHHKgccvgAkiqMxy6UhxBm6NCA0EplDMFhnAIGARRmIzMRRKgaT3gQsiREPwgTkQxHSqMmURYclMzjh2Up1QfC1JQosNolS+iggWuyZ8WApIBgye8eKyg2wyxZTLfskSxDalVREWCE4gxymWkCPAkctBwD2tqCcqpuDLSgEAA',
             'images' => json_encode([]),
-            'sizes' => json_encode(['US 8', 'US 9', 'US 10', 'US 11']),
-            'description' => 'Kiểu dáng hầm hố cổ điển hòa quyện cùng công nghệ hiện đại. Đệm Air Max êm ái xuyên suốt nâng đỡ bàn chân, giúp bạn tự tin di chuyển cả ngày dài.',
+            'sizes' => json_encode(['US 7', 'US 8', 'US 9']),
+            'description' => 'Sự kết hợp hoàn hảo giữa thiết kế di sản và công nghệ đệm Air-Sole êm ái. Phiên bản By You mang lại dấu ấn cá nhân không thể nhầm lẫn trên từng bước chân.',
             'specifications' => json_encode([
-                ['label' => 'Công nghệ đệm', 'value' => 'Visible Air Max gót chân giảm chấn cực tốt'],
-                ['label' => 'Kiểu dáng', 'value' => 'Retro 90s Streetstyle hầm hố và phong cách']
+                ['label' => 'Chất liệu thân giày', 'value' => 'Da tổng hợp cao cấp phối lưới thoáng khí'],
+                ['label' => 'Công nghệ đệm', 'value' => 'Air-Sole lộ thiên, đệm êm ái chống sốc']
             ]),
             'delivery_info' => 'Giao hàng 2-3 ngày nội thành. Hỗ trợ đổi size tại store trong vòng 7 ngày.'
         ],
         [
             'slug' => 'nike-mercurial-elite-sb',
-            'name' => 'Nike Mercurial Elite x SB',
-            'brand' => 'Nike',
-            'category' => 'FOOTBALL / SPECIAL EDITION',
-            'tag' => 'ELITE PERFORMANCE',
-            'price' => 4500000,
-            'image' => 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?auto=format&fit=crop&q=80&w=800',
+            'name' => 'AIR JORDAN 1 HIGH',
+            'brand' => 'Jordan',
+            'category' => 'LIFESTYLE / JORDAN BRAND',
+            'tag' => 'ĐỘC QUYỀN',
+            'price' => 3999000,
+            'image' => 'https://i.pinimg.com/736x/2d/e6/1a/2de61a5c9b3e7c8757c90b99b954659d.jpg',
             'images' => json_encode([]),
             'sizes' => json_encode(['US 8', 'US 9', 'US 10', 'US 11']),
-            'description' => 'Phiên bản hợp tác cực kỳ giới hạn giữa phân nhánh bóng đá chuyên nghiệp của Nike và SB, kết tinh vẻ đẹp thời thượng và sức mạnh bứt tốc vượt trội.',
+            'description' => 'Biểu tượng bất diệt của văn hóa sát mặt đất. Air Jordan 1 High duy trì sức hút từ thiết kế nguyên bản, tôn vinh phong cách tối giản mà vẫn nâng tầm đẳng cấp tuyệt đối.',
             'specifications' => json_encode([
-                ['label' => 'Phân nhánh', 'value' => 'Nike Football x Skateboarding Special Edition'],
-                ['label' => 'Vật liệu đế', 'value' => 'Nhựa dẻo chịu lực đàn hồi cao phủ sơn mạ vàng cao cấp']
+                ['label' => 'Chất liệu thân giày', 'value' => 'Da tự nhiên cao cấp'],
+                ['label' => 'Công nghệ đế', 'value' => 'Đế cao su đúc nguyên khối chống trượt']
             ]),
             'delivery_info' => 'Giao hàng hỏa tốc trong 24 giờ. Đổi trả miễn phí 30 ngày.'
         ],

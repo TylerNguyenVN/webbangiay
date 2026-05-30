@@ -165,7 +165,7 @@ try {
             if (!empty($variants) && is_array($variants)) {
                 $vStmt = $db->prepare("INSERT INTO product_variants (product_id, sku, size, color, stock_qty) VALUES (?, ?, ?, ?, ?)");
                 foreach ($variants as $v) {
-                    $sku = trim($v['sku'] ?? "SKU-" . $productId . "-" . strtoupper(substr(md5(uniqid()), 0, 6)));
+                    $sku = !empty($v['sku']) ? trim($v['sku']) : "SKU-" . $productId . "-" . strtoupper(substr(md5(uniqid()), 0, 6));
                     $size = trim($v['size'] ?? '');
                     $color = trim($v['color'] ?? 'Default');
                     $stock = intval($v['stock_qty'] ?? 0);
@@ -369,6 +369,9 @@ try {
     }
 
 } catch (Exception $e) {
+    if (isset($db) && $db->inTransaction()) {
+        $db->rollBack();
+    }
     $response = ["success" => false, "message" => "Đã có lỗi hệ thống xảy ra.", "error" => $e->getMessage()];
 }
 

@@ -429,8 +429,9 @@
                 </select>
               </div>
               <div class="editor-field">
-                <span class="editor-label">Ảnh chính (URL)</span>
-                <input type="text" id="product-image" class="search-input" style="width:100%; padding:0.5rem;" placeholder="https://..." required>
+                <span class="editor-label">Ảnh chính (Tải lên)</span>
+                <input type="file" id="product-image-file" class="search-input" style="width:100%; padding:0.5rem;" accept="image/*">
+                <!-- Vẫn giữ trường hidden hoặc URL cũ nếu cần, nhưng ở đây dùng trực tiếp file -->
               </div>
             </div>
 

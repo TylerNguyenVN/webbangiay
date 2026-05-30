@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nike Elite - Giỏ Hàng & Thanh Toán | TL Shop</title>
-  
+  <title>Giỏ Hàng & Thanh Toán | TL Shop</title>
+
   <!-- Preconnect and Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  
+
   <!-- Link Main Homepage Stylesheet and Custom Details Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/nike-elite.css">
-  
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body class="nike-body light-theme">
 
   <!-- GLOBAL HEADER PLACEHOLDER -->
@@ -24,7 +26,7 @@
   <!-- CORE SCREEN CONTENT -->
   <main class="nike-main">
     <div class="nike-container" style="padding: 2.5rem 1.5rem 1.5rem 1.5rem;">
-      
+
       <!-- ============================================== -->
       <!-- SCREEN 2: CART SCREEN (Mặc định active ở trang này) -->
       <!-- ============================================== -->
@@ -33,13 +35,19 @@
 
         <!-- Nếu giỏ hàng trống -->
         <div class="empty-cart-card hidden" id="cart-empty-view">
-          <i data-lucide="alert-triangle" style="width: 56px; height: 56px; color: var(--color-elite-muted); margin: 0 auto 1.5rem auto;"></i>
-          <h2 style="font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: #1c1917; margin: 0 0 0.5rem 0;">Giỏ hàng của bạn đang trống</h2>
-          <p style="font-size: 13.5px; color: var(--color-elite-muted); max-width: 450px; margin: 0 auto; line-height: 1.6;">
-            Hành trình chinh phục đỉnh cao luôn bắt đầu từ việc chuẩn bị kỹ trang bị. Hãy ghé thăm Showroom ngay để tìm kiếm đôi giày chiến hoàn hảo.
+          <i data-lucide="alert-triangle"
+            style="width: 56px; height: 56px; color: var(--color-elite-muted); margin: 0 auto 1.5rem auto;"></i>
+          <h2
+            style="font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; color: #1c1917; margin: 0 0 0.5rem 0;">
+            Giỏ hàng của bạn đang trống</h2>
+          <p
+            style="font-size: 13.5px; color: var(--color-elite-muted); max-width: 450px; margin: 0 auto; line-height: 1.6;">
+            Hành trình chinh phục đỉnh cao luôn bắt đầu từ việc chuẩn bị kỹ trang bị. Hãy ghé thăm Showroom ngay để tìm
+            kiếm đôi giày chiến hoàn hảo.
           </p>
           <div style="margin-top: 2rem;">
-            <a href="product-detail.html" class="pay-now-btn" style="display: inline-flex; width: auto; padding: 1rem 2.5rem; text-decoration: none; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 9999px;">
+            <a href="index.html" class="pay-now-btn"
+              style="display: inline-flex; width: auto; padding: 1rem 2.5rem; text-decoration: none; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 9999px;">
               <span>QUAY LẠI CỬA HÀNG</span>
               <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
             </a>
@@ -48,7 +56,7 @@
 
         <!-- Layout lưới giỏ hàng -->
         <div class="grid-cols-12" id="cart-content-view">
-          
+
           <!-- Cột Trái: Danh sách sản phẩm + Thông tin giao hàng (Phân bổ 8 cột) -->
           <div class="col-span-8" style="display: flex; flex-direction: column; gap: 2rem;">
             <!-- Danh sách sản phẩm render qua JS -->
@@ -75,14 +83,15 @@
 
                 <div class="form-group" style="margin-bottom: 1.5rem;">
                   <label class="form-label" for="ship-address">Địa chỉ chi tiết</label>
-                  <input type="text" id="ship-address" placeholder="Số nhà, tên đường, phường/xã, quận/huyện..." class="form-input">
+                  <input type="text" id="ship-address" placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."
+                    class="form-input">
                   <p class="form-error-msg hidden" id="error-address">Vui lòng điền địa chỉ giao nhận</p>
                 </div>
 
                 <div class="form-group">
                   <label class="form-label">Phương thức giao hàng</label>
                   <div class="delivery-cards-grid">
-                    
+
                     <!-- Giao hàng tiêu chuẩn -->
                     <div class="delivery-card selected" id="delivery-method-standard">
                       <div style="text-align: left;">
@@ -117,7 +126,7 @@
           <div class="col-span-4" style="display: flex; flex-direction: column; gap: 1.25rem;">
             <div class="summary-card">
               <h2 class="shipping-title" style="margin-bottom: 1.25rem;">TÓM TẮT ĐƠN HÀNG</h2>
-              
+
               <!-- Dòng thông số hóa đơn -->
               <div class="summary-rows">
                 <div class="summary-row">
@@ -145,7 +154,8 @@
                 <span class="rewards-star-badge">★</span>
                 <div>
                   <h3 class="rewards-tag">REWARDS ELITE</h3>
-                  <p class="rewards-desc">Bạn sẽ tích luỹ thêm <strong id="summary-reward-points" style="color: #451a03;">0 điểm</strong> thưởng.</p>
+                  <p class="rewards-desc">Bạn sẽ tích luỹ thêm <strong id="summary-reward-points"
+                      style="color: #451a03;">0 điểm</strong> thưởng.</p>
                 </div>
               </div>
 
@@ -158,11 +168,13 @@
               <!-- Các cam kết an toàn bảo mật -->
               <div class="assurance-group">
                 <div class="assurance-item">
-                  <i data-lucide="shield-check" style="color: var(--color-elite-primary); width: 15px; height: 15px; flex-shrink: 0;"></i>
+                  <i data-lucide="shield-check"
+                    style="color: var(--color-elite-primary); width: 15px; height: 15px; flex-shrink: 0;"></i>
                   <span>Thanh toán bảo mật 100% qua tiêu chuẩn SSL</span>
                 </div>
                 <div class="assurance-item">
-                  <i data-lucide="rotate-ccw" style="color: var(--color-elite-primary); width: 15px; height: 15px; flex-shrink: 0;"></i>
+                  <i data-lucide="rotate-ccw"
+                    style="color: var(--color-elite-primary); width: 15px; height: 15px; flex-shrink: 0;"></i>
                   <span>Chính sách đổi trả, hoàn tiền trong 30 ngày</span>
                 </div>
               </div>
@@ -176,7 +188,7 @@
       <!-- SCREEN 3: ORDER CONFIRMATION SCREEN (Khi đặt xong) -->
       <!-- ============================================== -->
       <section class="nike-screen" id="screen-confirmation" style="text-align: center;">
-        
+
         <!-- Checkbox thành công viền vàng cam nổi bật -->
         <div class="success-check-badge">
           <div class="success-check-inner">
@@ -185,11 +197,13 @@
         </div>
 
         <!-- Văn bản chúc mừng -->
-        <h1 style="font-family: var(--font-display); font-weight: 900; font-size: 2.25rem; color: var(--color-elite-primary); letter-spacing: -0.02em; margin: 0 0 0.5rem 0; text-transform: uppercase;">
+        <h1
+          style="font-family: var(--font-display); font-weight: 900; font-size: 2.25rem; color: var(--color-elite-primary); letter-spacing: -0.02em; margin: 0 0 0.5rem 0; text-transform: uppercase;">
           ĐẶT HÀNG THÀNH CÔNG!
         </h1>
         <p style="font-size: 14.5px; font-weight: 700; color: #1c1917; margin: 0;">
-          Mã đơn hàng: <span style="font-family: var(--font-mono); font-weight: 800;" id="confirm-order-id">#NKE-889922</span>
+          Mã đơn hàng: <span style="font-family: var(--font-mono); font-weight: 800;"
+            id="confirm-order-id">#NKE-889922</span>
         </p>
         <p style="font-size: 12px; color: var(--color-elite-muted); margin: 0.25rem 0 0 0;" id="confirm-order-date">
           Ngày đặt hàng: 29 tháng 5, 2026
@@ -197,10 +211,12 @@
 
         <!-- Thẻ Squad Welcome -->
         <div class="welcome-badge-box">
-          <h2 style="font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; color: #1c1917; margin: 0 0 0.5rem 0;">
+          <h2
+            style="font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; color: #1c1917; margin: 0 0 0.5rem 0;">
             Chào mừng bạn đã gia nhập Elite Squad.
           </h2>
-          <p style="font-size: 13.5px; color: var(--color-elite-muted); margin: 0;">Chiến binh của bạn đang trên đường tới.</p>
+          <p style="font-size: 13.5px; color: var(--color-elite-muted); margin: 0;">Chiến binh của bạn đang trên đường
+            tới.</p>
         </div>
 
         <!-- Điểm thưởng tích luỹ thành công -->
@@ -213,10 +229,11 @@
 
         <!-- Chi tiết đơn hàng tóm lược -->
         <div class="grid-cols-12 text-left max-w-3xl mx-auto">
-          
+
           <!-- Cột trái: sản phẩm đặt (7 cột) -->
           <div class="col-span-7" style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <h3 style="font-family: var(--font-mono); font-size: 10px; font-weight: 750; color: var(--color-elite-muted); text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--color-elite-border); padding-bottom: 0.5rem; margin: 0 0 0.25rem 0;">
+            <h3
+              style="font-family: var(--font-mono); font-size: 10px; font-weight: 750; color: var(--color-elite-muted); text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--color-elite-border); padding-bottom: 0.5rem; margin: 0 0 0.25rem 0;">
               Danh sách sản phẩm
             </h3>
             <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="confirm-items-container">
@@ -227,7 +244,8 @@
           <!-- Cột phải: Tổng thanh toán tài chính (5 cột) -->
           <div class="col-span-5" style="display: flex; flex-direction: column; gap: 1rem;">
             <div class="confirm-total-box" style="display: flex; flex-direction: column; gap: 1rem;">
-              <h3 style="font-family: var(--font-mono); font-size: 10px; font-weight: 750; color: #57534e; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid rgba(120, 113, 108, 0.25); padding-bottom: 0.5rem; margin: 0;">
+              <h3
+                style="font-family: var(--font-mono); font-size: 10px; font-weight: 750; color: #57534e; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid rgba(120, 113, 108, 0.25); padding-bottom: 0.5rem; margin: 0;">
                 Tổng thanh toán
               </h3>
 
@@ -238,23 +256,30 @@
                 </div>
                 <div style="display: flex; justify-content: space-between;">
                   <span>Phí vận chuyển</span>
-                  <span id="confirm-shipping" style="font-weight: 700; color: var(--color-elite-primary);">Miễn phí</span>
+                  <span id="confirm-shipping" style="font-weight: 700; color: var(--color-elite-primary);">Miễn
+                    phí</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; color: #047857;" class="hidden" id="confirm-discount-row">
+                <div style="display: flex; justify-content: space-between; color: #047857;" class="hidden"
+                  id="confirm-discount-row">
                   <span>Giảm giá Elite</span>
                   <span id="confirm-discount" style="font-weight: 700;">-0đ</span>
                 </div>
               </div>
 
               <!-- Tổng số thanh toán thực tế -->
-              <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid rgba(120, 113, 108, 0.25); padding-top: 0.75rem;">
-                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #1c1917;">Tổng cộng</span>
-                <span style="font-family: var(--font-display); font-weight: 900; font-size: 1.35rem; color: var(--color-elite-primary);" id="confirm-total-price">0đ</span>
+              <div
+                style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid rgba(120, 113, 108, 0.25); padding-top: 0.75rem;">
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #1c1917;">Tổng
+                  cộng</span>
+                <span
+                  style="font-family: var(--font-display); font-weight: 900; font-size: 1.35rem; color: var(--color-elite-primary);"
+                  id="confirm-total-price">0đ</span>
               </div>
 
               <!-- Tổ hợp nút chuyển tiếp showroom -->
               <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
-                <button type="button" class="pay-now-btn" style="padding: 0.85rem 0; font-size: 13px;" id="confirm-continue-shopping-btn">
+                <button type="button" class="pay-now-btn" style="padding: 0.85rem 0; font-size: 13px;"
+                  id="confirm-continue-shopping-btn">
                   Tiếp tục mua sắm
                 </button>
                 <button type="button" class="confirm-btn-outline" id="confirm-track-order-btn">
@@ -269,19 +294,25 @@
         <!-- 3 Cột cam kết hậu mãi bảo hành -->
         <div class="max-w-3xl mx-auto confirmation-features">
           <div class="feature-box">
-            <i data-lucide="truck" style="color: var(--color-elite-primary); width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
+            <i data-lucide="truck"
+              style="color: var(--color-elite-primary); width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
             <h4 style="font-size: 13.5px; font-weight: 800; color: #1c1917; margin: 0 0 0.25rem 0;">Giao hàng nhanh</h4>
-            <p style="font-size: 11.5px; color: var(--color-elite-muted); margin: 0;">Dự kiến nhận hàng trong 2-3 ngày làm việc tới địa chỉ của bạn.</p>
+            <p style="font-size: 11.5px; color: var(--color-elite-muted); margin: 0;">Dự kiến nhận hàng trong 2-3 ngày
+              làm việc tới địa chỉ của bạn.</p>
           </div>
           <div class="feature-box">
-            <i data-lucide="shield-check" style="color: var(--color-elite-primary); width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
+            <i data-lucide="shield-check"
+              style="color: var(--color-elite-primary); width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
             <h4 style="font-size: 13.5px; font-weight: 800; color: #1c1917; margin: 0 0 0.25rem 0;">Bảo hành Elite</h4>
-            <p style="font-size: 11.5px; color: var(--color-elite-muted); margin: 0;">Sản phẩm được bảo hành chính hãng theo tiêu chuẩn Nike Global.</p>
+            <p style="font-size: 11.5px; color: var(--color-elite-muted); margin: 0;">Sản phẩm được bảo hành chính hãng
+              theo tiêu chuẩn Nike Global.</p>
           </div>
           <div class="feature-box">
-            <i data-lucide="phone-call" style="color: var(--color-elite-primary); width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
+            <i data-lucide="phone-call"
+              style="color: var(--color-elite-primary); width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
             <h4 style="font-size: 13.5px; font-weight: 800; color: #1c1917; margin: 0 0 0.25rem 0;">Hỗ trợ 24/7</h4>
-            <p style="font-size: 11.5px; color: var(--color-elite-muted); margin: 0;">Mọi thắc mắc vui lòng liên hệ hotline 1900-NIKE-SB.</p>
+            <p style="font-size: 11.5px; color: var(--color-elite-muted); margin: 0;">Mọi thắc mắc vui lòng liên hệ
+              hotline 1900-NIKE-SB.</p>
           </div>
         </div>
       </section>
@@ -290,7 +321,7 @@
       <!-- SCREEN 4: POST-PURCHASE TIMELINE TRACKER -->
       <!-- ============================================== -->
       <section class="nike-screen" id="screen-tracker">
-        
+
         <!-- Tiêu đề mô phỏng hành trình giao vận -->
         <div style="margin-bottom: 2rem;">
           <p class="tracker-sub-tag">POST-PURCHASE JOURNEY</p>
@@ -299,7 +330,7 @@
 
         <!-- Lưới theo dõi chi tiết -->
         <div class="grid-cols-12">
-          
+
           <!-- Cột trái: Biểu đồ thời gian (7 cột) -->
           <div class="col-span-7" style="display: flex; flex-direction: column; gap: 0.5rem;">
             <p class="tracker-helper-hint">
@@ -320,7 +351,7 @@
           <!-- Cột phải: Thông tin kĩ thuật hành trình (5 cột) -->
           <div class="col-span-5" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div class="intel-card">
-              
+
               <!-- Tiêu đề card thông minh -->
               <div class="intel-header">
                 <i data-lucide="clipboard" style="color: var(--color-elite-primary); width: 20px; height: 20px;"></i>
@@ -348,10 +379,13 @@
               <div>
                 <p class="intel-info-label">Delivery Coordinates</p>
                 <div class="coordinates-box">
-                  <i data-lucide="map-pin" style="color: #a8a29e; width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
+                  <i data-lucide="map-pin"
+                    style="color: #a8a29e; width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
                   <div class="coordinates-details">
-                    <p style="margin: 0; font-weight: 700; color: #1c1917;" id="tracker-shipping-name">Jameson Performance Academy</p>
-                    <p style="margin: 2px 0 0 0;" id="tracker-shipping-address">422 Elite Parkway, Suite 10, Portland, OR 97204</p>
+                    <p style="margin: 0; font-weight: 700; color: #1c1917;" id="tracker-shipping-name">Jameson
+                      Performance Academy</p>
+                    <p style="margin: 2px 0 0 0;" id="tracker-shipping-address">422 Elite Parkway, Suite 10, Portland,
+                      OR 97204</p>
                   </div>
                 </div>
               </div>
@@ -379,7 +413,8 @@
               <p class="concierge-quote">
                 "Technical gear requires precise delivery. Our squad is monitoring your shipment 24/7."
               </p>
-              <button type="button" class="concierge-link" onclick="alert('Đường dây nóng Concierge Elite: 1900-NIKE-SB. Chúng tôi luôn sẵn sàng hỗ trợ!')">
+              <button type="button" class="concierge-link"
+                onclick="alert('Đường dây nóng Concierge Elite: 1900-NIKE-SB. Chúng tôi luôn sẵn sàng hỗ trợ!')">
                 <span>Contact Support Concierge</span>
                 <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
               </button>
@@ -432,4 +467,5 @@
     document.addEventListener("DOMContentLoaded", initPageComponents);
   </script>
 </body>
+
 </html>

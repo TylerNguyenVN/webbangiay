@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+(() => {
 
   const currentUserStr = localStorage.getItem("nike_current_user");
   const authStatusDark = document.getElementById("auth-status-dark");
@@ -33,6 +33,42 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ==============================================
+  // HÀM HIỂN THỊ WISHLIST OVERLAY (GLOBAL)
+  // ==============================================
+  window.renderWishlistOverlay = function() {
+    const container = document.getElementById("wishlist-items-container");
+    if (!container) return;
+    const items = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
+    
+    if (items.length === 0) {
+      container.innerHTML = '<p style="color: #6b7280; text-align: center;">Danh sách yêu thích đang trống.</p>';
+      return;
+    }
+
+    container.innerHTML = items.map(item => `
+      <div style="display: flex; gap: 1rem; align-items: center; border-bottom: 1px solid #f3f4f6; padding-bottom: 1rem;">
+        <img src="${item.image || item.img}" alt="${item.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+        <div style="flex: 1;">
+          <h4 style="font-size: 0.875rem; font-weight: 600; margin: 0 0 0.25rem 0;">${item.name}</h4>
+          <p style="font-size: 0.875rem; color: #6b7280; margin: 0 0 0.5rem 0;">${new Intl.NumberFormat('vi-VN').format(item.price)} ₫</p>
+          <a href="product-detail.html?id=${item.id}" style="font-size: 0.75rem; color: #047857; text-decoration: none; font-weight: 500;">Xem chi tiết</a>
+        </div>
+        <button onclick="window.removeFromWishlist('${item.id}')" style="background: transparent; border: none; color: #ef4444; cursor: pointer; padding: 0.5rem;"><i data-lucide="trash-2"></i></button>
+      </div>
+    `).join("");
+    
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  };
+
+  window.removeFromWishlist = function(id) {
+    let items = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
+    items = items.filter(item => item.id !== id);
+    localStorage.setItem("nike_wishlist_items", JSON.stringify(items));
+    window.renderWishlistOverlay();
+  };
+
+
   let cartCount = 2;
   const cartBadges = document.querySelectorAll(".cart-count");
 
@@ -63,30 +99,78 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4500);
   }
 
-  const buyBtns = document.querySelectorAll(".buy-btn");
-  buyBtns.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
+  // Xử lý nút Mua ngay bằng Event Delegation vì các sản phẩm có thể được render động
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".buy-btn");
+    if (!btn) return;
+    
+    // Nếu nút nằm trong danh sách .products-section hoặc .hero-cta thì cho phép
+    // Nhưng tránh bắt nhầm các nút khác
+    if(btn.classList.contains("text-only") || btn.classList.contains("hero-cta") || btn.classList.contains("add-btn")) {
       e.preventDefault();
       
-      // Dynamic Redirection if slug exists
       const slug = btn.getAttribute("data-slug");
       if (slug) {
         window.location.href = `product-detail.html?id=${slug}`;
         return;
       }
 
-      const price = parseFloat(btn.getAttribute("data-price"));
-      const name = btn.getAttribute("data-name");
+      const price = parseFloat(btn.getAttribute("data-price") || 0);
+      const name = btn.getAttribute("data-name") || "Sản phẩm";
 
-      cartCount++;
-      cartBadges.forEach(badge => {
-        badge.textContent = cartCount;
-      });
+      if(price > 0) {
+        cartCount++;
+        cartBadges.forEach(badge => {
+          badge.textContent = cartCount;
+        });
 
-      const formattedPrice = (price / 1000000).toFixed(1);
-      showNotification(`Đã tiếp nhận đơn hàng ${name}! Doanh thu hệ thống tăng +${formattedPrice}M ₫`, "success");
-    });
+        const formattedPrice = (price / 1000000).toFixed(1);
+        showNotification(`Đã tiếp nhận đơn hàng ${name}! Doanh thu hệ thống tăng +${formattedPrice}M ₫`, "success");
+      }
+    }
   });
+
+  // Tải danh sách sản phẩm động từ Database cho Trang chủ
+  async function fetchProductsForHome() {
+    const container = document.getElementById("home-product-list");
+    if (!container) return; // Không phải trang chủ
+
+    try {
+      const res = await fetch("api/admin_api.php?action=get_products");
+      const result = await res.json();
+      if (result.success && result.data.length > 0) {
+        // Lấy tối đa 4 sản phẩm mới nhất
+        const products = result.data.slice(0, 4);
+        
+        container.innerHTML = products.map(p => `
+          <div class="product-row">
+            <div class="product-row-info">
+              <div class="row-top">
+                <span class="card-badge grey">${p.category_name || 'MỚI'}</span>
+                <h3 class="product-name">${p.name}</h3>
+                <p class="product-desc">${p.description ? p.description.substring(0, 50) + '...' : ''}</p>
+              </div>
+              <div class="row-bottom">
+                <span class="product-price emerald-text">${new Intl.NumberFormat('vi-VN').format(p.price)} ₫</span>
+                <button class="buy-btn add-btn text-only" data-price="${p.price}" data-name="${p.name}" data-slug="${p.slug}">
+                  Mua ngay <i data-lucide="chevron-right"></i>
+                </button>
+              </div>
+            </div>
+            <div class="product-row-img">
+              <img src="${p.image_url || p.image || ''}" alt="${p.name}">
+            </div>
+          </div>
+        `).join("");
+
+        if (window.lucide) lucide.createIcons();
+      }
+    } catch (err) {
+      console.error("Lỗi khi tải sản phẩm trang chủ:", err);
+    }
+  }
+
+  fetchProductsForHome();
 
   const helpBtns = document.querySelectorAll(".help-btn");
   helpBtns.forEach(btn => {
@@ -969,4 +1053,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-});
+})();

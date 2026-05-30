@@ -622,10 +622,36 @@ document.addEventListener("DOMContentLoaded", () => {
   if (formProduct) {
     formProduct.addEventListener("submit", async (e) => {
       e.preventDefault();
+      
+      const fileInput = document.getElementById("product-image-file");
+      let image_url = "";
+
+      if (fileInput && fileInput.files.length > 0) {
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+        
+        try {
+          const uploadRes = await fetch("api/upload_image.php", {
+            method: "POST",
+            body: formData
+          });
+          const uploadResult = await uploadRes.json();
+          if (uploadResult.success) {
+            image_url = uploadResult.url;
+          } else {
+            showAdminNotification("Lỗi tải ảnh: " + uploadResult.message);
+            return;
+          }
+        } catch (err) {
+          console.error("Upload error:", err);
+          showAdminNotification("Lỗi kết nối tải ảnh");
+          return;
+        }
+      }
+
       const name = document.getElementById("product-name").value;
       const slug = document.getElementById("product-slug").value;
       const category_id = document.getElementById("product-category").value;
-      const image_url = document.getElementById("product-image").value;
       const price = document.getElementById("product-price").value;
       const sale_price = document.getElementById("product-sale-price").value;
       const description = document.getElementById("product-description").value;
@@ -658,7 +684,7 @@ document.addEventListener("DOMContentLoaded", () => {
           loadProducts();
           loadDashboardStats();
         } else {
-          showAdminNotification("Lỗi: " + result.message);
+          showAdminNotification("Lỗi: " + result.message + (result.error ? " (" + result.error + ")" : ""));
         }
       } catch (err) {
         console.error("Lỗi đăng sản phẩm:", err);

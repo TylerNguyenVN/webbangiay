@@ -131,14 +131,23 @@ try {
     require_once 'db.php';
     $pdo = getDbConnection();
     
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE id = :param OR slug = :param LIMIT 1");
-    $stmt->execute(['param' => $idOrSlug]);
+    $stmt = $pdo->prepare("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.id = :param1 OR p.slug = :param2 LIMIT 1");
+    $stmt->execute(['param1' => $idOrSlug, 'param2' => $idOrSlug]);
     $product = $stmt->fetch();
 
     if ($product) {
-        $product['images'] = json_decode($product['images'] ?? '[]', true);
-        $product['sizes'] = json_decode($product['sizes'] ?? '[]', true);
-        $product['specifications'] = json_decode($product['specifications'] ?? '[]', true);
+        $vStmt = $pdo->prepare("SELECT size FROM product_variants WHERE product_id = :pid");
+        $vStmt->execute(['pid' => $product['id']]);
+        $variants = $vStmt->fetchAll(PDO::FETCH_COLUMN);
+        
+        $product['image'] = $product['image_url'];
+        $product['category'] = $product['category_name'];
+        $product['images'] = [$product['image_url']];
+        $product['sizes'] = !empty($variants) ? $variants : ['US 7', 'US 8', 'US 9', 'US 10'];
+        $product['specifications'] = [
+            ['label' => 'Mã sản phẩm', 'value' => $product['slug']],
+            ['label' => 'Danh mục', 'value' => $product['category_name']]
+        ];
         $product['price'] = (float)$product['price'];
         
         http_response_code(200);
@@ -149,8 +158,9 @@ try {
         ]);
         exit;
     }
-} catch (\Throwable $e) {
-    // If MySQL connection is down, we catch the exception and fall back silently to the local memory array below
+} catch (\PDOException $e) {
+    echo json_encode(["success" => false, "message" => "DB Error: " . $e->getMessage()]);
+    exit;
 }
 
 // 5. Fallback Lookup (Ensures perfect operation even if Database is empty or MySQL is offline!)

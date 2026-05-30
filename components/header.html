@@ -87,12 +87,12 @@
   </nav>
 
   <div class="utilities">
-    <button id="search-trigger-btn" class="icon-btn" title="Tìm kiếm">
+    <button id="search-trigger-btn" class="icon-btn" title="Tìm kiếm" onclick="document.getElementById('search-overlay').classList.remove('hidden'); setTimeout(() => document.getElementById('search-input-field').focus(), 100);">
       <i data-lucide="search"></i>
     </button>
-    <button class="icon-btn" title="Yêu thích">
+    <a href="wishlist.html" class="icon-btn" title="Yêu thích" style="text-decoration:none;">
       <i data-lucide="heart"></i>
-    </button>
+    </a>
     <a href="cart.html" class="icon-btn" title="Giỏ hàng" style="text-decoration: none;" id="header-cart-btn">
       <i data-lucide="shopping-bag"></i>
       <span class="badge cart-count emerald" id="header-cart-count">2</span>
@@ -106,3 +106,23 @@
     </div>
   </div>
 </header>
+
+<!-- SEARCH OVERLAY -->
+<div id="search-overlay" class="search-overlay hidden" onclick="if(event.target === this) this.classList.add('hidden');">
+  <div class="search-overlay-container">
+    <div class="search-input-wrapper">
+      <i data-lucide="search" class="search-icon-lg"></i>
+      <input type="text" id="search-input-field" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+      <button id="close-search-btn" class="icon-btn close-search" onclick="document.getElementById('search-overlay').classList.add('hidden');"><i data-lucide="x"></i></button>
+    </div>
+    <div class="search-suggestions">
+      <p>Gợi ý tìm kiếm:</p>
+      <div class="suggestion-tags">
+        <a href="#">Air Force 1</a>
+        <a href="#">Jordan</a>
+        <a href="#">Air Max</a>
+        <a href="#">Blazer</a>
+      </div>
+    </div>
+  </div>
+</div>

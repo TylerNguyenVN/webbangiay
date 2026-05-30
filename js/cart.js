@@ -1,10 +1,80 @@
 /**
  * NIKE ELITE - Cart & Checkout Script
  * Quản lý giỏ hàng động từ LocalStorage, tăng/giảm/xoá sản phẩm, tính toán hóa đơn,
- * xác thực form giao hàng và điều hướng quy trình xác nhận / theo dõi đơn hàng sau mua.
  */
+(() => {
+  // ==============================================
+  // HIỂN THỊ TRẠNG THÁI ĐĂNG NHẬP (HEADER)
+  // ==============================================
+  const currentUserStr = localStorage.getItem("nike_current_user");
+  const authStatusLight = document.getElementById("auth-status-light");
+  const authStatusDark = document.getElementById("auth-status-dark");
 
-document.addEventListener("DOMContentLoaded", () => {
+  if (currentUserStr) {
+    const user = JSON.parse(currentUserStr);
+    const renderLoggedInBtn = (container) => {
+      if (!container) return;
+      container.innerHTML = `
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="${user.role === 'admin' ? 'admin.html' : 'profile.html'}" class="admin-btn" style="text-decoration:none; background:transparent; border:none; padding:0;">
+            <i data-lucide="user-check"></i>
+            <span>${user.name}</span>
+          </a>
+          <button id="logout-btn-${container.id}" class="icon-btn" title="Đăng xuất" style="background:transparent; border:none; cursor:pointer;">
+            <i data-lucide="log-out"></i>
+          </button>
+        </div>
+      `;
+    };
+
+    renderLoggedInBtn(authStatusLight);
+    renderLoggedInBtn(authStatusDark);
+    if (window.lucide) lucide.createIcons();
+
+    document.querySelectorAll("[id^='logout-btn-']").forEach(btn => {
+      btn.addEventListener("click", () => {
+        localStorage.removeItem("nike_current_user");
+        window.location.reload();
+      });
+    });
+  }
+
+  // ==============================================
+  // HÀM HIỂN THỊ WISHLIST OVERLAY (GLOBAL)
+  // ==============================================
+  window.renderWishlistOverlay = function() {
+    const container = document.getElementById("wishlist-items-container");
+    if (!container) return;
+    const items = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
+    
+    if (items.length === 0) {
+      container.innerHTML = '<p style="color: #6b7280; text-align: center;">Danh sách yêu thích đang trống.</p>';
+      return;
+    }
+
+    container.innerHTML = items.map(item => `
+      <div style="display: flex; gap: 1rem; align-items: center; border-bottom: 1px solid #f3f4f6; padding-bottom: 1rem;">
+        <img src="${item.image || item.img}" alt="${item.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+        <div style="flex: 1;">
+          <h4 style="font-size: 0.875rem; font-weight: 600; margin: 0 0 0.25rem 0;">${item.name}</h4>
+          <p style="font-size: 0.875rem; color: #6b7280; margin: 0 0 0.5rem 0;">${new Intl.NumberFormat('vi-VN').format(item.price)} ₫</p>
+          <a href="product-detail.html?id=${item.id}" style="font-size: 0.75rem; color: #047857; text-decoration: none; font-weight: 500;">Xem chi tiết</a>
+        </div>
+        <button onclick="window.removeFromWishlist('${item.id}')" style="background: transparent; border: none; color: #ef4444; cursor: pointer; padding: 0.5rem;"><i data-lucide="trash-2"></i></button>
+      </div>
+    `).join("");
+    
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  };
+
+  window.removeFromWishlist = function(id) {
+    let items = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
+    items = items.filter(item => item.id !== id);
+    localStorage.setItem("nike_wishlist_items", JSON.stringify(items));
+    window.renderWishlistOverlay();
+  };
+
+
   // ==============================================
   // 1. DATA DEFINITIONS & STATE
   // ==============================================
@@ -16,17 +86,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==============================================
   // 2. KHAI BÁO CÁC DOM ELEMENT
   // ==============================================
-  // Screens điều phối
   const screenCart = document.getElementById("screen-cart");
   const screenConfirmation = document.getElementById("screen-confirmation");
   const screenTracker = document.getElementById("screen-tracker");
 
-  // Giỏ hàng trống / đầy
   const cartEmptyView = document.getElementById("cart-empty-view");
   const cartContentView = document.getElementById("cart-content-view");
   const cartItemsListContainer = document.getElementById("cart-items-list-container");
 
-  // Form giao nhận & Errors
   const inputFullname = document.getElementById("ship-fullname");
   const inputPhone = document.getElementById("ship-phone");
   const inputAddress = document.getElementById("ship-address");
@@ -36,7 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const deliveryMethodStandard = document.getElementById("delivery-method-standard");
   const deliveryMethodExpress = document.getElementById("delivery-method-express");
 
-  // Bảng tính chi phí đơn hàng
   const summaryItemsCount = document.getElementById("summary-items-count");
   const summarySubtotal = document.getElementById("summary-subtotal");
   const summaryShipping = document.getElementById("summary-shipping");
@@ -46,7 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const summaryRewardPoints = document.getElementById("summary-reward-points");
   const payNowBtn = document.getElementById("pay-now-btn");
 
-  // Thành công (Confirmation screen)
   const confirmOrderId = document.getElementById("confirm-order-id");
   const confirmOrderDate = document.getElementById("confirm-order-date");
   const confirmRewardPoints = document.getElementById("confirm-reward-points");
@@ -59,7 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmContinueShoppingBtn = document.getElementById("confirm-continue-shopping-btn");
   const confirmTrackOrderBtn = document.getElementById("confirm-track-order-btn");
 
-  // Theo dõi tiến trình (Tracker screen)
   const trackerTimelineSteps = document.getElementById("tracker-timeline-steps");
   const trackerOrderId = document.getElementById("tracker-order-id");
   const trackerArrivalDate = document.getElementById("tracker-arrival-date");
@@ -69,25 +133,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const trackerDownloadInvoiceBtn = document.getElementById("tracker-download-invoice-btn");
 
   // ==============================================
-  // 2.5. TỰ ĐỘNG ĐIỀN THÔNG TIN TỪ LOCALSTORAGE NẾU ĐÃ ĐĂNG NHẬP
+  // 2.5. TỰ ĐỘNG ĐIỀN THÔNG TIN TỪ LOCALSTORAGE
   // ==============================================
   function autoFillUserInfo() {
     const userStr = localStorage.getItem("nike_current_user");
     if (userStr) {
       const user = JSON.parse(userStr);
-      if (user.name && user.name !== "Chưa cập nhật") {
-        inputFullname.value = user.name;
-      }
-      if (user.phone && user.phone !== "Chưa cập nhật") {
-        inputPhone.value = user.phone;
-      }
-      if (user.address && user.address !== "Chưa cập nhật") {
-        inputAddress.value = user.address;
-      }
+      if (user.name && user.name !== "Chưa cập nhật" && inputFullname) inputFullname.value = user.name;
+      if (user.phone && user.phone !== "Chưa cập nhật" && inputPhone) inputPhone.value = user.phone;
+      if (user.address && user.address !== "Chưa cập nhật" && inputAddress) inputAddress.value = user.address;
     }
   }
-
-  // Khởi chạy điền thông tin tự động
   autoFillUserInfo();
 
   // ==============================================
@@ -113,18 +169,17 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCartHeaderBadge();
 
     if (cartItems.length === 0) {
-      cartEmptyView.classList.remove("hidden");
-      cartContentView.classList.add("hidden");
+      if (cartEmptyView) cartEmptyView.classList.remove("hidden");
+      if (cartContentView) cartContentView.classList.add("hidden");
       return;
     }
 
-    cartEmptyView.classList.add("hidden");
-    cartContentView.classList.remove("hidden");
+    if (cartEmptyView) cartEmptyView.classList.add("hidden");
+    if (cartContentView) cartContentView.classList.remove("hidden");
 
-    // Khởi dựng danh sách sản phẩm
+    // Thay đổi: Sử dụng thuộc tính data-* thay vì onclick trực tiếp
     cartItemsListContainer.innerHTML = cartItems.map((item, idx) => `
       <div class="cart-item-card">
-        <!-- Thông tin bên trái -->
         <div class="cart-item-left">
           <div class="cart-item-thumb">
             <img src="${item.product.image}" alt="${item.product.name}" referrerPolicy="no-referrer">
@@ -136,18 +191,17 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         </div>
 
-        <!-- Điều chỉnh số lượng & Giá bán bên phải -->
         <div class="cart-item-right">
           <div class="qty-box">
-            <button type="button" class="qty-btn" onclick="updateCartQty(${idx}, -1)">-</button>
+            <button type="button" class="qty-btn" data-action="qty-change" data-index="${idx}" data-delta="-1">-</button>
             <span class="qty-val">${item.quantity}</span>
-            <button type="button" class="qty-btn" onclick="updateCartQty(${idx}, 1)">+</button>
+            <button type="button" class="qty-btn" data-action="qty-change" data-index="${idx}" data-delta="1">+</button>
           </div>
 
           <span class="cart-item-price">${(item.product.price * item.quantity).toLocaleString("vi-VN")}đ</span>
 
-          <button type="button" class="trash-btn" onclick="removeCartItem(${idx})" title="Xóa khỏi giỏ">
-            <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+          <button type="button" class="trash-btn" data-action="remove-item" data-index="${idx}" title="Xóa khỏi giỏ">
+            <i data-lucide="trash-2" style="width: 18px; height: 18px; pointer-events: none;"></i>
           </button>
         </div>
       </div>
@@ -157,116 +211,113 @@ document.addEventListener("DOMContentLoaded", () => {
     calculateCartTotals();
   }
 
-  // Tăng/Giảm số lượng sản phẩm
-  window.updateCartQty = function(index, delta) {
-    const newQty = cartItems[index].quantity + delta;
-    if (newQty <= 0) {
-      cartItems.splice(index, 1);
-    } else {
-      cartItems[index].quantity = newQty;
-    }
-    localStorage.setItem("nike_cart_items", JSON.stringify(cartItems));
-    renderCartScreen();
-  };
+  // Thay thế các hàm window.* bằng việc ủy quyền xử lý sự kiện trực tiếp tại thẻ Container cha
+  if (cartItemsListContainer) {
+    cartItemsListContainer.addEventListener("click", (e) => {
+      const target = e.target;
+      const action = target.getAttribute("data-action");
+      const index = parseInt(target.getAttribute("data-index"), 10);
 
-  // Xoá sản phẩm khỏi giỏ hàng
-  window.removeCartItem = function(index) {
-    cartItems.splice(index, 1);
-    localStorage.setItem("nike_cart_items", JSON.stringify(cartItems));
-    renderCartScreen();
-  };
+      if (!action) return;
 
-  // Tính toán bảng hoá đơn chi tiết
+      if (action === "qty-change") {
+        const delta = parseInt(target.getAttribute("data-delta"), 10);
+        const newQty = cartItems[index].quantity + delta;
+        if (newQty <= 0) {
+          cartItems.splice(index, 1);
+        } else {
+          cartItems[index].quantity = newQty;
+        }
+      } else if (action === "remove-item") {
+        cartItems.splice(index, 1);
+      }
+
+      localStorage.setItem("nike_cart_items", JSON.stringify(cartItems));
+      renderCartScreen();
+    });
+  }
+
   function calculateCartTotals() {
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const subtotal = cartItems.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
-    
-    // Vận chuyển: express 150k, standard 0đ
     const shippingFee = subtotal > 0 ? (selectedDeliveryMethod === "standard" ? 0 : 150000) : 0;
-    
-    // Tự động chiết khấu 150.000đ khi mua giày Mercurial
-    const hasMercurial = cartItems.some(item => item.product.id.includes("mercurial"));
+
+    const hasMercurial = cartItems.some(item => item.product.id && item.product.id.includes("mercurial"));
     const discount = hasMercurial ? 150000 : 0;
-    
+
     const finalTotal = Math.max(0, subtotal + shippingFee - discount);
     const rewardPoints = subtotal > 0 ? Math.round(subtotal / 10000) : 0;
 
-    // Hiển thị ra các thẻ
-    summaryItemsCount.textContent = `Tạm tính (${totalItems} sản phẩm)`;
-    summarySubtotal.textContent = `${subtotal.toLocaleString("vi-VN")}đ`;
-    summaryShipping.textContent = shippingFee > 0 ? `${shippingFee.toLocaleString("vi-VN")}đ` : "Miễn phí";
-    
-    if (discount > 0) {
-      summaryDiscountRow.classList.remove("hidden");
-      summaryDiscount.textContent = `-${discount.toLocaleString("vi-VN")}đ`;
-    } else {
-      summaryDiscountRow.classList.add("hidden");
+    if (summaryItemsCount) summaryItemsCount.textContent = `Tạm tính (${totalItems} sản phẩm)`;
+    if (summarySubtotal) summarySubtotal.textContent = `${subtotal.toLocaleString("vi-VN")}đ`;
+    if (summaryShipping) summaryShipping.textContent = shippingFee > 0 ? `${shippingFee.toLocaleString("vi-VN")}đ` : "Miễn phí";
+
+    if (summaryDiscountRow) {
+      if (discount > 0) {
+        summaryDiscountRow.classList.remove("hidden");
+        if (summaryDiscount) summaryDiscount.textContent = `-${discount.toLocaleString("vi-VN")}đ`;
+      } else {
+        summaryDiscountRow.classList.add("hidden");
+      }
     }
 
-    summaryTotalPrice.textContent = `${finalTotal.toLocaleString("vi-VN")}đ`;
-    summaryRewardPoints.textContent = `${rewardPoints.toLocaleString("vi-VN")} điểm`;
+    if (summaryTotalPrice) summaryTotalPrice.textContent = `${finalTotal.toLocaleString("vi-VN")}đ`;
+    if (summaryRewardPoints) summaryRewardPoints.textContent = `${rewardPoints.toLocaleString("vi-VN")} điểm`;
   }
 
-  // Tương tác phương thức Standard Shipping
   if (deliveryMethodStandard) {
     deliveryMethodStandard.addEventListener("click", () => {
       selectedDeliveryMethod = "standard";
       deliveryMethodStandard.classList.add("selected");
-      deliveryMethodExpress.classList.remove("selected");
+      if (deliveryMethodExpress) deliveryMethodExpress.classList.remove("selected");
       calculateCartTotals();
     });
   }
 
-  // Tương tác phương thức Express Shipping
   if (deliveryMethodExpress) {
     deliveryMethodExpress.addEventListener("click", () => {
       selectedDeliveryMethod = "express";
       deliveryMethodExpress.classList.add("selected");
-      deliveryMethodStandard.classList.remove("selected");
+      if (deliveryMethodStandard) deliveryMethodStandard.classList.remove("selected");
       calculateCartTotals();
     });
   }
 
-  // Khởi động render màn hình giỏ hàng
   renderCartScreen();
 
   // ==============================================
   // 5. VALIDATE FORM & QUY TRÌNH CHECKOUT
   // ==============================================
   if (payNowBtn) {
-    payNowBtn.addEventListener("click", (e) => {
+    payNowBtn.addEventListener("click", async (e) => {
       e.preventDefault();
-      
       let hasError = false;
-      
-      // Kiểm tra tên người nhận
+
       if (!inputFullname.value.trim()) {
         inputFullname.classList.add("error");
-        errFullname.classList.remove("hidden");
+        if (errFullname) errFullname.classList.remove("hidden");
         hasError = true;
       } else {
         inputFullname.classList.remove("error");
-        errFullname.classList.add("hidden");
+        if (errFullname) errFullname.classList.add("hidden");
       }
 
-      // Kiểm tra số điện thoại
       if (!inputPhone.value.trim()) {
         inputPhone.classList.add("error");
-        errPhone.classList.remove("hidden");
+        if (errPhone) errPhone.classList.remove("hidden");
         hasError = true;
       } else {
         inputPhone.classList.remove("error");
-        errPhone.classList.add("hidden");
+        if (errPhone) errPhone.classList.add("hidden");
       }
 
-      // Kiểm tra địa chỉ
       if (!inputAddress.value.trim()) {
         inputAddress.classList.add("error");
-        errAddress.classList.remove("hidden");
+        if (errAddress) errAddress.classList.remove("hidden");
         hasError = true;
       } else {
         inputAddress.classList.remove("error");
-        errAddress.classList.add("hidden");
+        if (errAddress) errAddress.classList.add("hidden");
       }
 
       if (hasError) return;
@@ -276,20 +327,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Tạo thông số đơn đặt hàng thành công
       const dateObj = new Date();
-      const monthsVi = [
-        "tháng 1", "tháng 2", "tháng 3", "tháng 4", "tháng 5", "tháng 6",
-        "tháng 7", "tháng 8", "tháng 9", "tháng 10", "tháng 11", "tháng 12"
-      ];
+      const monthsVi = ["tháng 1", "tháng 2", "tháng 3", "tháng 4", "tháng 5", "tháng 6", "tháng 7", "tháng 8", "tháng 9", "tháng 10", "tháng 11", "tháng 12"];
       const dateFormatted = `${dateObj.getDate()} ${monthsVi[dateObj.getMonth()]}, ${dateObj.getFullYear()}`;
-      
+
       const subtotal = cartItems.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
       const shippingFee = selectedDeliveryMethod === "standard" ? 0 : 150000;
-      const hasMercurial = cartItems.some(item => item.product.id.includes("mercurial"));
+      const hasMercurial = cartItems.some(item => item.product.id && item.product.id.includes("mercurial"));
       const discount = hasMercurial ? 150000 : 0;
       const finalTotal = Math.max(0, subtotal + shippingFee - discount);
-      
+
       activeOrder = {
         id: `#NKE-${Math.floor(100000 + Math.random() * 900000)}`,
         date: dateFormatted,
@@ -306,21 +353,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       };
 
-      // Cập nhật thông tin giao hàng mới vào database và local storage của tài khoản đã đăng nhập
       const userStr = localStorage.getItem("nike_current_user");
+      let userId = null;
       if (userStr) {
         const user = JSON.parse(userStr);
+        userId = user.id;
         const newName = inputFullname.value.trim();
         const newPhone = inputPhone.value.trim();
         const newAddress = inputAddress.value.trim();
 
-        // 1. Cập nhật LocalStorage
         user.name = newName;
         user.phone = newPhone;
         user.address = newAddress;
         localStorage.setItem("nike_current_user", JSON.stringify(user));
 
-        // 2. Cập nhật Database MySQL thông qua API update_profile.php
         fetch("update_profile.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -330,38 +376,59 @@ document.addEventListener("DOMContentLoaded", () => {
             phone: newPhone,
             address: newAddress
           })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            console.log("Đã tự động cập nhật thông tin giao hàng của tài khoản vào cơ sở dữ liệu!");
-          } else {
-            console.warn("Lưu thông tin giao hàng vào CSDL thất bại: ", data.message);
-          }
-        })
-        .catch(err => {
-          console.error("Lỗi kết nối API cập nhật thông tin giao hàng: ", err);
-        });
+        }).catch(err => console.error("Lỗi kết nối API update_profile: ", err));
       }
 
-      // Xoá sạch LocalStorage và biến giỏ hàng sau khi mua thành công
+      // GỌI API ĐỂ LƯU ĐƠN HÀNG VÀO DATABASE MySQL
+      const orderPayload = {
+        user_id: userId,
+        fullname: activeOrder.shippingInfo.fullName,
+        phone: activeOrder.shippingInfo.phone,
+        address: activeOrder.shippingInfo.address,
+        subtotal: activeOrder.subtotal,
+        shipping_fee: activeOrder.shippingFee,
+        discount_amount: activeOrder.discount,
+        total_amount: activeOrder.total,
+        items: cartItems.map(item => ({
+          product_name: item.product.name,
+          variant_info: `Size: ${item.selectedSize}`,
+          price: item.product.price,
+          quantity: item.quantity
+        }))
+      };
+
+      try {
+        const response = await fetch("api/create_order.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderPayload)
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          activeOrder.id = data.order_code; // Gán mã đơn thật từ DB trả về
+        } else {
+          console.warn("Lưu đơn hàng vào DB thất bại: ", data.message);
+        }
+      } catch (err) {
+        console.error("Lỗi gọi API create_order:", err);
+      }
+
       cartItems = [];
       localStorage.removeItem("nike_cart_items");
-      
+
       inputFullname.value = "";
       inputPhone.value = "";
       inputAddress.value = "";
-      
-      // Chuyển màn hình từ Giỏ hàng sang Hoá đơn xác nhận
-      screenCart.classList.remove("active");
-      screenConfirmation.classList.add("active");
-      
+
+      if (screenCart) screenCart.classList.remove("active");
+      if (screenConfirmation) screenConfirmation.classList.add("active");
+
       window.scrollTo({ top: 0, behavior: "smooth" });
       renderConfirmationScreen();
     });
   }
 
-  // Tự động ẩn thông báo lỗi khi khách gõ phím
   [inputFullname, inputPhone, inputAddress].forEach(input => {
     if (input) {
       input.addEventListener("input", () => {
@@ -377,8 +444,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==============================================
   function renderConfirmationScreen() {
     if (!activeOrder) return;
-    
-    updateCartHeaderBadge(); // Đưa giỏ hàng header về 0
+    updateCartHeaderBadge();
 
     const subtotal = activeOrder.subtotal;
     const shippingFee = activeOrder.shippingFee;
@@ -386,53 +452,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const finalTotal = activeOrder.total;
     const rewardPoints = Math.round(subtotal / 10000);
 
-    // Điền mã & ngày
-    confirmOrderId.textContent = activeOrder.id;
-    confirmOrderDate.textContent = `Ngày đặt hàng: ${activeOrder.date}`;
-    confirmRewardPoints.textContent = `${rewardPoints.toLocaleString("vi-VN")} điểm Rewards`;
-    
-    confirmSubtotal.textContent = `${subtotal.toLocaleString("vi-VN")}đ`;
-    confirmShipping.textContent = shippingFee > 0 ? `${shippingFee.toLocaleString("vi-VN")}đ` : "Miễn phí";
-    
-    if (discount > 0) {
-      confirmDiscountRow.classList.remove("hidden");
-      confirmDiscount.textContent = `-${discount.toLocaleString("vi-VN")}đ`;
-    } else {
-      confirmDiscountRow.classList.add("hidden");
+    if (confirmOrderId) confirmOrderId.textContent = activeOrder.id;
+    if (confirmOrderDate) confirmOrderDate.textContent = `Ngày đặt hàng: ${activeOrder.date}`;
+    if (confirmRewardPoints) confirmRewardPoints.textContent = `${rewardPoints.toLocaleString("vi-VN")} điểm Rewards`;
+    if (confirmSubtotal) confirmSubtotal.textContent = `${subtotal.toLocaleString("vi-VN")}đ`;
+    if (confirmShipping) confirmShipping.textContent = shippingFee > 0 ? `${shippingFee.toLocaleString("vi-VN")}đ` : "Miễn phí";
+
+    if (confirmDiscountRow) {
+      if (discount > 0) {
+        confirmDiscountRow.classList.remove("hidden");
+        if (confirmDiscount) confirmDiscount.textContent = `-${discount.toLocaleString("vi-VN")}đ`;
+      } else {
+        confirmDiscountRow.classList.add("hidden");
+      }
     }
 
-    confirmTotalPrice.textContent = `${finalTotal.toLocaleString("vi-VN")}đ`;
+    if (confirmTotalPrice) confirmTotalPrice.textContent = `${finalTotal.toLocaleString("vi-VN")}đ`;
 
-    // Render danh sách sản phẩm đặt
-    confirmItemsContainer.innerHTML = activeOrder.items.map(item => `
-      <div class="confirm-item-card">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-          <div class="cart-item-thumb" style="width: 56px; height: 56px;">
-            <img src="${item.product.image}" alt="${item.product.name}" referrerPolicy="no-referrer">
+    if (confirmItemsContainer) {
+      confirmItemsContainer.innerHTML = activeOrder.items.map(item => `
+        <div class="confirm-item-card">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="cart-item-thumb" style="width: 56px; height: 56px;">
+              <img src="${item.product.image}" alt="${item.product.name}" referrerPolicy="no-referrer">
+            </div>
+            <div>
+              <span style="font-size: 8px; font-weight: 750; color: var(--color-elite-primary); text-transform: uppercase; letter-spacing: 0.08em;">${item.product.tag || 'ELITE SQUAD'}</span>
+              <h4 class="cart-item-title" style="font-size: 13px;">${item.product.name}</h4>
+              <span class="cart-item-size" style="font-size: 11px;">Size: ${item.selectedSize} | SL: ${item.quantity}</span>
+            </div>
           </div>
-          <div>
-            <span style="font-size: 8px; font-weight: 750; color: var(--color-elite-primary); text-transform: uppercase; letter-spacing: 0.08em;">${item.product.tag || 'ELITE SQUAD'}</span>
-            <h4 class="cart-item-title" style="font-size: 13px;">${item.product.name}</h4>
-            <span class="cart-item-size" style="font-size: 11px;">Size: ${item.selectedSize} | SL: ${item.quantity}</span>
-          </div>
+          <span class="cart-item-price" style="font-size: 13px;">${(item.product.price * item.quantity).toLocaleString("vi-VN")}đ</span>
         </div>
-        <span class="cart-item-price" style="font-size: 13px;">${(item.product.price * item.quantity).toLocaleString("vi-VN")}đ</span>
-      </div>
-    `).join("");
+      `).join("");
+    }
   }
 
-  // Tương tác nút "Tiếp tục mua sắm" đưa người dùng về showroom
   if (confirmContinueShoppingBtn) {
     confirmContinueShoppingBtn.addEventListener("click", () => {
-      window.location.href = "product-detail.html";
+      window.location.href = "index.html";
     });
   }
 
-  // Tương tác nút "Theo dõi đơn hàng" đưa sang màn hình Tracking
   if (confirmTrackOrderBtn) {
     confirmTrackOrderBtn.addEventListener("click", () => {
-      screenConfirmation.classList.remove("active");
-      screenTracker.classList.add("active");
+      if (screenConfirmation) screenConfirmation.classList.remove("active");
+      if (screenTracker) screenTracker.classList.add("active");
       window.scrollTo({ top: 0, behavior: "smooth" });
       renderTrackerScreen();
     });
@@ -444,60 +509,29 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderTrackerScreen() {
     if (!activeOrder) return;
 
-    // Điền thông tin giao nhận
-    trackerOrderId.textContent = activeOrder.id;
-    trackerArrivalDate.textContent = "Thứ Hai, " + activeOrder.date;
-    trackerShippingName.textContent = activeOrder.shippingInfo.fullName;
-    trackerShippingAddress.textContent = activeOrder.shippingInfo.address;
+    if (trackerOrderId) trackerOrderId.textContent = activeOrder.id;
+    if (trackerArrivalDate) trackerArrivalDate.textContent = "Thứ Hai, " + activeOrder.date;
+    if (trackerShippingName) trackerShippingName.textContent = activeOrder.shippingInfo.fullName;
+    if (trackerShippingAddress) trackerShippingAddress.textContent = activeOrder.shippingInfo.address;
 
-    // Database các mốc mô phỏng
     const timelineSteps = [
-      {
-        title: "Order Confirmed",
-        description: "Đơn hàng đã được xác nhận thành công và chuyển qua khâu chuẩn bị đóng gói kỹ thuật.",
-        time: "09:45 AM"
-      },
-      {
-        title: "Processing",
-        description: "Đã vượt qua quy trình kiểm tra kiểm soát chất lượng & hiệu suất Elite cam kết.",
-        time: "02:30 PM"
-      },
-      {
-        title: "Shipped",
-        description: "Gói hàng đang được vận chuyển trên đường. Đối tác logistics: Elite Express Global.",
-        time: "08:15 AM",
-        trackingId: "EE-90210-XC",
-        location: "Trung tâm phân phối chính"
-      },
-      {
-        title: "Out for Delivery",
-        description: "Đoạn đường cuối. Nhân viên đang giao hàng tới địa chỉ nhận tin của bạn.",
-        time: "Dự kiến trong ngày"
-      }
+      { title: "Order Confirmed", description: "Đơn hàng đã được xác nhận thành công.", time: "09:45 AM" },
+      { title: "Processing", description: "Đã vượt qua quy trình kiểm tra kiểm soát chất lượng.", time: "02:30 PM" },
+      { title: "Shipped", description: "Gói hàng đang được vận chuyển. Đối tác: Elite Express Global.", time: "08:15 AM", trackingId: "EE-90210-XC", location: "Trung tâm phân phối chính" },
+      { title: "Out for Delivery", description: "Nhân viên đang giao hàng tới địa chỉ của bạn.", time: "Dự kiến trong ngày" }
     ];
 
-    // Vẽ biểu đồ tiến trình dạng dọc
-    trackerTimelineSteps.innerHTML = timelineSteps.map((step, idx) => {
-      const isPast = idx < trackerActiveStep;
-      const isCurrent = idx === trackerActiveStep;
-      const isFuture = idx > trackerActiveStep;
+    if (trackerTimelineSteps) {
+      trackerTimelineSteps.innerHTML = timelineSteps.map((step, idx) => {
+        const isPast = idx < trackerActiveStep;
+        const isCurrent = idx === trackerActiveStep;
+        const isFuture = idx > trackerActiveStep;
 
-      let indicatorHTML = "";
-      if (isCurrent) {
-        indicatorHTML = `<span class="indicator-dot-active"></span>`;
-      } else if (isPast) {
-        indicatorHTML = `
-          <span class="indicator-dot-past">
-            <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
-          </span>
-        `;
-      } else {
-        indicatorHTML = `<span class="indicator-dot-empty"></span>`;
-      }
+        let indicatorHTML = isCurrent
+          ? `<span class="indicator-dot-active"></span>`
+          : (isPast ? `<span class="indicator-dot-past"><i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i></span>` : `<span class="indicator-dot-empty"></span>`);
 
-      let contentHTML = "";
-      if (isCurrent) {
-        contentHTML = `
+        let contentHTML = isCurrent ? `
           <div class="timeline-card-active">
             <div class="timeline-card-header">
               <div>
@@ -506,7 +540,6 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
               <span class="timeline-active-tag">CURRENT STATUS</span>
             </div>
-            
             <div class="timeline-card-meta">
               <div class="timeline-meta-col">
                 <span class="timeline-meta-label">TRACKING ID</span>
@@ -517,59 +550,60 @@ document.addEventListener("DOMContentLoaded", () => {
                 <span class="timeline-meta-val">${step.location || 'Hải Phòng HUB'}</span>
               </div>
             </div>
-
             <p class="timeline-time" style="color: var(--color-elite-primary); font-weight: 700;">${step.time}</p>
           </div>
-        `;
-      } else {
-        contentHTML = `
+        ` : `
           <div class="${isPast ? 'timeline-content-past' : 'timeline-content-future'}">
             <h3>${step.title}</h3>
             <p class="timeline-desc">${step.description}</p>
             <p class="timeline-time">${step.time}</p>
           </div>
         `;
-      }
 
-      let opacityStyle = "";
-      if (isFuture) opacityStyle = "opacity: 0.55;";
-      else if (isPast) opacityStyle = "opacity: 0.85;";
+        let opacityStyle = isFuture ? "opacity: 0.55;" : (isPast ? "opacity: 0.85;" : "");
 
-      return `
-        <div class="timeline-step" onclick="changeTrackerStep(${idx})" style="${opacityStyle}">
-          <div class="timeline-indicator">${indicatorHTML}</div>
-          ${contentHTML}
-        </div>
-      `;
-    }).join("");
+        // Thay đổi: Thêm data-index để hứng sự kiện thay đổi mốc tiến trình bằng Event Delegation
+        return `
+          <div class="timeline-step" data-action="change-step" data-index="${idx}" style="${opacityStyle}">
+            <div class="timeline-indicator">${indicatorHTML}</div>
+            ${contentHTML}
+          </div>
+        `;
+      }).join("");
+    }
 
     if (window.lucide) lucide.createIcons();
 
-    // Render danh sách manifest sản phẩm trong thùng hàng vận tải
-    trackerManifestContainer.innerHTML = activeOrder.items.map(item => `
-      <div class="manifest-card">
-        <div class="manifest-thumb">
-          <img src="${item.product.image}" alt="${item.product.name}" referrerPolicy="no-referrer">
+    if (trackerManifestContainer) {
+      trackerManifestContainer.innerHTML = activeOrder.items.map(item => `
+        <div class="manifest-card">
+          <div class="manifest-thumb">
+            <img src="${item.product.image}" alt="${item.product.name}" referrerPolicy="no-referrer">
+          </div>
+          <div class="manifest-info">
+            <h4 class="manifest-title">${item.product.name}</h4>
+            <span class="manifest-desc">Size: ${item.selectedSize} · SL: ${item.quantity}</span>
+            <span class="manifest-price">${item.product.price.toLocaleString("vi-VN")} đ</span>
+          </div>
         </div>
-        <div class="manifest-info">
-          <h4 class="manifest-title">${item.product.name}</h4>
-          <span class="manifest-desc">Size: ${item.selectedSize} · SL: ${item.quantity}</span>
-          <span class="manifest-price">${item.product.price.toLocaleString("vi-VN")} đ</span>
-        </div>
-      </div>
-    `).join("");
+      `).join("");
+    }
   }
 
-  // Thay đổi mốc tiến trình giả lập
-  window.changeTrackerStep = function(stepIdx) {
-    trackerActiveStep = stepIdx;
-    renderTrackerScreen();
-  };
+  if (trackerTimelineSteps) {
+    trackerTimelineSteps.addEventListener("click", (e) => {
+      const stepElement = e.target.closest('[data-action="change-step"]');
+      if (stepElement) {
+        const stepIdx = parseInt(stepElement.getAttribute("data-index"), 10);
+        trackerActiveStep = stepIdx;
+        renderTrackerScreen();
+      }
+    });
+  }
 
-  // Nhấn tải hóa đơn giả lập
   if (trackerDownloadInvoiceBtn) {
     trackerDownloadInvoiceBtn.addEventListener("click", () => {
       alert("Tính năng tải hoá đơn PDF đang giả lập thành công! Tệp NKE-INVOICE.pdf đã được ghi nhớ.");
     });
   }
-});
+})();

@@ -1,30 +1,96 @@
 /**
  * NIKE ELITE - Product Detail Script
- * Hỗ trợ các tương tác showroom ảnh, chọn size, accordion và lưu giỏ hàng vào LocalStorage
  */
+(() => {
+  // ==============================================
+  // HIỂN THỊ TRẠNG THÁI ĐĂNG NHẬP (HEADER)
+  // ==============================================
+  const currentUserStr = localStorage.getItem("nike_current_user");
+  const authStatusLight = document.getElementById("auth-status-light");
+  const authStatusDark = document.getElementById("auth-status-dark");
 
-document.addEventListener("DOMContentLoaded", () => {
+  if (currentUserStr) {
+    const user = JSON.parse(currentUserStr);
+
+    const renderLoggedInBtn = (container) => {
+      if (!container) return;
+      container.innerHTML = `
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="${user.role === 'admin' ? 'admin.html' : 'profile.html'}" class="admin-btn" style="text-decoration:none; background:transparent; border:none; padding:0;">
+            <i data-lucide="user-check"></i>
+            <span>${user.name}</span>
+          </a>
+          <button id="logout-btn-${container.id}" class="icon-btn" title="Đăng xuất" style="background:transparent; border:none; cursor:pointer;">
+            <i data-lucide="log-out"></i>
+          </button>
+        </div>
+      `;
+
+      const logoutBtn = document.getElementById(`logout-btn-${container.id}`);
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          localStorage.removeItem("nike_current_user");
+          window.location.reload();
+        });
+      }
+    };
+
+    renderLoggedInBtn(authStatusLight);
+    renderLoggedInBtn(authStatusDark);
+
+    if (typeof lucide !== "undefined") {
+      lucide.createIcons();
+    }
+  }
+
   // ==============================================
-  // 1. ĐỊNH NGHĨA DỮ LIỆU SẢN PHẨM (NIKE ELITE)
+  // HÀM HIỂN THỊ WISHLIST OVERLAY (GLOBAL)
   // ==============================================
-  const PRODUCT = {
-    id: "nike-mercurial-vapor-16-elite",
-    name: "NIKE MERCURIAL VAPOR 16 ELITE",
-    category: "FOOTBALL / ELITE SERIES",
-    tag: "ELITE PERFORMANCE",
-    price: 6499000,
-    image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=1200",
-    specifications: [
-      { label: "Chất liệu thân giày", value: "Flyknit phủ lớp NIKESKIN cao cấp siêu mỏng" },
-      { label: "Công nghệ đế", value: "Đế đúc đa hướng chuyên dụng, đinh dẹt bám sân cực tốt" },
-      { label: "Trọng lượng", value: "185g (size 42 cực nhẹ)" },
-      { label: "Mục đích sử dụng", value: "Sân cỏ tự nhiên (FG) tối ưu tăng tốc lý tưởng" }
-    ]
+  window.renderWishlistOverlay = function() {
+    const container = document.getElementById("wishlist-items-container");
+    if (!container) return;
+    const items = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
+    
+    if (items.length === 0) {
+      container.innerHTML = '<p style="color: #6b7280; text-align: center;">Danh sách yêu thích đang trống.</p>';
+      return;
+    }
+
+    container.innerHTML = items.map(item => `
+      <div style="display: flex; gap: 1rem; align-items: center; border-bottom: 1px solid #f3f4f6; padding-bottom: 1rem;">
+        <img src="${item.image || item.img}" alt="${item.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+        <div style="flex: 1;">
+          <h4 style="font-size: 0.875rem; font-weight: 600; margin: 0 0 0.25rem 0;">${item.name}</h4>
+          <p style="font-size: 0.875rem; color: #6b7280; margin: 0 0 0.5rem 0;">${new Intl.NumberFormat('vi-VN').format(item.price)} ₫</p>
+          <a href="product-detail.html?id=${item.id}" style="font-size: 0.75rem; color: #047857; text-decoration: none; font-weight: 500;">Xem chi tiết</a>
+        </div>
+        <button onclick="window.removeFromWishlist('${item.id}')" style="background: transparent; border: none; color: #ef4444; cursor: pointer; padding: 0.5rem;"><i data-lucide="trash-2"></i></button>
+      </div>
+    `).join("");
+    
+    if (typeof lucide !== "undefined") lucide.createIcons();
   };
+
+  window.removeFromWishlist = function(id) {
+    let items = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
+    items = items.filter(item => item.id !== id);
+    localStorage.setItem("nike_wishlist_items", JSON.stringify(items));
+    window.renderWishlistOverlay();
+    
+    if (typeof PRODUCT !== 'undefined' && PRODUCT.id === id) {
+       const heartBtns = document.querySelectorAll(".product-info-actions .icon-btn");
+       heartBtns.forEach(btn => btn.classList.remove("active"));
+       activeWishlisted = false;
+    }
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramId = urlParams.get('id');
 
   // Các biến trạng thái của trang chi tiết
   let currentSelectedSize = "US 8";
   let activeWishlisted = false;
+  let PRODUCT = null;
 
   // ==============================================
   // 2. KHAI BÁO CÁC DOM ELEMENT
@@ -36,190 +102,266 @@ document.addEventListener("DOMContentLoaded", () => {
   const prodWishlistBtn = document.getElementById("prod-wishlist-btn");
   const prodSpecsBody = document.getElementById("prod-specs-body");
   const toastContainer = document.getElementById("toast-container");
+  const prodTagBadge = document.getElementById("prod-tag-badge");
+  const prodCategoryText = document.getElementById("prod-category-text");
+  const prodNameText = document.getElementById("prod-name-text");
+  const prodPriceText = document.getElementById("prod-price-text");
+  const prodDescBody = document.getElementById("prod-desc-body");
 
   // ==============================================
   // 3. HIỂN THỊ DỮ LIỆU ĐỘNG & ĐỒNG BỘ HEADER
   // ==============================================
-  
-  // Render thông số kỹ thuật (Accordion 3)
-  if (prodSpecsBody) {
-    prodSpecsBody.innerHTML = PRODUCT.specifications.map(spec => `
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid #f5f5f4; padding-bottom: 0.5rem;">
-        <span style="font-weight: 700; color: var(--color-elite-muted); font-size: 11px; text-transform: uppercase;">${spec.label}</span>
-        <span style="grid-column: span 2; font-size: 12.5px; color: var(--color-elite-charcoal);">${spec.value}</span>
-      </div>
-    `).join("");
-  }
-
-  // Đồng bộ số lượng hiển thị trên Badge của Giỏ hàng (Header)
-  function updateCartHeaderBadge() {
-    const cartItems = JSON.parse(localStorage.getItem("nike_cart_items")) || [];
-    const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-    const headerCartCount = document.getElementById("header-cart-count");
-    
-    if (headerCartCount) {
-      headerCartCount.textContent = totalCount;
-      if (totalCount > 0) {
-        headerCartCount.classList.remove("hidden");
-      } else {
-        headerCartCount.classList.add("hidden");
+  async function initProductDetail() {
+    try {
+      const res = await fetch(`api/get_product.php?id=${paramId || 'nike-air-max-tw'}`);
+      const data = await res.json();
+      
+      if (!data.success) {
+        document.body.innerHTML = "<h2 style='text-align:center; margin-top:20vh;'>Sản phẩm không tồn tại!</h2>";
+        return;
       }
+      PRODUCT = data.product;
+
+      // Map lại cấu trúc DB về cho logic cũ nếu cần
+      if(!PRODUCT.desc) PRODUCT.desc = PRODUCT.description;
+
+      if (prodMainImg) prodMainImg.src = PRODUCT.image_url || PRODUCT.image;
+      if (prodTagBadge) prodTagBadge.textContent = PRODUCT.tag || "MỚI";
+      if (prodCategoryText) prodCategoryText.textContent = PRODUCT.category;
+      if (prodNameText) prodNameText.textContent = PRODUCT.name;
+      if (prodPriceText) prodPriceText.textContent = Number(PRODUCT.price).toLocaleString("vi-VN") + " đ";
+      if (prodDescBody) prodDescBody.textContent = PRODUCT.desc;
+
+      if (prodSpecsBody && PRODUCT.specifications) {
+        // Đảm bảo parse JSON nếu nó là chuỗi từ DB
+        let specs = typeof PRODUCT.specifications === 'string' ? JSON.parse(PRODUCT.specifications) : PRODUCT.specifications;
+        if(Array.isArray(specs)) {
+          prodSpecsBody.innerHTML = specs.map(spec => `
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid #f5f5f4; padding-bottom: 0.5rem;">
+              <span style="font-weight: 700; color: var(--color-elite-muted); font-size: 11px; text-transform: uppercase;">${spec.label}</span>
+              <span style="grid-column: span 2; font-size: 12.5px; color: var(--color-elite-charcoal);">${spec.value}</span>
+            </div>
+          `).join("");
+        }
+      }
+
+      // Xử lý Wishlist khi PRODUCT đã load
+      if (prodWishlistBtn) {
+        let wishlistItems = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
+        activeWishlisted = wishlistItems.some(item => item.id === PRODUCT.slug || item.id === PRODUCT.id);
+        if (activeWishlisted) {
+          prodWishlistBtn.classList.add("active");
+        }
+      }
+      
+      // Xử lý Sizes nếu có
+      if (productSizeGrid && PRODUCT.sizes) {
+         let sizes = typeof PRODUCT.sizes === 'string' ? JSON.parse(PRODUCT.sizes) : PRODUCT.sizes;
+         if(Array.isArray(sizes) && sizes.length > 0) {
+            currentSelectedSize = sizes[0];
+            productSizeGrid.innerHTML = sizes.map((s, idx) => `
+              <button class="size-btn ${idx === 0 ? 'selected' : ''}">${s}</button>
+            `).join("");
+         }
+      }
+
+    } catch (err) {
+      console.error("Lỗi khi tải thông tin sản phẩm", err);
     }
   }
-  
-  // Gọi hàm đồng bộ giỏ hàng ngay khi tải trang
-  updateCartHeaderBadge();
 
-  // ==============================================
-  // 4. XỬ LÝ SỰ KIỆN TƯƠNG TÁC GIAO DIỆN (UI)
-  // ==============================================
+  initProductDetail();
 
-  // Tương tác đổi ảnh chính khi Click hoặc Hover ảnh thu nhỏ (Thumbnails)
-  if (productThumbGrid) {
-    productThumbGrid.addEventListener("click", (e) => {
-      const thumbCard = e.target.closest(".thumb-card");
-      if (!thumbCard) return;
+// Đồng bộ số lượng hiển thị trên Badge của Giỏ hàng (Header)
+function updateCartHeaderBadge() {
+  const cartItems = JSON.parse(localStorage.getItem("nike_cart_items")) || [];
+  const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const headerCartCount = document.getElementById("header-cart-count");
 
-      productThumbGrid.querySelectorAll(".thumb-card").forEach(c => c.classList.remove("active"));
-      thumbCard.classList.add("active");
+  if (headerCartCount) {
+    headerCartCount.textContent = totalCount;
+    if (totalCount > 0) {
+      headerCartCount.classList.remove("hidden");
+    } else {
+      headerCartCount.classList.add("hidden");
+    }
+  }
+}
 
-      const targetUrl = thumbCard.getAttribute("data-url");
+updateCartHeaderBadge();
+
+// ==============================================
+// 4. XỬ LÝ SỰ KIỆN TƯƠNG TÁC GIAO DIỆN (UI)
+// ==============================================
+
+// Tương tác đổi ảnh chính khi Click hoặc Hover ảnh thu nhỏ (Thumbnails)
+if (productThumbGrid) {
+  productThumbGrid.addEventListener("click", (e) => {
+    const thumbCard = e.target.closest(".thumb-card");
+    if (!thumbCard) return;
+
+    productThumbGrid.querySelectorAll(".thumb-card").forEach(c => c.classList.remove("active"));
+    thumbCard.classList.add("active");
+
+    const targetUrl = thumbCard.getAttribute("data-url");
+    prodMainImg.setAttribute("src", targetUrl);
+  });
+
+  productThumbGrid.querySelectorAll(".thumb-card").forEach(card => {
+    card.addEventListener("mouseenter", () => {
+      const targetUrl = card.getAttribute("data-url");
       prodMainImg.setAttribute("src", targetUrl);
     });
-
-    productThumbGrid.querySelectorAll(".thumb-card").forEach(card => {
-      card.addEventListener("mouseenter", () => {
-        const targetUrl = card.getAttribute("data-url");
-        prodMainImg.setAttribute("src", targetUrl);
-      });
-      card.addEventListener("mouseleave", () => {
-        const activeCard = productThumbGrid.querySelector(".thumb-card.active");
-        if (activeCard) {
-          prodMainImg.setAttribute("src", activeCard.getAttribute("data-url"));
-        } else {
-          prodMainImg.setAttribute("src", PRODUCT.image);
-        }
-      });
-    });
-  }
-
-  // Chọn kích thước sản phẩm (Size US)
-  if (productSizeGrid) {
-    productSizeGrid.addEventListener("click", (e) => {
-      const sizeBtn = e.target.closest(".size-btn");
-      if (!sizeBtn) return;
-      
-      productSizeGrid.querySelectorAll(".size-btn").forEach(btn => btn.classList.remove("selected"));
-      sizeBtn.classList.add("selected");
-      currentSelectedSize = sizeBtn.textContent.trim();
-    });
-  }
-
-  // Co giãn các mục chi tiết (Accordions: Giới thiệu, Giao hàng, Thông số)
-  const accordionItems = document.querySelectorAll(".accordion-item");
-  accordionItems.forEach(item => {
-    const trigger = item.querySelector(".accordion-trigger");
-    trigger.addEventListener("click", () => {
-      const isOpen = item.classList.contains("open");
-      accordionItems.forEach(i => i.classList.remove("open"));
-      if (!isOpen) {
-        item.classList.add("open");
+    card.addEventListener("mouseleave", () => {
+      const activeCard = productThumbGrid.querySelector(".thumb-card.active");
+      if (activeCard) {
+        prodMainImg.setAttribute("src", activeCard.getAttribute("data-url"));
+      } else {
+        prodMainImg.setAttribute("src", PRODUCT.image);
       }
     });
   });
+}
 
-  // Nút Yêu thích (Wishlist) trái tim
-  if (prodWishlistBtn) {
-    prodWishlistBtn.addEventListener("click", () => {
-      activeWishlisted = !activeWishlisted;
-      if (activeWishlisted) {
-        prodWishlistBtn.classList.add("active");
-        showToastNotification("Đã thêm vào danh sách yêu thích!", "Được đồng bộ với Squad Profile.");
-      } else {
-        prodWishlistBtn.classList.remove("active");
-        showToastNotification("Đã loại bỏ khỏi danh sách yêu thích.");
+// Chọn kích thước sản phẩm (Size US)
+if (productSizeGrid) {
+  productSizeGrid.addEventListener("click", (e) => {
+    const sizeBtn = e.target.closest(".size-btn");
+    if (!sizeBtn) return;
+
+    productSizeGrid.querySelectorAll(".size-btn").forEach(btn => btn.classList.remove("selected"));
+    sizeBtn.classList.add("selected");
+    currentSelectedSize = sizeBtn.textContent.trim();
+  });
+}
+
+// Co giãn các mục chi tiết (Accordions: Giới thiệu, Giao hàng, Thông số)
+const accordionItems = document.querySelectorAll(".accordion-item");
+accordionItems.forEach(item => {
+  const trigger = item.querySelector(".accordion-trigger");
+  trigger.addEventListener("click", () => {
+    const isOpen = item.classList.contains("open");
+    accordionItems.forEach(i => i.classList.remove("open"));
+    if (!isOpen) {
+      item.classList.add("open");
+    }
+  });
+});
+
+// Nút Yêu thích (Wishlist) trái tim
+if (prodWishlistBtn) {
+  prodWishlistBtn.addEventListener("click", () => {
+    if(!PRODUCT) return; // Đợi load
+
+    activeWishlisted = !activeWishlisted;
+    let items = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
+    let pId = PRODUCT.slug || PRODUCT.id;
+
+    if (activeWishlisted) {
+      prodWishlistBtn.classList.add("active");
+      
+      if (!items.some(i => i.id === pId)) {
+        items.push({
+          id: pId,
+          name: PRODUCT.name,
+          price: PRODUCT.price,
+          image: PRODUCT.image_url || PRODUCT.image
+        });
+        localStorage.setItem("nike_wishlist_items", JSON.stringify(items));
       }
-    });
-  }
+      
+      showToastNotification("Đã thêm vào danh sách yêu thích!", "Được đồng bộ với hệ thống.");
+    } else {
+      prodWishlistBtn.classList.remove("active");
+      
+      items = items.filter(i => i.id !== pId);
+      localStorage.setItem("nike_wishlist_items", JSON.stringify(items));
+      
+      showToastNotification("Đã loại bỏ khỏi danh sách yêu thích.");
+    }
+  });
+}
 
-  // ==============================================
-  // 5. TOAST NOTIFICATION VÀ LƯU GIỎ HÀNG LOCALSTORAGE
-  // ==============================================
+// Nút Thêm vào giỏ hàng
+if (prodAddToCartBtn) {
+  prodAddToCartBtn.addEventListener("click", () => {
+    if(!PRODUCT) return;
+    const cartBtn = document.getElementById("header-cart-btn");
+    
+    // Thu thập dữ liệu giỏ hàng
+    const cartItem = {
+      product: {
+        id: PRODUCT.slug || PRODUCT.id,
+        name: PRODUCT.name,
+        price: PRODUCT.price,
+        image: PRODUCT.image_url || PRODUCT.image,
+        tag: PRODUCT.tag || "MỚI"
+      },
+      selectedSize: currentSelectedSize,
+      quantity: 1
+    };
 
-  // Giả lập thông báo Toast cao cấp của Nike Elite
-  function showToastNotification(message, description = "") {
-    if (!toastContainer) return;
-    
-    const toast = document.createElement("div");
-    toast.className = "nike-toast";
-    
-    toast.innerHTML = `
+    // Lấy giỏ hàng từ localStorage
+    let currentCart = JSON.parse(localStorage.getItem("nike_cart_items")) || [];
+
+    // Kiểm tra sản phẩm & size đã tồn tại chưa
+    const existingIndex = currentCart.findIndex(item => 
+      item.product.id === cartItem.product.id && item.selectedSize === cartItem.selectedSize
+    );
+
+    if (existingIndex > -1) {
+      currentCart[existingIndex].quantity += 1; // Tăng số lượng
+    } else {
+      currentCart.push(cartItem); // Thêm mới
+    }
+
+    // Lưu lại vào LocalStorage
+    localStorage.setItem("nike_cart_items", JSON.stringify(currentCart));
+
+    // Cập nhật giao diện
+    updateCartHeaderBadge();
+    showToastNotification("Đã thêm vào giỏ hàng", `${PRODUCT.name} (Size: ${currentSelectedSize})`);
+
+    // Animation nảy nút giỏ hàng trên header
+    if (cartBtn) {
+      cartBtn.style.transform = "scale(1.2)";
+      setTimeout(() => {
+        cartBtn.style.transform = "scale(1)";
+      }, 200);
+    }
+  });
+}
+
+// ==============================================
+// 5. TOAST NOTIFICATION VÀ LƯU GIỎ HÀNG LOCALSTORAGE
+// ==============================================
+
+// Giả lập thông báo Toast cao cấp của Nike Elite
+function showToastNotification(message, description = "") {
+  if (!toastContainer) return;
+
+  const toast = document.createElement("div");
+  toast.className = "nike-toast";
+
+  toast.innerHTML = `
       <i data-lucide="shopping-bag" class="toast-icon" style="width: 20px; height: 20px;"></i>
       <div style="text-align: left;">
         <h4 class="toast-title">${message}</h4>
         ${description ? `<p class="toast-desc">${description}</p>` : ""}
       </div>
     `;
-    
-    toastContainer.appendChild(toast);
-    if (window.lucide) lucide.createIcons();
-    
-    // Tự động xoá sau 4.2 giây
+
+  toastContainer.appendChild(toast);
+  if (window.lucide) lucide.createIcons();
+
+  // Tự động xoá sau 4.2 giây
+  setTimeout(() => {
+    toast.classList.add("fade-out");
     setTimeout(() => {
-      toast.classList.add("fade-out");
-      setTimeout(() => {
-        if (toastContainer.contains(toast)) {
-          toastContainer.removeChild(toast);
-        }
-      }, 300);
-    }, 4200);
-  }
-
-  // Xử lý sự kiện "THÊM VÀO GIỎ HÀNG"
-  if (prodAddToCartBtn) {
-    prodAddToCartBtn.addEventListener("click", () => {
-      // Đọc giỏ hàng hiện tại từ LocalStorage
-      let cartItems = JSON.parse(localStorage.getItem("nike_cart_items")) || [];
-      
-      // Tìm xem sản phẩm cùng size này đã có trong giỏ chưa
-      const existingIndex = cartItems.findIndex(
-        item => item.product.id === PRODUCT.id && item.selectedSize === currentSelectedSize
-      );
-
-      if (existingIndex > -1) {
-        // Có rồi thì tăng số lượng lên 1
-        cartItems[existingIndex].quantity += 1;
-      } else {
-        // Chưa có thì tạo đối tượng sản phẩm mới và add vào mảng
-        cartItems.push({
-          product: {
-            id: PRODUCT.id,
-            name: PRODUCT.name,
-            tag: PRODUCT.tag,
-            price: PRODUCT.price,
-            image: PRODUCT.image
-          },
-          selectedSize: currentSelectedSize,
-          quantity: 1
-        });
+      if (toastContainer.contains(toast)) {
+        toastContainer.removeChild(toast);
       }
-
-      // Lưu lại vào LocalStorage
-      localStorage.setItem("nike_cart_items", JSON.stringify(cartItems));
-
-      // Đồng bộ badge ở Header
-      updateCartHeaderBadge();
-
-      // Hiển thị Toast thông báo thành công
-      showToastNotification(
-        `Đã thêm thành công size ${currentSelectedSize} vào giỏ hàng!`,
-        "Hệ thống đang chuẩn bị chuyển hướng sang trang thanh toán..."
-      );
-
-      // Chuyển hướng sang trang cart.html sau 800ms để trải nghiệm mượt mà
-      setTimeout(() => {
-        window.location.href = "cart.html";
-      }, 800);
-    });
-  }
-});
+    }, 300);
+  }, 4200);
+}
+})();
