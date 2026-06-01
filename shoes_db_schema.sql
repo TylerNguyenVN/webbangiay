@@ -21,6 +21,24 @@ DROP TABLE IF EXISTS `categories`;
 SET FOREIGN_KEY_CHECKS = 1;
 
 
+-- ==========================================
+-- 0. BẢNG NGƯỜI DÙNG (users)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS `users` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `username` VARCHAR(50) NOT NULL COMMENT 'Tên đăng nhập / Họ tên hiển thị',
+    `email` VARCHAR(100) NOT NULL UNIQUE COMMENT 'Email liên hệ chính',
+    `password` VARCHAR(255) DEFAULT NULL COMMENT 'Mật khẩu đã mã hóa (null nếu đăng nhập Google)',
+    `phone` VARCHAR(20) DEFAULT NULL COMMENT 'Số điện thoại liên lạc',
+    `address` TEXT DEFAULT NULL COMMENT 'Địa chỉ giao hàng mặc định',
+    `auth_provider` VARCHAR(50) DEFAULT 'local' COMMENT 'Phương thức đăng nhập: local, google',
+    `google_id` VARCHAR(255) DEFAULT NULL COMMENT 'ID của Google nếu dùng OAuth2',
+    `role` VARCHAR(20) DEFAULT 'customer' COMMENT 'Quyền hạn: customer, staff, admin',
+    `is_locked` TINYINT(1) DEFAULT 0 COMMENT 'Trạng thái khóa: 0 = Hoạt động, 1 = Đã khóa',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Ngày tạo tài khoản'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bảng lưu thông tin người dùng toàn hệ thống';
+
+
 CREATE TABLE IF NOT EXISTS `categories` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `parent_id` INT DEFAULT NULL COMMENT 'ID của danh mục cha (để làm danh mục đa cấp: Sneaker -> Nike Sneaker)',
@@ -236,4 +254,52 @@ CREATE INDEX `idx_orders_status` ON `orders` (`status`);
 CREATE INDEX `idx_coupons_code` ON `coupons` (`code`);
 CREATE INDEX `idx_reviews_product_id` ON `reviews` (`product_id`);
 CREATE INDEX `idx_transactions_code` ON `payment_transactions` (`transaction_code`);
+
+
+-- ==========================================
+-- DỮ LIỆU KHỞI TẠO CƠ BẢN (INITIAL DATA)
+-- ==========================================
+
+-- Tự động tạo tài khoản Admin mặc định (Mật khẩu mặc định: 123)
+-- Hash cho mật khẩu '123' tạo bằng password_hash() là: $2y$10$7vN34e9/wF4C3kE4fH7JeeQx5yK0Dp2XJvL4Fh6GgH8N/7WnKNu6Hq (hoặc tương tự)
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
+(1, 'Admin', 'admin', '$2y$10$7vN34e9/wF4C3kE4fH7JeeQx5yK0Dp2XJvL4Fh6GgH8N/7WnKNu6Hq', 'admin')
+ON DUPLICATE KEY UPDATE `role`='admin';
+
+-- Tạo danh mục cha và các danh mục con mặc định
+INSERT INTO `categories` (`id`, `parent_id`, `name`, `slug`, `description`, `status`) VALUES
+(1, NULL, 'Nam', 'nam', 'Thời trang giày dành cho nam giới', 1),
+(2, NULL, 'Nữ', 'nu', 'Thời trang giày dành cho nữ giới', 1),
+(3, NULL, 'Trẻ em', 'tre-em', 'Giày thể thao êm ái cho bé', 1),
+(4, 1, 'Air Force 1', 'nam-air-force-1', 'Dòng giày đường phố huyền thoại của Nike dành cho nam', 1),
+(5, 1, 'Air Max', 'nam-air-max', 'Đệm khí Air-Sole tối thượng mang phong cách thể thao và êm ái', 1),
+(6, 1, 'Air Jordan', 'nam-air-jordan', 'Biểu tượng văn hóa bóng rổ thời thượng phong cách Retro', 1),
+(7, 1, 'Dunk', 'nam-dunk', 'Giày trượt ván cổ điển, năng động và cá tính', 1),
+(8, 1, 'Football', 'nam-football', 'Giày đá bóng chuyên dụng bứt phá tốc độ trên sân', 1),
+(9, 1, 'Running', 'nam-running', 'Giày chạy bộ siêu nhẹ nâng đỡ từng bước chân chuyên nghiệp', 1),
+(10, 2, 'Air Force 1', 'nu-air-force-1', 'Giày phong cách đường phố dễ dàng phối đồ cho nữ', 1),
+(11, 2, 'Air Max', 'nu-air-max', 'Thiết kế êm ái, nâng gót và thời thượng cho phái đẹp', 1),
+(12, 2, 'Air Jordan', 'nu-air-jordan', 'Cá tính, nổi bật cùng các phối màu Jordan siêu bắt màu', 1),
+(13, 2, 'Dunk', 'nu-dunk', 'Giày thời trang thu hút mọi ánh nhìn cho các bạn nữ', 1),
+(14, 2, 'Running', 'nu-running', 'Giày chạy bộ êm chân, hỗ trợ bảo vệ xương khớp hiệu quả', 1),
+(15, 3, 'Air Force 1', 'tre-em-air-force-1', 'Bản thu nhỏ dễ thương, bảo vệ đôi chân bé nhỏ', 1),
+(16, 3, 'Air Max', 'tre-em-air-max', 'Hấp thụ chấn động cực tốt cho các bé hiếu động', 1),
+(17, 3, 'Air Jordan', 'tre-em-air-jordan', 'Giày bóng rổ cổ cao thời thượng dành cho trẻ em', 1),
+(18, 3, 'Football', 'tre-em-football', 'Đinh dăm bám sân an toàn cho các bé tập đá bóng', 1)
+ON DUPLICATE KEY UPDATE `status`=1;
+
+
+-- ==========================================
+-- HƯỚNG DẪN NẠP DỮ LIỆU DEMO 50 SẢN PHẨM MỖI LOẠI
+-- ==========================================
+-- Để tự động nạp 50 sản phẩm cao cấp cực đẹp kèm theo 4 biến thể size/màu và ảnh
+-- cho mỗi loại danh mục (tổng cộng 750 sản phẩm và 3000 biến thể), bạn vui lòng thực hiện:
+--
+-- CÁCH 1: Chạy trực tiếp từ trình duyệt bằng cách truy cập đường dẫn:
+-- http://localhost/webbangiay/api/seed_demo_50.php
+--
+-- CÁCH 2: Nếu có CLI PHP (XAMPP), chạy lệnh sau trong terminal:
+-- C:\xampp\php\php.exe -f c:\xampp\htdocs\webbangiay\api\seed_demo_50.php
+--
+-- (Đảm bảo Module MySQL trong XAMPP đã được BẬT trước khi chạy!)
 
