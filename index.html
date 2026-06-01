@@ -53,6 +53,12 @@
         <div class="product-list" id="home-product-list">
           <!-- Rendered by JS -->
         </div>
+        <div id="show-more-wrap" style="text-align: center; margin-top: 2rem; display: none;">
+          <button id="btn-show-more" style="background: transparent; border: 1px solid #053225; color: #053225; padding: 0.75rem 2rem; font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; letter-spacing: 0.05em;">
+            <span>XEM THÊM</span>
+            <i data-lucide="chevron-down" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
       </section>
 
       <section class="macro-section">
@@ -175,7 +181,7 @@
       // Dynamically load the page logic script (js/script.js) so it runs
       // after all header/footer DOM elements are available in the page
       const script = document.createElement('script');
-      script.src = 'js/script.js';
+      script.src = 'js/script.js?v=' + Date.now();
       document.body.appendChild(script);
     }
 

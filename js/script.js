@@ -131,6 +131,36 @@
   });
 
   // Tải danh sách sản phẩm động từ Database cho Trang chủ
+  let allProducts = [];
+
+  function renderHomeProducts(products) {
+    const container = document.getElementById("home-product-list");
+    if (!container) return;
+    
+    container.innerHTML = products.map(p => `
+      <div class="product-row">
+        <div class="product-row-info">
+          <div class="row-top">
+            <span class="card-badge grey">${p.category_name || 'MỚI'}</span>
+            <h3 class="product-name">${p.name}</h3>
+            <p class="product-desc">${p.description ? p.description.substring(0, 50) + '...' : ''}</p>
+          </div>
+          <div class="row-bottom">
+            <span class="product-price emerald-text">${new Intl.NumberFormat('vi-VN').format(p.price)} ₫</span>
+            <button class="buy-btn add-btn text-only" data-price="${p.price}" data-name="${p.name}" data-slug="${p.slug}">
+              Mua ngay <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        <div class="product-row-img">
+          <img src="${p.image_url || p.image || ''}" alt="${p.name}">
+        </div>
+      </div>
+    `).join("");
+
+    if (window.lucide) lucide.createIcons();
+  }
+
   async function fetchProductsForHome() {
     const container = document.getElementById("home-product-list");
     if (!container) return; // Không phải trang chủ
@@ -139,31 +169,19 @@
       const res = await fetch("api/admin_api.php?action=get_products");
       const result = await res.json();
       if (result.success && result.data.length > 0) {
-        // Lấy tối đa 4 sản phẩm mới nhất
-        const products = result.data.slice(0, 4);
+        allProducts = result.data;
         
-        container.innerHTML = products.map(p => `
-          <div class="product-row">
-            <div class="product-row-info">
-              <div class="row-top">
-                <span class="card-badge grey">${p.category_name || 'MỚI'}</span>
-                <h3 class="product-name">${p.name}</h3>
-                <p class="product-desc">${p.description ? p.description.substring(0, 50) + '...' : ''}</p>
-              </div>
-              <div class="row-bottom">
-                <span class="product-price emerald-text">${new Intl.NumberFormat('vi-VN').format(p.price)} ₫</span>
-                <button class="buy-btn add-btn text-only" data-price="${p.price}" data-name="${p.name}" data-slug="${p.slug}">
-                  Mua ngay <i data-lucide="chevron-right"></i>
-                </button>
-              </div>
-            </div>
-            <div class="product-row-img">
-              <img src="${p.image_url || p.image || ''}" alt="${p.name}">
-            </div>
-          </div>
-        `).join("");
+        // Lấy tối đa 4 sản phẩm mới nhất
+        renderHomeProducts(allProducts.slice(0, 4));
 
-        if (window.lucide) lucide.createIcons();
+        const showMoreWrap = document.getElementById("show-more-wrap");
+        if (showMoreWrap) {
+          if (allProducts.length > 4) {
+            showMoreWrap.style.display = "block";
+          } else {
+            showMoreWrap.style.display = "none";
+          }
+        }
       }
     } catch (err) {
       console.error("Lỗi khi tải sản phẩm trang chủ:", err);
@@ -171,6 +189,21 @@
   }
 
   fetchProductsForHome();
+
+  const btnShowMore = document.getElementById("btn-show-more");
+  if (btnShowMore) {
+    btnShowMore.addEventListener("mouseenter", () => {
+      btnShowMore.style.background = "#053225";
+      btnShowMore.style.color = "#fff";
+    });
+    btnShowMore.addEventListener("mouseleave", () => {
+      btnShowMore.style.background = "transparent";
+      btnShowMore.style.color = "#053225";
+    });
+    btnShowMore.addEventListener("click", () => {
+      window.location.href = "san-pham.html";
+    });
+  }
 
   const helpBtns = document.querySelectorAll(".help-btn");
   helpBtns.forEach(btn => {

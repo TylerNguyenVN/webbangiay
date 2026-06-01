@@ -189,15 +189,72 @@ try {
             $sale_price = !empty($input['sale_price']) ? floatval($input['sale_price']) : null;
             $description = trim($input['description'] ?? '');
             $image_url = trim($input['image_url'] ?? '');
+            $variants = $input['variants'] ?? [];
 
             if (!$id || empty($name) || empty($slug) || $price <= 0) {
                 $response = ["success" => false, "message" => "Thiếu thông tin cập nhật hợp lệ."];
                 break;
             }
 
+            $db->beginTransaction();
+
+            // 1. Cập nhật thông tin cơ bản sản phẩm
             $stmt = $db->prepare("UPDATE products SET category_id = ?, name = ?, slug = ?, price = ?, sale_price = ?, description = ?, image_url = ? WHERE id = ?");
             $stmt->execute([$category_id, $name, $slug, $price, $sale_price, $description, $image_url, $id]);
-            $response = ["success" => true, "message" => "Cập nhật sản phẩm thành công!"];
+
+            // 2. Cập nhật các biến thể
+            if (is_array($variants)) {
+                // Lấy tất cả biến thể hiện tại để so khớp
+                $exStmt = $db->prepare("SELECT id, size, color FROM product_variants WHERE product_id = ?");
+                $exStmt->execute([$id]);
+                $existing = $exStmt->fetchAll();
+
+                $keptIds = [];
+
+                foreach ($variants as $v) {
+                    $size = trim($v['size'] ?? '');
+                    $color = trim($v['color'] ?? 'Default');
+                    $stock = intval($v['stock_qty'] ?? 0);
+                    $sku = !empty($v['sku']) ? trim($v['sku']) : "SKU-" . $id . "-" . strtoupper(substr(md5(uniqid()), 0, 6));
+
+                    if (empty($size)) continue;
+
+                    // Kiểm tra xem đã có chưa
+                    $foundId = null;
+                    foreach ($existing as $ex) {
+                        if ($ex['size'] === $size && $ex['color'] === $color) {
+                            $foundId = $ex['id'];
+                            break;
+                        }
+                    }
+
+                    if ($foundId !== null) {
+                        // Cập nhật biến thể hiện có
+                        $upStmt = $db->prepare("UPDATE product_variants SET sku = ?, stock_qty = ? WHERE id = ?");
+                        $upStmt->execute([$sku, $stock, $foundId]);
+                        $keptIds[] = $foundId;
+                    } else {
+                        // Thêm mới biến thể
+                        $insStmt = $db->prepare("INSERT INTO product_variants (product_id, sku, size, color, stock_qty) VALUES (?, ?, ?, ?, ?)");
+                        $insStmt->execute([$id, $sku, $size, $color, $stock]);
+                        $keptIds[] = $db->lastInsertId();
+                    }
+                }
+
+                // Xóa các biến thể không còn được giữ lại
+                if (!empty($keptIds)) {
+                    $placeholders = implode(',', array_fill(0, count($keptIds), '?'));
+                    $delStmt = $db->prepare("DELETE FROM product_variants WHERE product_id = ? AND id NOT IN ($placeholders)");
+                    $params = array_merge([$id], $keptIds);
+                    $delStmt->execute($params);
+                } else {
+                    $delStmt = $db->prepare("DELETE FROM product_variants WHERE product_id = ?");
+                    $delStmt->execute([$id]);
+                }
+            }
+
+            $db->commit();
+            $response = ["success" => true, "message" => "Cập nhật sản phẩm cùng các biến thể thành công!"];
             break;
 
         case 'delete_product':
@@ -372,7 +429,17 @@ try {
     if (isset($db) && $db->inTransaction()) {
         $db->rollBack();
     }
-    $response = ["success" => false, "message" => "Đã có lỗi hệ thống xảy ra.", "error" => $e->getMessage()];
+    
+    $message = "Đã có lỗi hệ thống xảy ra.";
+    if (strpos($e->getMessage(), "Duplicate entry") !== false) {
+        if (strpos($e->getMessage(), "sku") !== false) {
+            $message = "Lỗi: Mã SKU đã tồn tại trên hệ thống hoặc bị trùng lặp.";
+        } else if (strpos($e->getMessage(), "unique_variant") !== false) {
+            $message = "Lỗi: Trùng lặp biến thể (cùng kích cỡ và màu sắc) cho sản phẩm này.";
+        }
+    }
+    
+    $response = ["success" => false, "message" => $message, "error" => $e->getMessage()];
 }
 
 echo json_encode($response);

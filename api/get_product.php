@@ -8,6 +8,9 @@
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 
 // 1. Validate request method
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -136,7 +139,7 @@ try {
     $product = $stmt->fetch();
 
     if ($product) {
-        $vStmt = $pdo->prepare("SELECT size FROM product_variants WHERE product_id = :pid");
+        $vStmt = $pdo->prepare("SELECT DISTINCT size FROM product_variants WHERE product_id = :pid ORDER BY CAST(size AS UNSIGNED) ASC, size ASC");
         $vStmt->execute(['pid' => $product['id']]);
         $variants = $vStmt->fetchAll(PDO::FETCH_COLUMN);
         

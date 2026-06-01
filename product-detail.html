@@ -212,7 +212,7 @@
 
       // Tải script xử lý tương tác chi tiết sản phẩm sau khi đã chèn xong header/footer
       const script = document.createElement('script');
-      script.src = 'js/product-detail.js';
+      script.src = 'js/product-detail.js?v=' + Date.now();
       document.body.appendChild(script);
     }
 

@@ -113,7 +113,7 @@
   // ==============================================
   async function initProductDetail() {
     try {
-      const res = await fetch(`api/get_product.php?id=${paramId || 'nike-air-max-tw'}`);
+      const res = await fetch(`api/get_product.php?id=${paramId || 'nike-air-max-tw'}&t=${Date.now()}`);
       const data = await res.json();
       
       if (!data.success) {

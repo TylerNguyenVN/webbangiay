@@ -31,6 +31,8 @@ const unresolvedQueries = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
+  let currentProducts = [];
+  let editingProductImageUrl = "";
   const currentUserStr = localStorage.getItem("nike_current_user");
   if (!currentUserStr) {
     window.location.href = "auth.html";
@@ -74,7 +76,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Tải dữ liệu mới nhất từ CSDL tương ứng thời gian thực
       if (target === "admin-dashboard") loadDashboardStats();
       if (target === "admin-categories") loadCategories();
-      if (target === "admin-products") loadProducts();
+      if (target === "admin-products") {
+        loadCategories();
+        loadProducts();
+      }
       if (target === "admin-orders") loadOrders();
       if (target === "admin-users") loadUsers();
       if (target === "admin-coupons") loadCoupons();
@@ -376,8 +381,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Tải chỉ số ngay lập tức khi vào trang quản trị
+  // Tải chỉ số và danh mục ngay lập tức khi vào trang quản trị
   loadDashboardStats();
+  loadCategories();
 
   // ==========================================
   // II. PHÂN HỆ QUẢN LÝ DANH MỤC (CATEGORIES)
@@ -516,6 +522,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("api/admin_api.php?action=get_products");
       const result = await res.json();
       if (result.success) {
+        currentProducts = result.data;
         renderProducts(result.data);
       }
     } catch (e) {
@@ -558,6 +565,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="status-badge ${p.status === 'active' ? 'status-completed' : 'status-pending'}">${p.status}</span>
         </td>
         <td style="text-align:right;white-space:nowrap;">
+          <button class="btn-draft" onclick="editProduct(${p.id})" style="display:inline-flex;padding:0.25rem 0.5rem;font-size:0.75rem;margin-right:0.25rem; border-radius:0;">Sửa</button>
           <button class="btn-draft" onclick="deleteProduct(${p.id})" style="display:inline-flex;padding:0.25rem 0.5rem;font-size:0.75rem;background:#fef2f2;color:#ef4444;border-color:#fecaca; border-radius:0;">Xóa</button>
         </td>
       `;
@@ -578,6 +586,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("product-id").value = "";
       document.getElementById("modal-product-title").textContent = "Đăng sản phẩm mới";
       document.getElementById("product-variants-section").style.display = "block";
+      editingProductImageUrl = "";
       
       if (varsContainer) {
         varsContainer.innerHTML = `
@@ -594,6 +603,59 @@ document.addEventListener("DOMContentLoaded", () => {
       prodModal.style.display = "flex";
     });
   }
+
+  window.editProduct = (id) => {
+    const p = currentProducts.find(x => x.id === id);
+    if (!p) return;
+
+    document.getElementById("product-id").value = p.id;
+    document.getElementById("product-name").value = p.name;
+    document.getElementById("product-slug").value = p.slug;
+    document.getElementById("product-category").value = p.category_id || "";
+    document.getElementById("product-price").value = p.price;
+    document.getElementById("product-sale-price").value = p.sale_price || "";
+    document.getElementById("product-description").value = p.description || "";
+    
+    editingProductImageUrl = p.image_url || "";
+    
+    document.getElementById("modal-product-title").textContent = "Sửa sản phẩm: " + p.name;
+    
+    const fileInput = document.getElementById("product-image-file");
+    if (fileInput) fileInput.value = "";
+
+    const varsContainer = document.getElementById("variants-container");
+    if (varsContainer) {
+      varsContainer.innerHTML = "";
+      if (p.variants && p.variants.length > 0) {
+        p.variants.forEach(v => {
+          const div = document.createElement("div");
+          div.className = "variant-row";
+          div.style.cssText = "display:flex; gap:0.5rem; align-items:center; margin-top:0.25rem;";
+          div.innerHTML = `
+            <input type="text" class="search-input var-size" style="width: 20%; padding: 0.5rem;" placeholder="Size (VD: 42)" value="${v.size}" required>
+            <input type="text" class="search-input var-color" style="width: 25%; padding: 0.5rem;" placeholder="Màu (VD: Đen)" value="${v.color}" required>
+            <input type="text" class="search-input var-sku" style="width: 35%; padding: 0.5rem;" placeholder="Mã SKU (Tự động)" value="${v.sku || ''}">
+            <input type="number" class="search-input var-stock" style="width: 20%; padding: 0.5rem;" placeholder="Tồn" value="${v.stock_qty}" required>
+            <button type="button" class="btn-remove-var" onclick="this.parentElement.remove()" style="background:transparent; border:none; color:#ef4444; cursor:pointer;"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+          `;
+          varsContainer.appendChild(div);
+        });
+      } else {
+        varsContainer.innerHTML = `
+          <div class="variant-row" style="display:flex; gap:0.5rem; align-items:center;">
+            <input type="text" class="search-input var-size" style="width: 20%; padding: 0.5rem;" placeholder="Size (VD: 42)" required>
+            <input type="text" class="search-input var-color" style="width: 25%; padding: 0.5rem;" placeholder="Màu (VD: Đen)" required>
+            <input type="text" class="search-input var-sku" style="width: 35%; padding: 0.5rem;" placeholder="Mã SKU (Tự động)">
+            <input type="number" class="search-input var-stock" style="width: 20%; padding: 0.5rem;" placeholder="Tồn" value="10" required>
+            <button type="button" class="btn-remove-var" onclick="this.parentElement.remove()" style="background:transparent; border:none; color:#ef4444; cursor:pointer;"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+          </div>
+        `;
+      }
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    if (prodModal) prodModal.style.display = "flex";
+  };
 
   const hideProdModal = () => {
     if (prodModal) prodModal.style.display = "none";
@@ -647,7 +709,12 @@ document.addEventListener("DOMContentLoaded", () => {
           showAdminNotification("Lỗi kết nối tải ảnh");
           return;
         }
+      } else {
+        image_url = editingProductImageUrl;
       }
+
+      const id = document.getElementById("product-id").value;
+      const apiAction = id ? 'update_product' : 'create_product';
 
       const name = document.getElementById("product-name").value;
       const slug = document.getElementById("product-slug").value;
@@ -658,21 +725,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const variantRows = document.querySelectorAll(".variant-row");
       const variants = [];
+      const skuSet = new Set();
+      const variantSet = new Set();
+      let hasDuplicateSku = false;
+      let duplicateSkuVal = "";
+      let hasDuplicateVariant = false;
+      let duplicateVariantVal = "";
+
       variantRows.forEach(row => {
-        const size = row.querySelector(".var-size").value;
-        const color = row.querySelector(".var-color").value;
-        const sku = row.querySelector(".var-sku").value;
-        const stock_qty = row.querySelector(".var-stock").value;
+        const size = row.querySelector(".var-size").value.trim();
+        const color = row.querySelector(".var-color").value.trim();
+        const sku = row.querySelector(".var-sku").value.trim();
+        const stock_qty = row.querySelector(".var-stock").value.trim();
 
         if (size) {
+          if (sku) {
+            if (skuSet.has(sku)) {
+              hasDuplicateSku = true;
+              duplicateSkuVal = sku;
+            }
+            skuSet.add(sku);
+          }
+
+          const varKey = `${size}-${color}`;
+          if (variantSet.has(varKey)) {
+            hasDuplicateVariant = true;
+            duplicateVariantVal = `Size: ${size} | Màu: ${color}`;
+          }
+          variantSet.add(varKey);
+
           variants.push({ size, color, sku, stock_qty });
         }
       });
 
-      const payload = { category_id, name, slug, price, sale_price, description, image_url, variants };
+      if (hasDuplicateSku) {
+        showAdminNotification("Lỗi: Trùng lặp mã SKU '" + duplicateSkuVal + "' giữa các biến thể.");
+        return;
+      }
+
+      if (hasDuplicateVariant) {
+        showAdminNotification("Lỗi: Trùng lặp biến thể '" + duplicateVariantVal + "' (Kích cỡ và Màu sắc đã tồn tại).");
+        return;
+      }
+
+      const payload = { id, category_id, name, slug, price, sale_price, description, image_url, variants };
 
       try {
-        const res = await fetch("api/admin_api.php?action=create_product", {
+        const res = await fetch(`api/admin_api.php?action=${apiAction}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
