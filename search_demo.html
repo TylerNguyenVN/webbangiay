@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Search Dropdown - Verification Dashboard</title>
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Main Styles & Lucide Icons -->
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    :root {
+      --primary-color: #047857;
+      --primary-hover: #065f46;
+      --bg-dark-dashboard: #0f172a;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+    
+    .demo-container {
+      max-width: 1200px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .demo-header {
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .demo-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+    }
+    
+    .demo-badge {
+      display: inline-block;
+      background-color: #d1fae5;
+      color: #065f46;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .feature-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      background: #f8fafc;
+      transition: all 0.3s;
+    }
+    
+    .feature-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      background: white;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: #d1fae5;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    
+    .feature-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      color: #0f172a;
+    }
+    
+    .feature-desc {
+      font-size: 0.875rem;
+      color: #64748b;
+      line-height: 1.5;
+      margin: 0;
+    }
+    
+    .action-panel {
+      margin-top: 3rem;
+      background: linear-gradient(135deg, #064e3b, #022c22);
+      border-radius: 12px;
+      padding: 2.5rem;
+      color: white;
+      text-align: center;
+    }
+    
+    .action-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.75rem 0;
+    }
+    
+    .action-desc {
+      font-size: 1rem;
+      color: #a7f3d0;
+      max-width: 600px;
+      margin: 0 auto 1.5rem auto;
+      line-height: 1.5;
+    }
+    
+    .action-btn {
+      background: #10b981;
+      color: #022c22;
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.85rem 2rem;
+      border-radius: 99px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+    
+    .action-btn:hover {
+      background: #34d399;
+      transform: scale(1.03);
+    }
+    
+    .action-btn i {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- DYNAMIC HEADER PLACEHOLDER -->
+  <div id="header-placeholder"></div>
+
+  <!-- DEMO WORKSPACE AREA -->
+  <div class="demo-container">
+    <div class="demo-header">
+      <span class="demo-badge">Verification Dashboard</span>
+      <h1 class="demo-title">Smart Instant Search Dropdown</h1>
+      <p style="color: #64748b; margin-top: 0.5rem; font-size: 1.05rem;">Bảng điều khiển kiểm thử chi tiết tính năng tìm kiếm sản phẩm thông minh phía Frontend và Backend.</p>
+    </div>
+    
+    <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; color: #0f172a; margin: 0 0 1rem 0;">Các tính năng kỹ thuật cốt lõi:</h2>
+    
+    <div class="feature-grid">
+      
+      <!-- Feature 1 -->
+      <div class="feature-card">
+        <div class="feature-icon"><i data-lucide="zap"></i></div>
+        <h3 class="feature-title">Hàm Debounce 300ms thủ công</h3>
+        <p class="feature-desc">Mã JS quản lý trì hoãn việc gọi API. Hãy mở Tab Network trong F12, gõ từ khóa "pega" liên tục và kiểm chứng: chỉ có 1 request duy nhất được bắn đi sau khi dừng gõ 300ms.</p>
+      </div>
+      
+      <!-- Feature 2 -->
+      <div class="feature-card">
+        <div class="feature-icon"><i data-lucide="languages"></i></div>
+        <h3 class="feature-title">Tìm kiếm tiếng Việt thông minh</h3>
+        <p class="feature-desc">Hỗ trợ tìm kiếm không dấu lẫn có dấu. Đặc biệt, viết bộ quy tắc chuyển đổi nguyên âm linh hoạt giúp gõ "bánh mì" hoặc "bánh mỳ" đều trả về kết quả chính xác không lệch một ly.</p>
+      </div>
+      
+      <!-- Feature 3 -->
+      <div class="feature-card">
+        <div class="feature-icon"><i data-lucide="highlighter"></i></div>
+        <h3 class="feature-title">Bôi đậm từ khóa khớp (Highlight)</h3>
+        <p class="feature-desc">Thuật toán khớp chuỗi chính xác phía client: Tự động phát hiện vị trí trùng khớp của từ khóa với tên sản phẩm, tách chuỗi và đóng gói bằng thẻ &lt;mark&gt; mà vẫn giữ nguyên Case chữ gốc.</p>
+      </div>
+      
+      <!-- Feature 4 -->
+      <div class="feature-card">
+        <div class="feature-icon"><i data-lucide="database"></i></div>
+        <h3 class="feature-title">Tối ưu Fulltext MATCH... AGAINST</h3>
+        <p class="feature-desc">Phía Backend PHP hoàn toàn không sử dụng câu lệnh LIKE '%keyword%' để loại bỏ Full Table Scan. Sử dụng BOOLEAN và NATURAL LANGUAGE MODE kết hợp sắp xếp theo relevance score.</p>
+      </div>
+      
+      <!-- Feature 5 -->
+      <div class="feature-card">
+        <div class="feature-icon"><i data-lucide="shield-alert"></i></div>
+        <h3 class="feature-title">Uptime 100% nhờ Cache Fallback</h3>
+        <p class="feature-desc">Nếu database MySQL của bạn trong XAMPP bị tắt hoặc gặp lỗi, API Backend và Controller Frontend sẽ tự động chuyển sang chế độ Local Fallback Search từ bộ catalog tĩnh để đảm bảo trải nghiệm người dùng luôn thông suốt.</p>
+      </div>
+      
+      <!-- Feature 6 -->
+      <div class="feature-card">
+        <div class="feature-icon"><i data-lucide="history"></i></div>
+        <h3 class="feature-title">Lịch sử tìm kiếm & Xu hướng</h3>
+        <p class="feature-desc">Lưu trữ các từ khóa đã tìm kiếm thành công vào localStorage. Hỗ trợ xóa lịch sử từng từ khóa hoặc xóa toàn bộ. Hiển thị danh mục xu hướng (Trending) cực kỳ trực quan khi ô tìm kiếm trống.</p>
+      </div>
+      
+    </div>
+    
+    <div class="action-panel">
+      <h3 class="action-title">Trải nghiệm thanh Tìm kiếm thông minh</h3>
+      <p class="action-desc">Bấm vào nút dưới đây (hoặc click icon Search ở header) để mở Overlay Tìm kiếm phong cách Nike với công nghệ kính mờ glassmorphism và bắt đầu gõ từ khóa thử nghiệm.</p>
+      <button class="action-btn" onclick="if(window.TLSearch && typeof window.TLSearch.open === 'function') { window.TLSearch.open(); } else { const overlay = document.getElementById('search-overlay'); if (overlay) { overlay.classList.remove('sh-closed'); overlay.classList.add('sh-open'); setTimeout(() => { const input = document.getElementById('search-input-field'); if (input) input.focus(); }, 150); } }">
+        <i data-lucide="search"></i> KÍCH HOẠT THANH TÌM KIẾM
+      </button>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <!-- Bootstrapper Script -->
+  <script>
+    // Helper to load templates dynamically
+    async function loadTemplate(placeholderId, filePath) {
+      try {
+        const response = await fetch(filePath);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const content = await response.text();
+        document.getElementById(placeholderId).innerHTML = content;
+      } catch (error) {
+        console.error(`Failed to load ${filePath}:`, error);
+      }
+    }
+
+    // Load Header component
+    async function initDemo() {
+      await Promise.all([
+        loadTemplate('header-placeholder', 'components/header.html?v=' + Date.now()),
+        loadTemplate('footer-placeholder', 'components/footer.html')
+      ]);
+
+      // Trigger Lucide icons
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+      
+      // Load our Search JS controller dynamically
+      const searchScript = document.createElement('script');
+      searchScript.src = 'js/search.js?v=' + Date.now();
+      document.body.appendChild(searchScript);
+    }
+
+    document.addEventListener("DOMContentLoaded", initDemo);
+  </script>
+</body>
+</html>

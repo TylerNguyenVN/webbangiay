@@ -60,7 +60,8 @@ echo json_encode([
         "email" => $userRecord['email'],
         "phone" => $userRecord['phone'],
         "address" => $userRecord['address'],
-        "role" => $userRecord['role']
+        "role" => $userRecord['role'],
+        "created_at" => $userRecord['created_at'] ?? null
     ]
 ]);
 ?>
