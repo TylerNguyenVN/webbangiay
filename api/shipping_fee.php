@@ -3,10 +3,10 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 
-// Thay thế bằng Token GHN và ShopId thực tế của bạn trên môi trường Production
+
 define('GHN_TOKEN', 'YOUR_GHN_DEV_TOKEN_HERE'); 
-define('GHN_SHOP_ID', '123456'); // Mã ShopID giả định
-define('SHOP_DISTRICT_ID', 1454); // Mã Quận xuất phát (VD: Quận 3, HCM)
+define('GHN_SHOP_ID', '123456'); 
+define('SHOP_DISTRICT_ID', 1454); 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -24,10 +24,10 @@ if ($to_district_id === 0 || empty($to_ward_code)) {
     exit;
 }
 
-// Chuẩn bị dữ liệu tính phí cho 1 đôi giày (1000g, 30x20x10)
+
 $payload = [
-    "service_id" => 53320, // Service ID mặc định của GHN (VD: Chuyển phát thương mại điện tử)
-    "service_type_id" => 2, // Giao chuẩn
+    "service_id" => 53320, 
+    "service_type_id" => 2, 
     "to_district_id" => $to_district_id,
     "to_ward_code" => $to_ward_code,
     "weight" => 1000,
@@ -51,7 +51,7 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
     "ShopId: " . GHN_SHOP_ID
 ]);
 
-// Tắt xác minh SSL cho môi trường dev (Không khuyến khích trên production)
+
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
 $response = curl_exec($ch);
@@ -66,11 +66,11 @@ if ($err) {
 $data = json_decode($response, true);
 
 if (isset($data['code']) && $data['code'] === 200) {
-    // Lấy thành công
+    
     $total_fee = $data['data']['total'];
     echo json_encode(["success" => true, "total_fee" => $total_fee]);
 } else {
-    // Trả về số tiền giả lập 35k nếu API Sandbox báo lỗi sai thông số do dev môi trường giả
+    
     $fallbackFee = 35000;
     echo json_encode([
         "success" => true, 

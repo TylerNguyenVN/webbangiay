@@ -106,7 +106,7 @@
       <h1 class="wishlist-title">Danh sách yêu thích</h1>
       
       <div id="wishlist-grid" class="wishlist-grid">
-        <!-- Rendered by JS -->
+        
       </div>
     </div>
 
@@ -136,7 +136,7 @@
         lucide.createIcons();
       }
 
-      // Xử lý logic Header (Đăng nhập/Đăng xuất)
+      
       const currentUserStr = localStorage.getItem("nike_current_user");
       const authStatusLight = document.getElementById("auth-status-light");
       if (currentUserStr && authStatusLight) {
@@ -159,7 +159,7 @@
         if (window.lucide) lucide.createIcons();
       }
 
-      // Load Wishlist Logic
+      
       const script = document.createElement('script');
       script.src = 'js/wishlist.js';
       document.body.appendChild(script);

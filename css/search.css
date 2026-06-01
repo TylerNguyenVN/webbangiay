@@ -1,9 +1,6 @@
-/* =========================================================================
-   PREMIUM INSTANT SEARCH SYSTEM STYLES (SH- SYSTEMS & NIKE AESTHETICS)
-   Author: Senior Frontend Engineer
-   ========================================================================= */
 
-/* 1. Theme and variable declarations */
+
+
 :root {
   --sh-bg-light: rgba(255, 255, 255, 0.94);
   --sh-bg-dark: rgba(10, 10, 10, 0.95);
@@ -23,7 +20,7 @@
   --sh-text-secondary-dark: #8d8d90;
 }
 
-/* 2. Global overlay layout and animations */
+
 .search-overlay {
   position: fixed;
   top: 0;
@@ -51,7 +48,7 @@ body.dark-theme .search-overlay,
   background-color: var(--sh-bg-dark);
 }
 
-/* State controls */
+
 .search-overlay.sh-closed {
   opacity: 0;
   visibility: hidden;
@@ -66,7 +63,7 @@ body.dark-theme .search-overlay,
   transform: translateY(0);
 }
 
-/* 3. Top bar controls */
+
 .search-top-bar {
   display: flex;
   align-items: center;
@@ -231,7 +228,7 @@ body.dark-theme .search-overlay,
   color: var(--sh-primary-dark);
 }
 
-/* 4. Dropdown body grid system */
+
 .search-dropdown-body {
   flex: 1;
   overflow-y: auto;
@@ -245,7 +242,7 @@ body.dark-theme .search-overlay,
   box-sizing: border-box;
 }
 
-/* 5. DEFAULT VIEW GRID LAYOUT */
+
 .sh-default-view-grid {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -267,7 +264,7 @@ body.dark-theme .search-overlay,
   min-height: 350px;
 }
 
-/* 6. Left side suggestions / trending / history */
+
 .suggestions-section {
   margin-bottom: 2.5rem;
 }
@@ -289,14 +286,14 @@ body.dark-theme .search-overlay,
   color: var(--sh-text-secondary-dark);
 }
 
-/* Trending Tags container */
+
 .sh-tag-container {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
 }
 
-/* Suggest tag links */
+
 .sh-suggest-link {
   background-color: var(--sh-input-bg-light);
   border: none;
@@ -329,7 +326,7 @@ body.dark-theme .search-overlay,
   transform: translateY(0);
 }
 
-/* Recent Search list */
+
 .sh-history-list-items {
   list-style: none;
   padding: 0;
@@ -399,7 +396,7 @@ body.dark-theme .search-overlay,
   color: #f87171;
 }
 
-/* 7. Product Cards design */
+
 .search-products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -535,7 +532,7 @@ body.dark-theme .search-overlay,
 }
 
 .sh-card-discount {
-  color: #dc2626; /* Deep red discount banner */
+  color: #dc2626; 
   font-size: 0.8rem;
   font-weight: 700;
 }
@@ -544,7 +541,7 @@ body.dark-theme .search-overlay,
   color: #f87171;
 }
 
-/* 8. RESULTS VIEW SYSTEM */
+
 .sh-results-view-wrap {
   animation: shFadeIn 0.35s ease-out;
 }
@@ -565,7 +562,7 @@ body.dark-theme .search-overlay,
   font-weight: 700;
 }
 
-/* Empty states */
+
 .sh-empty-state {
   text-align: center;
   padding: 4rem 1rem;
@@ -593,7 +590,7 @@ body.dark-theme .search-overlay,
   margin: 0;
 }
 
-/* 9. Spinner loader and footer status */
+
 .sh-spinner-container {
   display: inline-flex;
   align-items: center;
@@ -636,7 +633,7 @@ body.dark-theme .search-overlay,
   color: var(--sh-text-secondary-dark);
 }
 
-/* Highlighted match marks */
+
 .sh-mark {
   background-color: rgba(250, 204, 21, 0.25);
   color: #c27803;
@@ -650,12 +647,12 @@ body.dark-theme .search-overlay,
   color: #fbbf24;
 }
 
-/* Utility visibility helper */
+
 .sh-hidden {
   display: none !important;
 }
 
-/* 10. Keyframes animations */
+
 @keyframes shFadeIn {
   from {
     opacity: 0;
@@ -673,7 +670,7 @@ body.dark-theme .search-overlay,
   }
 }
 
-/* 11. Responsive Design layout shifts */
+
 @media (max-width: 991px) {
   .sh-default-view-grid {
     grid-template-columns: 1fr;

@@ -1,4 +1,4 @@
-/* auth.css */
+
 
 .auth-page {
   margin: 0;
@@ -287,7 +287,7 @@
   color: var(--color-emerald-400);
 }
 
-/*LIGHT THEME OVERRIDES */
+
 body.auth-page.light-theme {
   background-color: var(--bg-light-main);
 }

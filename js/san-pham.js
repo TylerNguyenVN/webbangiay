@@ -1,7 +1,7 @@
 (() => {
-  // ==========================================
-  // MOCK DATA: 25 SẢN PHẨM PHỤC VỤ TEST THUẬT TOÁN PHÂN TRANG (MOCK DATA FOR TESTING)
-  // ==========================================
+  
+  
+  
   const mockProducts = [
     { id: 101, name: "Nike Air Force 1 '07 Premium", price: 3590000, sales_count: 842, category_name: "Air Force 1", slug: "nike-air-force-1-07-premium", description: "Bản kỷ niệm đặc biệt với chất liệu da cao cấp và logo thêu chìm sang trọng.", image_url: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400" },
     { id: 102, name: "Nike Air Max 270 React", price: 4190000, sales_count: 1205, category_name: "Air Max", slug: "nike-air-max-270-react", description: "Sự kết hợp hoàn hảo giữa công nghệ Air Max 270 và đế đệm React siêu nhẹ.", image_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" },
@@ -40,13 +40,13 @@
     { value: "oldest", label: "Cũ nhất" },
   ];
 
-  // Các biến toàn cục phục vụ thuật toán phân trang
+  
   let allProducts = [];
   let currentPage = 1;
   let currentSort = null;
   const itemsPerPage = 10;
 
-  // Xử lý nút Mua ngay trên trang sản phẩm để chuyển hướng đến trang chi tiết
+  
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".buy-btn");
     if (!btn) return;
@@ -60,9 +60,9 @@
     }
   });
 
-  // ==========================================
-  // SẮP XẾP SẢN PHẨM
-  // ==========================================
+  
+  
+  
   function getProductPrice(product) {
     const sale = parseFloat(product.sale_price);
     const base = parseFloat(product.price);
@@ -136,10 +136,10 @@
     });
   }
 
-  // ==========================================
-  // HÀM LẤY SẢN PHẨM (FETCH PRODUCTS)
-  // Ưu tiên lấy từ MySQL thông qua API, tự động dự phòng sang Mock Data
-  // ==========================================
+  
+  
+  
+  
   async function fetchProducts() {
     try {
       const res = await fetch("api/admin_api.php?action=get_products");
@@ -159,10 +159,10 @@
     updateCatalogPage();
   }
 
-  // ==========================================
-  // HÀM RENDER DANH SÁCH SẢN PHẨM DỰA TRÊN TRANG HIỆN TẠI
-  // Tận dụng chính xác các class CSS có sẵn của hệ thống (.product-row)
-  // ==========================================
+  
+  
+  
+  
   function renderProducts(products) {
     const container = document.getElementById("home-product-list");
     if (!container) return;
@@ -173,7 +173,7 @@
     }
 
     container.innerHTML = products.map(p => `
-      <!-- Tận dụng class CSS gốc .product-row để giao diện đồng bộ -->
+      
       <div class="product-row">
         <div class="product-row-info">
           <div class="row-top">
@@ -197,9 +197,9 @@
     if (window.lucide) lucide.createIcons();
   }
 
-  // ==========================================
-  // HÀM RENDER THANH PHÂN TRANG (PAGINATION BAR RENDERER)
-  // ==========================================
+  
+  
+  
   function renderPagination(totalItems) {
     const container = document.getElementById("pagination-container");
     if (!container) return;
@@ -212,14 +212,14 @@
 
     let html = "";
 
-    // Nút "Trước" (Prev)
+    
     html += `<button class="pag-btn" id="pag-prev" ${currentPage === 1 ? 'disabled' : ''}>
       <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i> Trước
     </button>`;
 
     html += `<div class="pag-pages">`;
 
-    // Tính toán thuật toán hiển thị số trang dạng "1 2 3 ... hoặc rút gọn"
+    
     const maxVisiblePages = 5;
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
@@ -248,7 +248,7 @@
 
     html += `</div>`;
 
-    // Nút "Sau" (Next)
+    
     html += `<button class="pag-btn" id="pag-next" ${currentPage === totalPages ? 'disabled' : ''}>
       Sau <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
     </button>`;
@@ -257,17 +257,17 @@
 
     if (window.lucide) lucide.createIcons();
 
-    // Lắng nghe sự kiện click trên các nút số trang
+    
     container.querySelectorAll(".pag-page").forEach(btn => {
       btn.addEventListener("click", () => {
         currentPage = parseInt(btn.getAttribute("data-page"));
         updateCatalogPage();
-        // Cuộn trang lên trên để khách dễ quan sát sản phẩm mới
+        
         document.querySelector(".catalog-hero").scrollIntoView({ behavior: 'smooth' });
       });
     });
 
-    // Lắng nghe nút Trước
+    
     const prevBtn = document.getElementById("pag-prev");
     if (prevBtn) {
       prevBtn.addEventListener("click", () => {
@@ -279,7 +279,7 @@
       });
     }
 
-    // Lắng nghe nút Sau
+    
     const nextBtn = document.getElementById("pag-next");
     if (nextBtn) {
       nextBtn.addEventListener("click", () => {
@@ -292,7 +292,7 @@
     }
   }
 
-  // Cập nhật trạng thái trang
+  
   function updateCatalogPage() {
     const sorted = getSortedProducts();
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -308,10 +308,10 @@
   fetchProducts();
 
 
-  // ==========================================
-  // TÍCH HỢP WIDGET CHATBOT VÀ ĐỒNG BỘ BROADCAST KÊNH CHAT
-  // (Đồng bộ đầy đủ tính năng Livechat của hệ thống chính)
-  // ==========================================
+  
+  
+  
+  
   const QUEUES_KEY = "live_chat_queues";
   const chatChannel = new BroadcastChannel("chat_system");
   

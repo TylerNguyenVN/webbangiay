@@ -30,7 +30,7 @@
         <div class="light-hero-container">
           <div class="light-hero-bg">
             <div class="light-hero-glow"></div>
-            <img src="https://i.pinimg.com/1200x/a5/28/b4/a528b41b751bda231e92b86ce7a93491.jpg" alt="Nike Speed">
+            <img src="https://i.pinimg.com/1200x/91/83/39/918339710f6a5617f9e6a7e37e0d09c8.jpg" alt="Nike Speed">
           </div>
           <div class="light-hero-content">
             <span class="hero-tag">BỘ SƯU TẬP MỚI</span>
@@ -51,10 +51,11 @@
           <div class="title-divider"></div>
         </div>
         <div class="product-list" id="home-product-list">
-          <!-- Rendered by JS -->
+          
         </div>
         <div id="show-more-wrap" style="text-align: center; margin-top: 2rem; display: none;">
-          <button id="btn-show-more" style="background: transparent; border: 1px solid #053225; color: #053225; padding: 0.75rem 2rem; font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; letter-spacing: 0.05em;">
+          <button id="btn-show-more"
+            style="background: transparent; border: 1px solid #053225; color: #053225; padding: 0.75rem 2rem; font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; letter-spacing: 0.05em;">
             <span>XEM THÊM</span>
             <i data-lucide="chevron-down" style="width: 16px; height: 16px;"></i>
           </button>
@@ -154,7 +155,7 @@
 
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
-    // Function to load external HTML templates into placeholders
+    
     async function loadTemplate(placeholderId, filePath) {
       try {
         const response = await fetch(filePath);
@@ -166,20 +167,20 @@
       }
     }
 
-    // Load header and footer dynamically, then run scripts
+    
     async function initPageComponents() {
       await Promise.all([
         loadTemplate('header-placeholder', 'components/header.html?v=2'),
         loadTemplate('footer-placeholder', 'components/footer.html')
       ]);
 
-      // Re-initialize Lucide Icons since new HTML has been dynamically inserted
+      
       if (window.lucide) {
         lucide.createIcons();
       }
 
-      // Dynamically load the page logic script (js/script.js) so it runs
-      // after all header/footer DOM elements are available in the page
+      
+      
       const script = document.createElement('script');
       script.src = 'js/script.js?v=' + Date.now();
       document.body.appendChild(script);

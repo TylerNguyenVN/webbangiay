@@ -1,8 +1,5 @@
 <?php
-/**
- * DATABASE CONNECTOR HELPER
- * Author: Senior Fullstack Developer
- */
+
 
 function getDbConnection() {
     $host = '127.0.0.1';
@@ -21,7 +18,7 @@ function getDbConnection() {
     try {
         return new PDO($dsn, $user, $pass, $options);
     } catch (\PDOException $e) {
-        // Send clean JSON 500 error response to Frontend in case of DB failure
+        
         header("Content-Type: application/json", true, 500);
         echo json_encode([
             "success" => false, 

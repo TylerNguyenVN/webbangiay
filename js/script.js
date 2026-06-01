@@ -33,9 +33,9 @@
     });
   }
 
-  // ==============================================
-  // HÀM HIỂN THỊ WISHLIST OVERLAY (GLOBAL)
-  // ==============================================
+  
+  
+  
   window.renderWishlistOverlay = function() {
     const container = document.getElementById("wishlist-items-container");
     if (!container) return;
@@ -99,13 +99,13 @@
     }, 4500);
   }
 
-  // Xử lý nút Mua ngay bằng Event Delegation vì các sản phẩm có thể được render động
+  
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".buy-btn");
     if (!btn) return;
     
-    // Nếu nút nằm trong danh sách .products-section hoặc .hero-cta thì cho phép
-    // Nhưng tránh bắt nhầm các nút khác
+    
+    
     if(btn.classList.contains("text-only") || btn.classList.contains("hero-cta") || btn.classList.contains("add-btn")) {
       e.preventDefault();
       
@@ -130,7 +130,7 @@
     }
   });
 
-  // Tải danh sách sản phẩm động từ Database cho Trang chủ
+  
   let allProducts = [];
 
   function renderHomeProducts(products) {
@@ -163,7 +163,7 @@
 
   async function fetchProductsForHome() {
     const container = document.getElementById("home-product-list");
-    if (!container) return; // Không phải trang chủ
+    if (!container) return; 
 
     try {
       const res = await fetch("api/admin_api.php?action=get_products");
@@ -171,7 +171,7 @@
       if (result.success && result.data.length > 0) {
         allProducts = result.data;
         
-        // Lấy tối đa 4 sản phẩm mới nhất
+        
         renderHomeProducts(allProducts.slice(0, 4));
 
         const showMoreWrap = document.getElementById("show-more-wrap");
@@ -294,7 +294,7 @@
     activeChatId = "chat_" + currentUserProfile.id;
   }
 
-  // (Handled dynamically on syncWithDatabase below)
+  
 
   let currentRole = "customer";
   try {
@@ -304,7 +304,7 @@
     }
   } catch(e) {}
   let activeChatId = null;
-  let widgetTab = "all"; // 'all', 'unread', 'completed'
+  let widgetTab = "all"; 
 
   const chatbotToggleBtn = document.getElementById("chatbot-toggle-btn");
   const chatWindow = document.getElementById("chat-window");
@@ -377,7 +377,7 @@
           }
         }
 
-        // Show typing indicator in header status if agent is typing
+        
         if (activeChat.isTyping && activeChat.status === "human") {
           chatHeaderStatus.textContent = "Nhân viên đang soạn tin...";
         }
@@ -433,7 +433,7 @@
     let totalUnread = 0;
     const chats = getChats();
 
-    // Tính toán số lượng cần xử lý cho Widget Admin Panel
+    
     const systemUnreadCount = chats.filter(chat => {
       const isRead = chat.isRead !== undefined ? chat.isRead : true;
       const unreadCount = chat.unreadCount !== undefined ? chat.unreadCount : (chat.unread || 0);
@@ -446,14 +446,14 @@
     }
 
     chats.forEach(chat => {
-      // Khởi tạo các trường quản lý đọc/chưa đọc nếu chưa có
+      
       if (chat.isRead === undefined) chat.isRead = true;
       if (chat.unreadCount === undefined) chat.unreadCount = chat.unread || 0;
 
-      // Tính tổng tin nhắn chưa đọc cho badge ngoài
+      
       totalUnread += (chat.unread || 0);
 
-      // Bộ lọc theo tab của widget
+      
       let isVisible = true;
       if (widgetTab === "unread") {
         isVisible = chat.status !== "closed" && (!chat.isRead || chat.unreadCount > 0);
@@ -592,7 +592,7 @@
       });
     });
 
-    // Lắng nghe sự kiện click trên các nút lọc admin của widget
+    
     const filterBtns = document.querySelectorAll(".admin-filters .filter-btn");
     filterBtns.forEach((btn, idx) => {
       btn.addEventListener("click", () => {
@@ -642,7 +642,7 @@
       return "Dạ tôi đã tiếp nhận câu hỏi của bạn. Hệ thống AI đang phân tích dữ liệu, hoặc bạn cũng có thể gõ 'gặp nhân viên' để tôi chuyển hướng cuộc gọi đến nhân viên tư vấn hỗ trợ trực tiếp nhé!";
     }
 
-    // Broadcast customer typing status in real-time
+    
     let customerTypingTimeout = null;
     chatInput.addEventListener("keyup", () => {
       if (currentRole === "customer" && activeChatId) {
@@ -652,7 +652,7 @@
           chat.isUserTyping = true;
           saveChats(chats);
 
-          // Broadcast typing signal
+          
           chatChannel.postMessage({
             type: "CUSTOMER_TYPING",
             chatId: activeChatId,
@@ -668,7 +668,7 @@
             freshChat.isUserTyping = false;
             saveChats(freshChats);
 
-            // Broadcast stopped typing signal
+            
             chatChannel.postMessage({
               type: "CUSTOMER_TYPING",
               chatId: activeChatId,
@@ -823,7 +823,7 @@
       const queues = getChats();
       let session = queues.find(c => c.id === chatId);
 
-      // Nếu là Admin và nhận được tin nhắn mới từ khách hàng mới chưa có trong list
+      
       if (!session && chatId && currentRole !== "customer") {
         session = {
           id: chatId,
@@ -1056,7 +1056,7 @@
     syncWithDatabase();
   }
 
-  // Load search controller dynamically since scripts in innerHTML don't execute
+  
   const searchScript = document.createElement('script');
   searchScript.src = 'js/search.js?v=' + Date.now();
   searchScript.onload = () => {

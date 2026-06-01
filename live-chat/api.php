@@ -12,7 +12,7 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // 1. Tạo bảng chat_data để lưu trữ JSON state
+    
     $pdo->exec("CREATE TABLE IF NOT EXISTS chat_data (
         id INT AUTO_INCREMENT PRIMARY KEY,
         data_key VARCHAR(50) UNIQUE,
@@ -20,7 +20,7 @@ try {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
-    // 2. Tạo bảng chatbot_knowledge để lưu trữ cặp tri thức huấn luyện của Admin
+    
     $pdo->exec("CREATE TABLE IF NOT EXISTS chatbot_knowledge (
         id INT AUTO_INCREMENT PRIMARY KEY,
         query VARCHAR(255) UNIQUE NOT NULL,
@@ -41,7 +41,7 @@ $action = $_GET['action'] ?? '';
 if ($method === 'POST') {
     $input = json_decode(file_get_contents("php://input"), true);
     
-    // Yêu cầu nạp tri thức huấn luyện AI từ Admin
+    
     if ($action === 'inject_knowledge') {
         $q = trim($input['query'] ?? '');
         $cat = trim($input['category'] ?? 'Product Inquiry > General');
@@ -61,27 +61,27 @@ if ($method === 'POST') {
         exit;
     }
     
-    // Gọi OpenAI API (ChatGPT) để trả lời khách hàng
+    
     if ($action === 'query_ai') {
         $userQuestion = trim($input['question'] ?? '');
-        $chatHistory = $input['messages'] ?? []; // Có thể truyền lịch sử [ {role: "user", content: "..."}, ... ]
+        $chatHistory = $input['messages'] ?? []; 
         
         if (empty($userQuestion) && empty($chatHistory)) {
             echo json_encode(["success" => true, "answer" => null]);
             exit;
         }
         
-        $openAiKey = "YOUR_OPENAI_API_KEY"; // Nhập API Key thực tế của bạn
+        $openAiKey = "YOUR_OPENAI_API_KEY"; 
         
         $systemPrompt = [
             "role" => "system",
             "content" => "Bạn là trợ lý ảo thông minh của cửa hàng giày TL Shop (Tyler Store). Bạn chuyên tư vấn về các dòng giày đá bóng Nike như Tiempo, Mercurial, Phantom. Hãy trả lời thân thiện, ngắn gọn bằng tiếng Việt, tập trung vào việc hỗ trợ chọn size và giải đáp thắc mắc về đơn hàng."
         ];
         
-        // Lắp ráp tin nhắn
+        
         $messages = [$systemPrompt];
         
-        // Nạp lịch sử nếu Frontend có truyền lên
+        
         if (is_array($chatHistory) && !empty($chatHistory)) {
             foreach ($chatHistory as $msg) {
                 if (isset($msg['role']) && isset($msg['content'])) {
@@ -90,7 +90,7 @@ if ($method === 'POST') {
             }
         }
         
-        // Nạp tin nhắn hiện tại của User
+        
         if (!empty($userQuestion)) {
             $messages[] = ["role" => "user", "content" => $userQuestion];
         }
@@ -131,7 +131,7 @@ if ($method === 'POST') {
         exit;
     }
 
-    // Yêu cầu lưu trữ danh sách câu hỏi chưa giải quyết (Unresolved Queries) từ Admin
+    
     if ($action === 'save_unresolved') {
         $queries = $input['queries'] ?? [];
         $queriesJson = json_encode($queries, JSON_UNESCAPED_UNICODE);
@@ -144,7 +144,7 @@ if ($method === 'POST') {
         exit;
     }
 
-    // Mặc định lưu queues tin nhắn
+    
     if (!isset($input['queues'])) {
         http_response_code(400);
         echo json_encode(["success" => false, "message" => "Thiếu dữ liệu queues."]);
@@ -162,7 +162,7 @@ if ($method === 'POST') {
 }
 
 if ($method === 'GET') {
-    // Admin lấy danh sách câu hỏi chưa giải quyết
+    
     if ($action === 'get_unresolved') {
         $stmt = $pdo->prepare("SELECT data_value FROM chat_data WHERE data_key = 'unresolved_queries' LIMIT 1");
         $stmt->execute();
@@ -177,13 +177,13 @@ if ($method === 'GET') {
         exit;
     }
 
-    // Lấy thông tin phiên đăng nhập người dùng (Option B API)
+    
     if ($action === 'get_logged_in_user') {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Kiểm tra xem có lưu session trong website root không
+        
         if (isset($_SESSION['user'])) {
             echo json_encode(["success" => true, "user" => $_SESSION['user']]);
         } else {
@@ -192,7 +192,7 @@ if ($method === 'GET') {
         exit;
     }
 
-    // Mặc định lấy queues tin nhắn hoặc lọc qua parameters
+    
     $stmt = $pdo->prepare("SELECT data_value FROM chat_data WHERE data_key = 'queues_state' LIMIT 1");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -202,7 +202,7 @@ if ($method === 'GET') {
         $queues = json_decode($result['data_value'], true);
     }
     
-    // Hỗ trợ lọc qua query parameters (?filter=unread hoặc ?status=unread hoặc ?status=closed)
+    
     $filter = $_GET['filter'] ?? $_GET['status'] ?? '';
     if ($filter === 'unread') {
         $queues = array_filter($queues, function($chat) {

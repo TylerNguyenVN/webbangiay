@@ -1,10 +1,8 @@
-/**
- * NIKE ELITE - Product Detail Script
- */
+
 (() => {
-  // ==============================================
-  // HIỂN THỊ TRẠNG THÁI ĐĂNG NHẬP (HEADER)
-  // ==============================================
+  
+  
+  
   const currentUserStr = localStorage.getItem("nike_current_user");
   const authStatusLight = document.getElementById("auth-status-light");
   const authStatusDark = document.getElementById("auth-status-dark");
@@ -43,9 +41,9 @@
     }
   }
 
-  // ==============================================
-  // HÀM HIỂN THỊ WISHLIST OVERLAY (GLOBAL)
-  // ==============================================
+  
+  
+  
   window.renderWishlistOverlay = function() {
     const container = document.getElementById("wishlist-items-container");
     if (!container) return;
@@ -87,7 +85,7 @@
   const urlParams = new URLSearchParams(window.location.search);
   const paramId = urlParams.get('id');
 
-  // Các biến trạng thái của trang chi tiết
+  
   let currentSelectedSize = "36";
   let activeWishlisted = false;
   let PRODUCT = null;
@@ -102,9 +100,9 @@
     return normalized;
   }
 
-  // ==============================================
-  // 2. KHAI BÁO CÁC DOM ELEMENT
-  // ==============================================
+  
+  
+  
   const prodMainImg = document.getElementById("prod-main-img");
   const productThumbGrid = document.getElementById("product-thumbnails");
   const productSizeContainer = document.getElementById("product-size-container");
@@ -118,9 +116,9 @@
   const prodPriceText = document.getElementById("prod-price-text");
   const prodDescBody = document.getElementById("prod-desc-body");
 
-  // ==============================================
-  // 3. HIỂN THỊ DỮ LIỆU ĐỘNG & ĐỒNG BỘ HEADER
-  // ==============================================
+  
+  
+  
   async function initProductDetail() {
     try {
       const res = await fetch(`api/get_product.php?id=${paramId || 'nike-air-max-tw'}&t=${Date.now()}`);
@@ -132,7 +130,7 @@
       }
       PRODUCT = data.product;
 
-      // Map lại cấu trúc DB về cho logic cũ nếu cần
+      
       if(!PRODUCT.desc) PRODUCT.desc = PRODUCT.description;
 
       if (prodMainImg) prodMainImg.src = PRODUCT.image_url || PRODUCT.image;
@@ -143,7 +141,7 @@
       if (prodDescBody) prodDescBody.textContent = PRODUCT.desc;
 
       if (prodSpecsBody && PRODUCT.specifications) {
-        // Đảm bảo parse JSON nếu nó là chuỗi từ DB
+        
         let specs = typeof PRODUCT.specifications === 'string' ? JSON.parse(PRODUCT.specifications) : PRODUCT.specifications;
         if(Array.isArray(specs)) {
           prodSpecsBody.innerHTML = specs.map(spec => `
@@ -155,7 +153,7 @@
         }
       }
 
-      // Xử lý Wishlist khi PRODUCT đã load
+      
       if (prodWishlistBtn) {
         let wishlistItems = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
         activeWishlisted = wishlistItems.some(item => item.id === PRODUCT.slug || item.id === PRODUCT.id);
@@ -164,7 +162,7 @@
         }
       }
       
-      // Xử lý Sizes (giày: 36–45, 5 size mỗi hàng)
+      
       if (productSizeContainer) {
          let rawSizes = PRODUCT.sizes
            ? (typeof PRODUCT.sizes === "string" ? JSON.parse(PRODUCT.sizes) : PRODUCT.sizes)
@@ -185,7 +183,7 @@
 
   initProductDetail();
 
-// Đồng bộ số lượng hiển thị trên Badge của Giỏ hàng (Header)
+
 function updateCartHeaderBadge() {
   const cartItems = JSON.parse(localStorage.getItem("nike_cart_items")) || [];
   const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -203,11 +201,11 @@ function updateCartHeaderBadge() {
 
 updateCartHeaderBadge();
 
-// ==============================================
-// 4. XỬ LÝ SỰ KIỆN TƯƠNG TÁC GIAO DIỆN (UI)
-// ==============================================
 
-// Tương tác đổi ảnh chính khi Click hoặc Hover ảnh thu nhỏ (Thumbnails)
+
+
+
+
 if (productThumbGrid) {
   productThumbGrid.addEventListener("click", (e) => {
     const thumbCard = e.target.closest(".thumb-card");
@@ -236,7 +234,7 @@ if (productThumbGrid) {
   });
 }
 
-// Selection interaction for sizes list
+
 if (productSizeContainer) {
   productSizeContainer.addEventListener("click", (e) => {
     const btn = e.target.closest(".size-pill-btn");
@@ -248,7 +246,7 @@ if (productSizeContainer) {
   });
 }
 
-// Co giãn các mục chi tiết (Accordions: Giới thiệu, Giao hàng, Thông số)
+
 const accordionItems = document.querySelectorAll(".accordion-item");
 accordionItems.forEach(item => {
   const trigger = item.querySelector(".accordion-trigger");
@@ -261,10 +259,10 @@ accordionItems.forEach(item => {
   });
 });
 
-// Nút Yêu thích (Wishlist) trái tim
+
 if (prodWishlistBtn) {
   prodWishlistBtn.addEventListener("click", () => {
-    if(!PRODUCT) return; // Đợi load
+    if(!PRODUCT) return; 
 
     activeWishlisted = !activeWishlisted;
     let items = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
@@ -295,13 +293,13 @@ if (prodWishlistBtn) {
   });
 }
 
-// Nút Thêm vào giỏ hàng
+
 if (prodAddToCartBtn) {
   prodAddToCartBtn.addEventListener("click", () => {
     if(!PRODUCT) return;
     const cartBtn = document.getElementById("header-cart-btn");
     
-    // Thu thập dữ liệu giỏ hàng
+    
     const cartItem = {
       product: {
         id: PRODUCT.slug || PRODUCT.id,
@@ -314,28 +312,28 @@ if (prodAddToCartBtn) {
       quantity: 1
     };
 
-    // Lấy giỏ hàng từ localStorage
+    
     let currentCart = JSON.parse(localStorage.getItem("nike_cart_items")) || [];
 
-    // Kiểm tra sản phẩm & size đã tồn tại chưa
+    
     const existingIndex = currentCart.findIndex(item => 
       item.product.id === cartItem.product.id && item.selectedSize === cartItem.selectedSize
     );
 
     if (existingIndex > -1) {
-      currentCart[existingIndex].quantity += 1; // Tăng số lượng
+      currentCart[existingIndex].quantity += 1; 
     } else {
-      currentCart.push(cartItem); // Thêm mới
+      currentCart.push(cartItem); 
     }
 
-    // Lưu lại vào LocalStorage
+    
     localStorage.setItem("nike_cart_items", JSON.stringify(currentCart));
 
-    // Cập nhật giao diện
+    
     updateCartHeaderBadge();
     showToastNotification("Đã thêm vào giỏ hàng", `${PRODUCT.name} (Size: ${currentSelectedSize})`);
 
-    // Animation nảy nút giỏ hàng trên header
+    
     if (cartBtn) {
       cartBtn.style.transform = "scale(1.2)";
       setTimeout(() => {
@@ -345,11 +343,11 @@ if (prodAddToCartBtn) {
   });
 }
 
-// ==============================================
-// 5. TOAST NOTIFICATION VÀ LƯU GIỎ HÀNG LOCALSTORAGE
-// ==============================================
 
-// Giả lập thông báo Toast cao cấp của Nike Elite
+
+
+
+
 function showToastNotification(message, description = "") {
   if (!toastContainer) return;
 
@@ -367,7 +365,7 @@ function showToastNotification(message, description = "") {
   toastContainer.appendChild(toast);
   if (window.lucide) lucide.createIcons();
 
-  // Tự động xoá sau 4.2 giây
+  
   setTimeout(() => {
     toast.classList.add("fade-out");
     setTimeout(() => {

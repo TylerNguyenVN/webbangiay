@@ -3,7 +3,7 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 
-// Kết nối Database
+
 $host = '127.0.0.1';
 $db   = 'webbangiay_db';
 $user = 'root';

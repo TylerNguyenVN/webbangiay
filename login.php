@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Nhận dữ liệu từ Frontend
+
 $data = json_decode(file_get_contents("php://input"), true);
 $email = trim($data['email'] ?? '');
 $password = $data['password'] ?? '';
@@ -23,7 +23,7 @@ if (empty($email) || empty($password)) {
     exit;
 }
 
-// Tìm user theo email
+
 $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
 $stmt->execute([$email]);
 $userRecord = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -34,21 +34,21 @@ if (!$userRecord) {
     exit;
 }
 
-// Kiểm tra trạng thái khóa tài khoản
+
 if (isset($userRecord['is_locked']) && $userRecord['is_locked'] == 1) {
     http_response_code(403);
     echo json_encode(["success" => false, "message" => "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên."]);
     exit;
 }
 
-// Kiểm tra mật khẩu
+
 if (!password_verify($password, $userRecord['password'])) {
     http_response_code(401);
     echo json_encode(["success" => false, "message" => "Sai email hoặc mật khẩu!"]);
     exit;
 }
 
-// Đăng nhập thành công, không trả về password
+
 http_response_code(200);
 echo json_encode([
     "success" => true,
@@ -56,7 +56,7 @@ echo json_encode([
     "user" => [
         "id" => $userRecord['id'],
         "username" => $userRecord['username'],
-        "name" => $userRecord['username'], // Frontend cart.js expects user.name
+        "name" => $userRecord['username'], 
         "email" => $userRecord['email'],
         "phone" => $userRecord['phone'],
         "address" => $userRecord['address'],

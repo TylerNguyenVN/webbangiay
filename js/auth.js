@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       
       try {
-        // Gọi API PHP thay vì lưu LocalStorage
+        
         const response = await fetch("register.php", {
           method: "POST",
           headers: {
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Toggle password visibility
+  
   const togglePasswordBtns = document.querySelectorAll(".toggle-password");
   togglePasswordBtns.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// Hàm callback nhận JWT token từ Google
+
 window.handleGoogleCredentialResponse = async (response) => {
   const credential = response.credential;
   
@@ -212,7 +212,7 @@ window.handleGoogleCredentialResponse = async (response) => {
       };
       localStorage.setItem("nike_current_user", JSON.stringify(sessionUser));
       
-      // Hiển thị thông báo (nếu có container)
+      
       const container = document.getElementById("notification-container");
       if (container) {
         const notif = document.createElement("div");

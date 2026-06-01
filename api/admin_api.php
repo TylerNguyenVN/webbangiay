@@ -1,9 +1,5 @@
 <?php
-/**
- * TL SHOP - ADMIN DASHBOARD COMPREHENSIVE BACKEND API
- * Author: Senior Backend Developer
- * Technology: PHP PDO Prepared Statements
- */
+
 
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
@@ -12,29 +8,29 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 require_once __DIR__ . '/db.php';
 
-// Tự động kiểm tra và thêm các cột cần thiết cho quản lý tài khoản (role, is_locked)
+
 try {
     $db = getDbConnection();
     
-    // Thêm cột 'role' nếu chưa tồn tại
+    
     $checkRole = $db->query("SHOW COLUMNS FROM `users` LIKE 'role'");
     if (!$checkRole->fetch()) {
         $db->exec("ALTER TABLE `users` ADD COLUMN `role` VARCHAR(20) DEFAULT 'customer' COMMENT 'Quyền: customer, staff, admin'");
     }
     
-    // Thêm cột 'is_locked' nếu chưa tồn tại
+    
     $checkLocked = $db->query("SHOW COLUMNS FROM `users` LIKE 'is_locked'");
     if (!$checkLocked->fetch()) {
         $db->exec("ALTER TABLE `users` ADD COLUMN `is_locked` TINYINT(1) DEFAULT 0 COMMENT 'Trạng thái khóa tài khoản: 0 = Hoạt động, 1 = Đã khóa'");
     }
 } catch (Exception $e) {
-    // Bỏ qua lỗi di chuyển nếu bảng chưa sẵn sàng hoặc đã có
+    
 }
 
-// Lấy action từ Query String
+
 $action = $_GET['action'] ?? '';
 
-// Nhận dữ liệu POST dạng JSON
+
 $input = json_decode(file_get_contents("php://input"), true) ?? $_POST;
 
 $response = ["success" => false, "message" => "Invalid action."];
@@ -44,19 +40,19 @@ try {
 
     switch ($action) {
         
-        // ==========================================
-        // 0. DASHBOARD STATS
-        // ==========================================
+        
+        
+        
         case 'get_dashboard_stats':
-            // Doanh thu (từ hóa đơn hoàn thành/đã thanh toán hoặc tất cả tùy chọn)
+            
             $stmtRev = $db->query("SELECT SUM(total_amount) AS revenue FROM orders WHERE status != 'cancelled'");
             $revenue = $stmtRev->fetch()['revenue'] ?? 0;
 
-            // Tổng đơn hàng
+            
             $stmtOrders = $db->query("SELECT COUNT(*) AS total FROM orders");
             $totalOrders = $stmtOrders->fetch()['total'] ?? 0;
 
-            // Người dùng mới
+            
             $stmtUsers = $db->query("SELECT COUNT(*) AS total FROM users");
             $totalUsers = $stmtUsers->fetch()['total'] ?? 0;
 
@@ -70,9 +66,9 @@ try {
             ];
             break;
 
-        // ==========================================
-        // 1. DANH MỤC (CATEGORIES) CRUD
-        // ==========================================
+        
+        
+        
         case 'get_categories':
             $stmt = $db->query("SELECT c1.*, c2.name AS parent_name FROM categories c1 LEFT JOIN categories c2 ON c1.parent_id = c2.id ORDER BY c1.id DESC");
             $response = ["success" => true, "data" => $stmt->fetchAll()];
@@ -122,14 +118,14 @@ try {
             $response = ["success" => true, "message" => "Xóa danh mục thành công!"];
             break;
 
-        // ==========================================
-        // 2. SẢN PHẨM & BIẾN THỂ (PRODUCTS & VARIANTS)
-        // ==========================================
+        
+        
+        
         case 'get_products':
             $stmt = $db->query("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id ORDER BY p.id DESC");
             $products = $stmt->fetchAll();
             
-            // Lấy kèm biến thể cho từng sản phẩm
+            
             foreach ($products as &$prod) {
                 $vStmt = $db->prepare("SELECT * FROM product_variants WHERE product_id = ?");
                 $vStmt->execute([$prod['id']]);
@@ -147,7 +143,7 @@ try {
             $sale_price = !empty($input['sale_price']) ? floatval($input['sale_price']) : null;
             $description = trim($input['description'] ?? '');
             $image_url = trim($input['image_url'] ?? '');
-            $variants = $input['variants'] ?? []; // Mảng chứa biến thể: [['size' => '42', 'color' => 'Black', 'sku' => '...', 'stock' => 10], ...]
+            $variants = $input['variants'] ?? []; 
 
             if (empty($name) || empty($slug) || $price <= 0) {
                 $response = ["success" => false, "message" => "Tên, Slug, và Giá bán không hợp lệ."];
@@ -156,12 +152,12 @@ try {
 
             $db->beginTransaction();
 
-            // 1. Chèn sản phẩm
+            
             $stmt = $db->prepare("INSERT INTO products (category_id, name, slug, price, sale_price, description, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$category_id, $name, $slug, $price, $sale_price, $description, $image_url]);
             $productId = $db->lastInsertId();
 
-            // 2. Chèn các biến thể variants (nếu có)
+            
             if (!empty($variants) && is_array($variants)) {
                 $vStmt = $db->prepare("INSERT INTO product_variants (product_id, sku, size, color, stock_qty) VALUES (?, ?, ?, ?, ?)");
                 foreach ($variants as $v) {
@@ -198,13 +194,13 @@ try {
 
             $db->beginTransaction();
 
-            // 1. Cập nhật thông tin cơ bản sản phẩm
+            
             $stmt = $db->prepare("UPDATE products SET category_id = ?, name = ?, slug = ?, price = ?, sale_price = ?, description = ?, image_url = ? WHERE id = ?");
             $stmt->execute([$category_id, $name, $slug, $price, $sale_price, $description, $image_url, $id]);
 
-            // 2. Cập nhật các biến thể
+            
             if (is_array($variants)) {
-                // Lấy tất cả biến thể hiện tại để so khớp
+                
                 $exStmt = $db->prepare("SELECT id, size, color FROM product_variants WHERE product_id = ?");
                 $exStmt->execute([$id]);
                 $existing = $exStmt->fetchAll();
@@ -219,7 +215,7 @@ try {
 
                     if (empty($size)) continue;
 
-                    // Kiểm tra xem đã có chưa
+                    
                     $foundId = null;
                     foreach ($existing as $ex) {
                         if ($ex['size'] === $size && $ex['color'] === $color) {
@@ -229,19 +225,19 @@ try {
                     }
 
                     if ($foundId !== null) {
-                        // Cập nhật biến thể hiện có
+                        
                         $upStmt = $db->prepare("UPDATE product_variants SET sku = ?, stock_qty = ? WHERE id = ?");
                         $upStmt->execute([$sku, $stock, $foundId]);
                         $keptIds[] = $foundId;
                     } else {
-                        // Thêm mới biến thể
+                        
                         $insStmt = $db->prepare("INSERT INTO product_variants (product_id, sku, size, color, stock_qty) VALUES (?, ?, ?, ?, ?)");
                         $insStmt->execute([$id, $sku, $size, $color, $stock]);
                         $keptIds[] = $db->lastInsertId();
                     }
                 }
 
-                // Xóa các biến thể không còn được giữ lại
+                
                 if (!empty($keptIds)) {
                     $placeholders = implode(',', array_fill(0, count($keptIds), '?'));
                     $delStmt = $db->prepare("DELETE FROM product_variants WHERE product_id = ? AND id NOT IN ($placeholders)");
@@ -268,9 +264,9 @@ try {
             $response = ["success" => true, "message" => "Xóa sản phẩm thành công!"];
             break;
 
-        // ==========================================
-        // 3. QUẢN LÝ ĐƠN HÀNG (ORDERS) & TRỪ KHO
-        // ==========================================
+        
+        
+        
         case 'get_orders':
             $stmt = $db->query("SELECT o.*, u.username FROM orders o LEFT JOIN users u ON o.user_id = u.id ORDER BY o.id DESC");
             $orders = $stmt->fetchAll();
@@ -286,7 +282,7 @@ try {
 
         case 'update_order_status':
             $orderId = intval($input['order_id'] ?? 0);
-            $newStatus = trim($input['status'] ?? ''); // pending, processing, shipping, completed, cancelled
+            $newStatus = trim($input['status'] ?? ''); 
 
             if (!$orderId || empty($newStatus)) {
                 $response = ["success" => false, "message" => "Thiếu thông tin trạng thái."];
@@ -295,7 +291,7 @@ try {
 
             $db->beginTransaction();
 
-            // 1. Kiểm tra trạng thái hiện tại của đơn hàng
+            
             $stmtCheck = $db->prepare("SELECT `status` FROM orders WHERE id = ?");
             $stmtCheck->execute([$orderId]);
             $currentStatus = $stmtCheck->fetch()['status'] ?? '';
@@ -306,11 +302,11 @@ try {
                 break;
             }
 
-            // 2. Nếu chuyển trạng thái sang 'shipping' (Đang giao), tự động giảm trừ số lượng tồn kho tương ứng
-            // Đồng thời đảm bảo không trừ lặp nếu trạng thái trước đó đã là shipping hoặc completed
+            
+            
             if ($newStatus === 'shipping' && !in_array($currentStatus, ['shipping', 'completed'])) {
                 
-                // Lấy các sản phẩm trong đơn hàng
+                
                 $itemStmt = $db->prepare("SELECT variant_id, quantity, product_name, variant_info FROM order_items WHERE order_id = ?");
                 $itemStmt->execute([$orderId]);
                 $items = $itemStmt->fetchAll();
@@ -319,23 +315,23 @@ try {
                 
                 foreach ($items as $item) {
                     if (!empty($item['variant_id'])) {
-                        // Thực thi giảm kho, kiểm tra xem có đủ số lượng để trừ không
+                        
                         $updateStockStmt->execute([$item['quantity'], $item['variant_id'], $item['quantity']]);
                         
                         if ($updateStockStmt->rowCount() === 0) {
-                            // Kho không đủ hàng hoặc trừ thất bại
+                            
                             $db->rollBack();
                             $response = [
                                 "success" => false, 
                                 "message" => "Kho hàng không đủ số lượng cho sản phẩm: " . $item['product_name'] . " (" . $item['variant_info'] . ")"
                             ];
-                            break 2; // Thoát hẳn switch case
+                            break 2; 
                         }
                     }
                 }
             }
 
-            // 3. Cập nhật trạng thái đơn hàng
+            
             $stmtUpdate = $db->prepare("UPDATE orders SET status = ? WHERE id = ?");
             $stmtUpdate->execute([$newStatus, $orderId]);
 
@@ -343,9 +339,9 @@ try {
             $response = ["success" => true, "message" => "Cập nhật trạng thái đơn hàng và trừ kho thành công!"];
             break;
 
-        // ==========================================
-        // 4. QUẢN LÝ TÀI KHOẢN (USERS)
-        // ==========================================
+        
+        
+        
         case 'get_users':
             $stmt = $db->query("SELECT id, username, email, phone, address, role, is_locked, created_at FROM users ORDER BY id DESC");
             $response = ["success" => true, "data" => $stmt->fetchAll()];
@@ -353,7 +349,7 @@ try {
 
         case 'update_user_role':
             $userId = intval($input['user_id'] ?? 0);
-            $newRole = trim($input['role'] ?? 'customer'); // customer, staff, admin
+            $newRole = trim($input['role'] ?? 'customer'); 
 
             if (!$userId) {
                 $response = ["success" => false, "message" => "ID người dùng không hợp lệ."];
@@ -373,7 +369,7 @@ try {
                 break;
             }
 
-            // Lấy trạng thái khóa hiện tại
+            
             $stmtCheck = $db->prepare("SELECT is_locked FROM users WHERE id = ?");
             $stmtCheck->execute([$userId]);
             $isLocked = intval($stmtCheck->fetch()['is_locked'] ?? 0);
@@ -387,9 +383,9 @@ try {
             $response = ["success" => true, "message" => $msg, "is_locked" => $newLockState];
             break;
 
-        // ==========================================
-        // 5. QUẢN LÝ MÃ GIẢM GIÁ (COUPONS)
-        // ==========================================
+        
+        
+        
         case 'get_coupons':
             $stmt = $db->query("SELECT * FROM coupons ORDER BY id DESC");
             $response = ["success" => true, "data" => $stmt->fetchAll()];
@@ -397,7 +393,7 @@ try {
 
         case 'create_coupon':
             $code = strtoupper(trim($input['code'] ?? ''));
-            $type = trim($input['type'] ?? 'fixed'); // percentage, fixed
+            $type = trim($input['type'] ?? 'fixed'); 
             $value = floatval($input['value'] ?? 0);
             $min_order = floatval($input['min_order_value'] ?? 0);
             $limit = !empty($input['usage_limit']) ? intval($input['usage_limit']) : null;

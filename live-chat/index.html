@@ -6,12 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TL Shop | Hỗ Trợ Trực Tuyến</title>
 
-  <!-- Google Fonts -->
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS CDN -->
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -34,11 +34,11 @@
     }
   </script>
 
-  <!-- Lucide Icons -->
+  
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* Premium custom scrollbar styling */
+    
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
@@ -52,7 +52,7 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: rgba(0, 0, 0, 0.2);
     }
-    /* Wave animation for typing indicator */
+    
     .typing-dot {
       animation: typingWave 1.4s infinite ease-in-out;
     }
@@ -67,7 +67,7 @@
 
 <body class="bg-slate-50 font-sans h-full flex flex-col justify-between" style="background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 20px 20px;">
 
-  <!-- Main Showcase Area for testing widget -->
+  
   <main class="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-2xl mx-auto">
     <div class="bg-white/80 backdrop-blur-md border border-slate-200/60 p-10 rounded-3xl shadow-xl flex flex-col items-center">
       <div class="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-6 text-brand-600 shadow-md">
@@ -88,34 +88,34 @@
     </div>
   </main>
 
-  <!-- LIVE CHAT WIDGET WRAPPER -->
+  
   <div id="chat-widget-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
     
-    <!-- Floating Action Button (FAB) -->
+    
     <button id="chat-fab" onclick="toggleChatWindow()" class="group relative w-14 h-14 bg-gradient-to-tr from-brand-600 to-blue-500 hover:from-brand-700 hover:to-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer">
-      <!-- Unread Badge -->
+      
       <span id="unread-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-bounce hidden">1</span>
       
-      <!-- Icons Toggle -->
+      
       <i id="fab-chat-icon" data-lucide="message-circle" class="w-7 h-7 transition-all duration-300 transform group-hover:rotate-12"></i>
       <i id="fab-close-icon" data-lucide="x" class="w-7 h-7 hidden transition-all duration-300 transform group-hover:scale-110"></i>
       
-      <!-- Tooltip / Dynamic Welcome Banner -->
+      
       <span id="fab-tooltip" class="absolute right-16 bg-slate-900/90 text-white text-xs font-medium py-2.5 px-4 rounded-xl shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
         Bạn cần hỗ trợ? Trò chuyện ngay!
       </span>
     </button>
 
-    <!-- Sleek Chat Window -->
+    
     <div id="chat-window" class="hidden absolute bottom-18 right-0 w-[380px] max-w-[calc(100vw-2rem)] h-[580px] bg-white border border-slate-200/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-all duration-300 transform scale-95 opacity-0 origin-bottom-right">
       
-      <!-- Header -->
+      
       <div id="chat-header" class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white px-4 py-3.5 flex items-center justify-between border-b border-slate-700/30">
         <div class="flex items-center gap-3">
-          <!-- Live Status Avatar -->
+          
           <div class="relative">
             <div id="avatar-container" class="w-10 h-10 rounded-full flex items-center justify-center shadow-inner overflow-hidden border border-white/20 transition-all duration-300">
-              <!-- Dynamically rendered image or icon -->
+              
               <img id="avatar-image" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=256" class="w-full h-full object-cover hidden">
               <i id="avatar-icon" data-lucide="bot" class="w-5 h-5 text-blue-400"></i>
             </div>
@@ -124,9 +124,9 @@
           <div>
             <div class="flex items-center gap-1.5">
               <h3 id="header-title" class="font-semibold text-sm tracking-wide">Trợ Lý AI Smart</h3>
-              <!-- Status Badge -->
+              
               <span id="header-badge" class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-500/20 uppercase tracking-widest">AI</span>
-              <!-- Escalation Button (Get Human Help) -->
+              
               <button id="btn-get-human" onclick="escalateToHuman()" class="bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/20 text-[10px] font-bold px-2 py-0.5 rounded-md transition-all cursor-pointer">Gặp Nhân Viên</button>
             </div>
             <p id="header-status" class="text-slate-400 text-xs flex items-center gap-1">
@@ -139,12 +139,12 @@
         </button>
       </div>
 
-      <!-- Messages Area -->
+      
       <div id="chat-messages" class="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 custom-scrollbar bg-slate-50">
-        <!-- Messages will be injected here dynamically -->
+        
       </div>
 
-      <!-- Typing Indicator -->
+      
       <div id="chat-typing-container" class="px-4 py-2 bg-slate-50 border-t border-slate-100 hidden">
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-full bg-slate-200/80 flex items-center justify-center">
@@ -159,7 +159,7 @@
         </div>
       </div>
 
-      <!-- Footer / Input Form -->
+      
       <div id="chat-footer" class="p-3 bg-white border-t border-slate-100 flex flex-col gap-2">
         <form id="chat-form" onsubmit="handleUserSend(event)" class="flex items-center gap-2">
           <input type="text" id="chat-input" placeholder="Nhập câu hỏi tại đây..." autocomplete="off" class="flex-1 text-slate-800 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 text-sm px-4 py-2.5 rounded-xl outline-none transition-all duration-200">
@@ -177,35 +177,27 @@
   </div>
 
   <script>
-    // Database Storage Keys
+    
     const QUEUES_KEY = "live_chat_queues";
-    let ACTIVE_CHAT_ID = "chat_active"; // Initial default fallback
-    let currentUserProfile = null; // Stored user profile
+    let ACTIVE_CHAT_ID = "chat_active"; 
+    let currentUserProfile = null; 
 
-    // Setup Shared BroadcastChannel for Real-Time synchronization
+    
     const chatChannel = new BroadcastChannel("chat_system");
 
-    // ==========================================
-    // DATABASE / SESSION USER INTEGRATION SYSTEM
-    // ==========================================
     
-    // OPTION A: Server-Side Rendering (SSR)
-    // To implement Option A in PHP, your backend index.php would dynamically render session variables:
-    /*
-    window.currentUser = {
-      id: "<?php echo $_SESSION['user_id'] ?? ''; ?>",
-      name: "<?php echo $_SESSION['username'] ?? ''; ?>",
-      email: "<?php echo $_SESSION['email'] ?? ''; ?>",
-      phone: "<?php echo $_SESSION['phone'] ?? ''; ?>",
-      avatar: "<?php echo $_SESSION['avatar'] ?? ''; ?>"
-    };
-    */
+    
+    
+    
+    
+    
+    
     
     if (!window.currentUser) {
       window.currentUser = null;
     }
 
-    // OPTION B: API Fetching from Database Session Endpoint
+    
     async function fetchCurrentLoggedInUser() {
       try {
         const response = await fetch("api.php?action=get_logged_in_user");
@@ -219,7 +211,7 @@
         console.warn("Could not fetch user session from API, trying local storage fallback:", err);
       }
       
-      // Fallback: Check local storage for logged-in user in front-end
+      
       try {
         const localUser = localStorage.getItem("nike_current_user");
         if (localUser) {
@@ -230,14 +222,14 @@
       return null;
     }
 
-    // Initialize User & Chat Session dynamically based on database / guest fallback
+    
     async function initUserAndChat() {
-      // 1. Try Option A (Server-side rendering)
+      
       if (window.currentUser && window.currentUser.name) {
         currentUserProfile = window.currentUser;
       }
       
-      // 2. Try Option B (API Fetching)
+      
       if (!currentUserProfile) {
         const fetchedUser = await fetchCurrentLoggedInUser();
         if (fetchedUser) {
@@ -251,7 +243,7 @@
         }
       }
 
-      // 3. Fallback: Guest User Profile (Khách vãng lai #ID)
+      
       if (!currentUserProfile) {
         let guestProfile = JSON.parse(localStorage.getItem("live_chat_guest_profile"));
         if (!guestProfile) {
@@ -272,7 +264,7 @@
       console.log("Chat system initialized for user:", currentUserProfile, "Chat ID:", ACTIVE_CHAT_ID);
     }
 
-    // Listen to BroadcastChannel signals from Dashboard (Real-Time Agent events!)
+    
     chatChannel.onmessage = (event) => {
       const { type, chatId, message, agentName, isTyping } = event.data;
       if (chatId !== ACTIVE_CHAT_ID) return;
@@ -285,7 +277,7 @@
 
       switch (type) {
         case "AGENT_MESSAGE":
-          // Add agent reply instantly
+          
           session.messages.push(message);
           session.lastUpdated = Date.now();
           session.isTyping = false;
@@ -340,7 +332,7 @@
       }
     };
 
-    // DOM Elements
+    
     const chatWindow = document.getElementById("chat-window");
     const chatFab = document.getElementById("chat-fab");
     const fabChatIcon = document.getElementById("fab-chat-icon");
@@ -362,13 +354,13 @@
     let isWindowOpen = false;
     let localMsgCount = 0;
 
-    // Toggle Chat Window
+    
     function toggleChatWindow() {
       isWindowOpen = !isWindowOpen;
       
       if (isWindowOpen) {
         chatWindow.classList.remove("hidden");
-        // Trigger reflow for transition animation
+        
         void chatWindow.offsetWidth;
         chatWindow.classList.remove("scale-95", "opacity-0");
         chatWindow.classList.add("scale-100", "opacity-100");
@@ -392,7 +384,7 @@
       }
     }
 
-    // Helper function to save queues to both localStorage and MySQL DB
+    
     function saveQueuesState(queues) {
       localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
       fetch("api.php", {
@@ -402,7 +394,7 @@
       }).catch(err => console.error("Database save error:", err));
     }
 
-    // Load Chat Session from LocalStorage and Database
+    
     async function loadChatSession() {
       if (!currentUserProfile) {
         await initUserAndChat();
@@ -418,7 +410,7 @@
             queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
           }
 
-          // Dynamic user chat session generation
+          
           let session = queues.find(q => q.id === ACTIVE_CHAT_ID);
           if (!session) {
             session = {
@@ -477,13 +469,13 @@
       
       if (!session) return;
 
-      // Update Header according to status (AI vs Human Agent)
+      
       updateHeaderUI(session);
 
-      // Render Messages
+      
       renderMessages(session.messages);
 
-      // Sync unread status when window is closed
+      
       if (!isWindowOpen && session.messages.length > localMsgCount) {
         unreadBadge.textContent = session.messages.length - localMsgCount;
         unreadBadge.classList.remove("hidden");
@@ -492,7 +484,7 @@
         unreadBadge.classList.add("hidden");
       }
 
-      // Sync Agent Typing Indicator
+      
       if (session.isTyping && session.status === "human") {
         showTypingIndicator("Nhân viên đang soạn tin...", "user");
       } else {
@@ -500,7 +492,7 @@
       }
     }
 
-    // Update the Chat Header
+    
     function updateHeaderUI(session) {
       const getHumanBtn = document.getElementById("btn-get-human");
       
@@ -511,7 +503,7 @@
         headerBadge.className = "bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-500/20 uppercase tracking-widest";
         if (getHumanBtn) getHumanBtn.classList.remove("hidden");
         
-        // Show Bot Icon
+        
         avatarImage.classList.add("hidden");
         avatarIcon.classList.remove("hidden");
         avatarContainer.className = "w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shadow-inner overflow-hidden border border-white/20";
@@ -525,7 +517,7 @@
         headerBadge.className = "bg-amber-500/10 text-amber-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-amber-500/20 uppercase tracking-widest";
         if (getHumanBtn) getHumanBtn.classList.add("hidden");
         
-        // Show Handoff icon
+        
         avatarImage.classList.add("hidden");
         avatarIcon.classList.remove("hidden");
         avatarContainer.className = "w-10 h-10 rounded-full bg-amber-950 flex items-center justify-center shadow-inner overflow-hidden border border-amber-500/20";
@@ -539,7 +531,7 @@
         headerBadge.className = "bg-blue-500/10 text-blue-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-blue-500/20 uppercase tracking-widest";
         if (getHumanBtn) getHumanBtn.classList.add("hidden");
 
-        // Show Agent Profile Avatar
+        
         avatarImage.src = session.userAvatar; 
         avatarImage.classList.remove("hidden");
         avatarIcon.classList.add("hidden");
@@ -560,7 +552,7 @@
       }
     }
 
-    // Render Messages to Area
+    
     function renderMessages(messages) {
       chatMessages.innerHTML = "";
       
@@ -596,7 +588,7 @@
 
         const innerHTML = `
           <div class="flex gap-2.5 max-w-[80%] ${isUser ? 'flex-row-reverse' : 'flex-row'}">
-            <!-- Icon/Avatar -->
+            
             ${!isUser ? `
               <div class="w-8 h-8 rounded-full bg-slate-200 border border-slate-200 overflow-hidden flex items-center justify-center shadow-sm flex-shrink-0">
                 ${isBot ? `
@@ -609,7 +601,7 @@
               </div>
             ` : ''}
 
-            <!-- Bubble -->
+            
             <div>
               <div class="px-4 py-2.5 rounded-2xl text-sm shadow-sm ${
                 isUser 
@@ -632,14 +624,14 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Escape HTML to prevent XSS
+    
     function escapeHTML(str) {
       return str.replace(/[&<>'"]/g, 
         tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
       );
     }
 
-    // Typing Indicator Controller
+    
     function showTypingIndicator(text, sender) {
       typingText.textContent = text;
       if (sender === "bot") {
@@ -656,7 +648,7 @@
       typingContainer.classList.add("hidden");
     }
 
-    // Broadcast customer typing events dynamically
+    
     let customerTypingTimeout = null;
     chatInput.addEventListener("keyup", () => {
       const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
@@ -666,7 +658,7 @@
         session.isUserTyping = true;
         localStorage.setItem(QUEUES_KEY, JSON.stringify(queues));
         
-        // Broadcast typing signal
+        
         chatChannel.postMessage({
           type: "CUSTOMER_TYPING",
           chatId: ACTIVE_CHAT_ID,
@@ -682,7 +674,7 @@
           freshSession.isUserTyping = false;
           localStorage.setItem(QUEUES_KEY, JSON.stringify(freshQueues));
 
-          // Broadcast stopped typing signal
+          
           chatChannel.postMessage({
             type: "CUSTOMER_TYPING",
             chatId: ACTIVE_CHAT_ID,
@@ -692,7 +684,7 @@
       }, 1500);
     });
 
-    // Handle user sending message
+    
     function handleUserSend(e) {
       e.preventDefault();
       const text = chatInput.value.trim();
@@ -708,7 +700,7 @@
         return;
       }
 
-      // Add user message
+      
       const newMsg = {
         sender: "user",
         text: text,
@@ -719,14 +711,14 @@
       session.lastUpdated = Date.now();
       session.isUserTyping = false;
       
-      // Mark as unread for Admin
+      
       session.isRead = false;
       session.unreadCount = (session.unreadCount || 0) + 1;
       
-      // Update and save
+      
       saveQueuesState(queues);
       
-      // Broadcast customer message to Admin Dashboard in Real-Time with active database-backed username!
+      
       chatChannel.postMessage({
         type: "CUSTOMER_MESSAGE",
         chatId: ACTIVE_CHAT_ID,
@@ -740,11 +732,11 @@
       chatInput.value = "";
       loadChatSession();
 
-      // Trigger AI reply automatically if in AI Mode
+      
       if (session.status === "ai") {
         showTypingIndicator("AI đang trả lời...", "bot");
         
-        // Broadcast AI is typing to Admin Dashboard
+        
         chatChannel.postMessage({
           type: "AGENT_TYPING",
           chatId: ACTIVE_CHAT_ID,
@@ -752,7 +744,7 @@
         });
 
         setTimeout(() => {
-          // Query the database-driven AI Knowledge Base first
+          
           fetch("api.php?action=query_ai", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -762,9 +754,9 @@
           .then(data => {
             let aiResponseText = "";
             if (data.success && data.answer) {
-              aiResponseText = data.answer; // Database-matched trained response
+              aiResponseText = data.answer; 
             } else {
-              aiResponseText = generateAIAnswer(text); // Fallback to templates
+              aiResponseText = generateAIAnswer(text); 
             }
 
             const updatedQueues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
@@ -779,13 +771,13 @@
               currentSession.messages.push(botMsg);
               currentSession.lastUpdated = Date.now();
               
-              // Mark as unread for Admin (AI replies)
+              
               currentSession.isRead = false;
               currentSession.unreadCount = (currentSession.unreadCount || 0) + 1;
               
               saveQueuesState(updatedQueues);
               
-              // Broadcast Bot Reply to Admin Dashboard
+              
               chatChannel.postMessage({
                 type: "CUSTOMER_MESSAGE",
                 chatId: ACTIVE_CHAT_ID,
@@ -794,7 +786,7 @@
                 message: botMsg
               });
 
-              // Broadcast AI stopped typing
+              
               chatChannel.postMessage({
                 type: "AGENT_TYPING",
                 chatId: ACTIVE_CHAT_ID,
@@ -821,13 +813,13 @@
               currentSession.messages.push(botMsg);
               currentSession.lastUpdated = Date.now();
               
-              // Mark as unread for Admin (AI replies fallback)
+              
               currentSession.isRead = false;
               currentSession.unreadCount = (currentSession.unreadCount || 0) + 1;
               
               saveQueuesState(updatedQueues);
 
-              // Broadcast Bot Reply to Admin Dashboard
+              
               chatChannel.postMessage({
                 type: "CUSTOMER_MESSAGE",
                 chatId: ACTIVE_CHAT_ID,
@@ -836,7 +828,7 @@
                 message: botMsg
               });
 
-              // Broadcast AI stopped typing
+              
               chatChannel.postMessage({
                 type: "AGENT_TYPING",
                 chatId: ACTIVE_CHAT_ID,
@@ -851,7 +843,7 @@
       }
     }
 
-    // Simple Rule-Based AI Response Generator for testing
+    
     function generateAIAnswer(question) {
       const q = question.toLowerCase();
       
@@ -865,7 +857,7 @@
         return "Dạ sản phẩm mua tại TL Shop đều đi kèm bảo hành chính hãng keo chỉ 6 tháng. Nếu gặp vấn đề kỹ thuật nào bạn cứ yên tâm gửi lại shop hỗ trợ khắc phục nhé.";
       }
       if (q.includes("chuyển") || q.includes("gặp người") || q.includes("nhân viên") || q.includes("admin") || q.includes("hỗ trợ")) {
-        // Trigger human handoff escalation dynamically from AI!
+        
         setTimeout(() => {
           escalateToHuman();
         }, 500);
@@ -877,13 +869,13 @@
       return "Dạ tôi đã tiếp nhận câu hỏi của bạn. Hệ thống AI đang phân tích dữ liệu, hoặc bạn cũng có thể gõ 'gặp nhân viên' để tôi chuyển hướng cuộc gọi đến nhân viên tư vấn hỗ trợ trực tiếp nhé!";
     }
 
-    // Escalate to human handoff dynamically from the Client (Get Human Help)
+    
     function escalateToHuman() {
       const queues = JSON.parse(localStorage.getItem(QUEUES_KEY)) || [];
       const session = queues.find(q => q.id === ACTIVE_CHAT_ID);
       
       if (session && session.status === "ai") {
-        session.status = "human_requested"; // State to indicate handoff requested!
+        session.status = "human_requested"; 
         session.lastUpdated = Date.now();
         session.messages.push({
           sender: "system",
@@ -892,7 +884,7 @@
         });
         saveQueuesState(queues);
         
-        // Broadcast escalation signal to Admin Dashboard with real database-backed payload!
+        
         chatChannel.postMessage({
           type: "HANDOFF_REQUEST",
           chatId: ACTIVE_CHAT_ID,
@@ -906,14 +898,14 @@
       }
     }
 
-    // Listen to LocalStorage changes from Dashboard tab (Backup Sync!)
+    
     window.addEventListener("storage", (e) => {
       if (e.key === QUEUES_KEY) {
         loadChatSession();
       }
     });
 
-    // Initial Loading
+    
     loadChatSession();
     lucide.createIcons();
   </script>

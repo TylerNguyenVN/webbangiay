@@ -46,6 +46,6 @@
     window.renderWishlistPage();
   };
 
-  // Initial render
+  
   window.renderWishlistPage();
 })();

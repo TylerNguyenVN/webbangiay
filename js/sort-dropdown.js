@@ -1,6 +1,4 @@
-/**
- * SortDropdown — Modern Minimalism sorting filter
- */
+
 class SortDropdown {
   constructor(rootEl, config = {}) {
     if (!rootEl) throw new Error("SortDropdown: root element is required");

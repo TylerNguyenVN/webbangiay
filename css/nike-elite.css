@@ -1,7 +1,4 @@
-/* 
- * NIKE ELITE - Custom Premium Stylesheet
- * Custom themed design for the Nike Football Elite Series
- */
+
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 
@@ -23,7 +20,7 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 
-/* Base Styles */
+
 .nike-body {
   margin: 0;
   padding: 0;
@@ -44,7 +41,7 @@
   color: #ffffff;
 }
 
-/* Custom Scrollbar */
+
 .nike-body::-webkit-scrollbar {
   width: 8px;
 }
@@ -59,7 +56,7 @@
   background: rgba(0, 102, 55, 0.5);
 }
 
-/* Containers */
+
 .nike-container {
   max-width: 1280px;
   margin: 0 auto;
@@ -67,7 +64,7 @@
   box-sizing: border-box;
 }
 
-/* Sticky Header */
+
 .nike-header {
   position: sticky;
   top: 0;
@@ -238,7 +235,7 @@
   }
 }
 
-/* Content Views wrapper */
+
 .nike-main {
   flex-grow: 1;
   padding-bottom: 8rem;
@@ -265,7 +262,7 @@
   }
 }
 
-/* Grid Layouts */
+
 .grid-cols-12 {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -287,7 +284,7 @@
   }
 }
 
-/* UI Elements */
+
 .nike-badge-green {
   background-color: var(--color-elite-primary);
   color: #ffffff;
@@ -300,7 +297,7 @@
   display: inline-block;
 }
 
-/* Product Detail Styles */
+
 .image-showcase {
   border-radius: 1rem;
   overflow: hidden;
@@ -367,7 +364,7 @@
   opacity: 0;
 }
 
-/* Rating Card */
+
 .rating-card {
   background-color: #ffffff;
   border-radius: 1rem;
@@ -392,7 +389,7 @@
   color: #fbbf24;
 }
 
-/* Product Info Box */
+
 .product-category-tag {
   font-size: 11px;
   font-weight: 700;
@@ -420,7 +417,7 @@
   margin-bottom: 2rem;
 }
 
-/* Sizes */
+
 .size-selector-header {
   display: flex;
   justify-content: space-between;
@@ -447,7 +444,7 @@
   color: var(--color-elite-charcoal);
 }
 
-/* Premium Size Grid Selector — 5 sizes per row */
+
 .size-flex-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -464,7 +461,7 @@
   width: 100%;
   min-width: 0;
   height: 44px;
-  border-radius: 9999px; /* Bo tròn hoàn toàn */
+  border-radius: 9999px; 
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -489,7 +486,7 @@
   transform: translateY(-2px);
 }
 
-/* Action Buttons */
+
 .add-to-cart-big-btn {
   background-color: var(--color-elite-primary);
   color: #ffffff;
@@ -540,7 +537,7 @@
   transform: scale(1.05);
 }
 
-/* Accordion drop list */
+
 .accordion-list {
   border-top: 1px solid var(--color-elite-border);
   margin-bottom: 2.5rem;
@@ -589,7 +586,7 @@
   transform: rotate(180deg);
 }
 
-/* Authenticity Card */
+
 .authenticity-card {
   background-color: #fdfdfc;
   border: 1px solid rgba(231, 229, 228, 0.6);
@@ -600,7 +597,7 @@
   gap: 1rem;
 }
 
-/* Shopping Cart Screen Styles */
+
 .cart-title-row {
   font-family: var(--font-display);
   font-weight: 900;
@@ -723,7 +720,7 @@
   }
 }
 
-/* Quantity selector */
+
 .qty-box {
   display: flex;
   align-items: center;
@@ -787,7 +784,7 @@
   color: #ef4444;
 }
 
-/* Shipping form */
+
 .shipping-card {
   background-color: #ffffff;
   border-radius: 1.25rem;
@@ -931,7 +928,7 @@
   opacity: 1;
 }
 
-/* Order billing summary box */
+
 .summary-card {
   background-color: #ffffff;
   border-radius: 1.25rem;
@@ -979,7 +976,7 @@
   letter-spacing: -0.03em;
 }
 
-/* Reward points card */
+
 .rewards-banner {
   background-color: var(--color-elite-amber-bg);
   border: 1px solid rgba(253, 230, 138, 0.5);
@@ -1072,7 +1069,7 @@
   color: #57534e;
 }
 
-/* Confirmation screen success check circle */
+
 .success-check-badge {
   width: 64px;
   height: 64px;
@@ -1192,7 +1189,7 @@
   text-align: center;
 }
 
-/* Post Purchase Tracker Screen Styles */
+
 .tracker-sub-tag {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -1344,7 +1341,7 @@
   margin: 0;
 }
 
-/* Active timeline step card design */
+
 .timeline-card-active {
   background-color: #ffffff;
   border-radius: 1.25rem;
@@ -1419,7 +1416,7 @@
   margin: 0;
 }
 
-/* Post Purchase Intelligence Box */
+
 .intel-card {
   background-color: #ffffff;
   border-radius: 1.25rem;
@@ -1609,7 +1606,7 @@
   transform: translateX(3px);
 }
 
-/* FLOATING HUD DOCK BAR AT BOTTOM */
+
 .hud-dock-wrapper {
   position: fixed;
   bottom: 1.5rem;
@@ -1697,7 +1694,7 @@
   transform: scale(1.05);
 }
 
-/* Success notification toasts */
+
 .nike-toast-container {
   position: fixed;
   top: 5rem;
@@ -1770,7 +1767,7 @@
   margin: 0.15rem 0 0 0;
 }
 
-/* Footer Section */
+
 .nike-footer {
   background-color: var(--color-elite-charcoal);
   color: #e7e5e4;
@@ -1794,7 +1791,7 @@
   }
 }
 
-/* .footer-heading removed to inherit from style.css */
+
 
 .footer-subheading {
   font-size: 11px;

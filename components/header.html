@@ -138,11 +138,11 @@
   </div>
 </header>
 
-<!-- PREMIUM INSTANT SEARCH OVERLAY -->
+
 <link rel="stylesheet" href="css/search.css?v=3">
 
 <div id="search-overlay" class="search-overlay sh-closed">
-  <!-- Search top control bar -->
+  
   <div class="search-top-bar">
     <div class="search-top-logo">
       <a href="index.html">
@@ -158,69 +158,69 @@
       </button>
       <input type="text" id="search-input-field" placeholder="Tìm kiếm sản phẩm..." autocomplete="off" spellcheck="false">
       
-      <!-- Clear button (sh-clear-btn) -->
+      
       <button id="sh-clear-btn" class="search-clear-btn sh-hidden" title="Xóa từ khóa">
         <i data-lucide="x"></i>
       </button>
     </div>
     
-    <!-- Close Search Button inside Top Bar (represented as cancel-search-btn/Hủy) -->
+    
     <button id="close-search-btn" class="cancel-search-btn">Hủy</button>
   </div>
   
-  <!-- Search body (grid system) -->
+  
   <div class="search-dropdown-body">
     <div class="search-overlay-container">
       
-      <!-- DEFAULT VIEW (Suggestions, History, Featured) -->
+      
       <div id="sh-default-view" class="sh-default-view-grid">
         
-        <!-- Left Panel: Trending & History -->
+        
         <div class="sh-left-panel">
-          <!-- Trending Section -->
+          
           <div class="suggestions-section">
             <h4 class="search-section-title">Xu hướng tìm kiếm</h4>
             <div id="sh-trending-tags" class="sh-tag-container">
-              <!-- Rendered dynamically as button.sh-suggest-link.sh-tag -->
+              
             </div>
           </div>
           
-          <!-- History Section -->
+          
           <div id="sh-history-section" class="suggestions-section sh-hidden">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.25rem;">
               <h4 class="search-section-title" style="margin:0;">Lịch sử tìm kiếm</h4>
               <button id="sh-clear-all-btn" style="background:none; border:none; color:var(--sh-text-secondary-light); font-size:0.75rem; font-weight:600; cursor:pointer; padding:0; text-transform:uppercase; letter-spacing:0.05em; transition:color 0.2s;" title="Xóa toàn bộ lịch sử">Xóa tất cả</button>
             </div>
             <ul id="sh-history-list" class="sh-history-list-items">
-              <!-- Rendered dynamically -->
+              
             </ul>
           </div>
         </div>
         
-        <!-- Right Panel: Featured / Top suggestions (5 cards horizontal) -->
+        
         <div class="sh-right-panel">
           <h4 class="search-section-title">Gợi ý hàng đầu</h4>
-          <!-- Spinner inside list -->
+          
           <div id="sh-spinner" class="sh-spinner-container sh-hidden" style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:#707072;">
             <div class="sh-loader-ring"></div> <span>Đang tải...</span>
           </div>
           <div id="sh-featured-list" class="search-products-grid">
-            <!-- Rendered dynamically -->
+            
           </div>
         </div>
         
       </div>
       
-      <!-- RESULTS VIEW (Dynamic matching results) -->
+      
       <div id="sh-results-view" class="sh-results-view-wrap sh-hidden">
         <div class="sh-results-header">
           <h4 id="sh-results-title" class="search-section-title">0 kết quả tìm kiếm</h4>
         </div>
         <div id="sh-results-list" class="search-products-grid">
-          <!-- Rendered dynamically -->
+          
         </div>
         
-        <!-- Pagination controls inside overlay search results -->
+        
         <div id="sh-pagination-container" class="sh-hidden" style="display:flex; justify-content:center; align-items:center; gap:1.5rem; margin-top:2.5rem; padding-top:1.5rem; border-top: 1px solid var(--sh-border-light);">
           <button id="sh-pagination-prev" class="sh-suggest-link" style="padding:0.4rem 1rem; font-size:0.8rem; font-weight:600;" title="Trang trước">Trước</button>
           <span id="sh-pagination-info" style="font-size:0.85rem; font-weight:600; color:var(--sh-text-secondary-light);">Trang 1 / 1</span>
@@ -231,7 +231,7 @@
     </div>
   </div>
   
-  <!-- Search Footer Status bar -->
+  
   <div class="sh-footer-bar">
     <span id="sh-footer-status">Sẵn sàng tìm kiếm</span>
   </div>

@@ -13,18 +13,18 @@ try {
     $password = '123';
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Kiểm tra xem đã tồn tại chưa
+    
     $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $exists = $stmt->fetch();
 
     if ($exists) {
-        // Cập nhật mật khẩu mới
+        
         $updateStmt = $pdo->prepare("UPDATE users SET password = ?, username = ? WHERE email = ?");
         $updateStmt->execute([$hashedPassword, $username, $email]);
         $message = "Đã cập nhật mật khẩu cho tài khoản Admin hiện tại thành công!";
     } else {
-        // Thêm mới
+        
         $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
         $insertStmt->execute([$username, $email, $hashedPassword]);
         $message = "Đã tạo mới tài khoản Admin thành công!";

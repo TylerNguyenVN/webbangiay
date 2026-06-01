@@ -1,10 +1,10 @@
 :root {
-  /* Fonts */
+  
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Space Grotesk', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Colors */
+  
   --color-teal-300: #5eead4;
   --color-teal-400: #2dd4bf;
   --color-teal-500: #14b8a6;
@@ -38,7 +38,7 @@
   --text-light-secondary: #4b5563;
 }
 
-/* Base Reset */
+
 *,
 *::before,
 *::after {
@@ -77,7 +77,7 @@ button {
   font-family: inherit;
 }
 
-/* Scrollbar */
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -97,7 +97,7 @@ button {
 }
 
 
-/* Main layout */
+
 .main-content {
   flex: 1;
   display: flex;
@@ -128,7 +128,7 @@ button {
   }
 }
 
-/* Global Selection */
+
 .dark-theme *::selection {
   background: var(--color-teal-400);
   color: #000;
@@ -139,13 +139,13 @@ button {
   color: #fff;
 }
 
-/* DARK THEME */
+
 .dark-theme {
   background-color: var(--bg-dark-main);
   color: var(--text-dark-primary);
 }
 
-/* Header */
+
 .main-header {
   display: flex;
   align-items: center;
@@ -331,7 +331,7 @@ button {
   color: var(--color-teal-300);
 }
 
-/* Hero Dark */
+
 .dark-hero {
   position: relative;
   height: 650px;
@@ -464,7 +464,7 @@ button {
   background-color: var(--color-emerald-500);
 }
 
-/* Product Section Dark */
+
 .products-section {
   padding: 5rem 1.5rem;
   max-width: 80rem;
@@ -722,7 +722,7 @@ button {
   color: #4b5563;
 }
 
-/* Tech Section Dark */
+
 .tech-section {
   background: #040808;
   border-top: 1px solid #0c1617;
@@ -980,7 +980,7 @@ button {
   margin-top: 1rem;
 }
 
-/* Footer */
+
 .main-footer {
   padding: 2.5rem 1.5rem;
   font-size: 0.75rem;
@@ -1057,7 +1057,7 @@ button {
 }
 
 
-/*LIGHT THEME*/
+
 
 .light-theme {
   background-color: var(--bg-light-main);
@@ -1116,12 +1116,12 @@ button {
   color: #ef4444;
 }
 
-/* heart turns red */
+
 .light-theme .icon-btn:last-of-type:hover {
   color: #374151;
 }
 
-/* bag stays gray */
+
 .light-theme .badge.emerald {
   background-color: var(--color-emerald-600);
   color: #fff;
@@ -1137,7 +1137,7 @@ button {
   background: #d1d5db;
 }
 
-/* Hero Light */
+
 .light-hero {
   padding: 3rem 1.5rem;
 }
@@ -1259,7 +1259,7 @@ button {
   background-color: var(--color-emerald-600);
 }
 
-/* Products Section Light */
+
 .light-products {
   padding: 4rem 1.5rem;
   max-width: 80rem;
@@ -1412,7 +1412,7 @@ button {
   transform: scale(1.1);
 }
 
-/* Macro Section */
+
 .macro-section {
   padding: 4rem 1.5rem;
   background: #eae8dd;
@@ -1539,7 +1539,7 @@ button {
   padding: 0.25rem 0.625rem;
 }
 
-/* Light Footer */
+
 .light-footer {
   border-top: 1px solid #e1ded1;
   background: var(--bg-light-footer);
@@ -1558,7 +1558,7 @@ button {
   color: #111827;
 }
 
-/* Notification Popup */
+
 .notification-container {
   position: fixed;
   bottom: 1rem;
@@ -1615,7 +1615,7 @@ button {
   }
 }
 
-/* CHAT BOX */
+
 .chatbot-widget {
   position: fixed;
   bottom: 2rem;
@@ -1703,7 +1703,7 @@ button {
   width: 350px;
   height: 500px;
   background-color: #0c1314;
-  /* Dark premium bg */
+  
   border: 1px solid #14b8a6;
   border-radius: 12px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
@@ -1822,7 +1822,7 @@ button {
   height: 18px;
 }
 
-/* Views */
+
 .chat-view {
   flex: 1;
   display: none;
@@ -1846,7 +1846,7 @@ button {
   }
 }
 
-/* Chat List View */
+
 .admin-panel {
   background: #f9fafb;
   padding: 0.75rem 1rem;
@@ -1998,7 +1998,7 @@ button {
   justify-content: center;
 }
 
-/* Chat Detail View */
+
 .chat-messages {
   flex: 1;
   padding: 1rem;
@@ -2428,7 +2428,7 @@ button {
   color: #fff;
 }
 
-/* Header Horizontal Search */
+
 .header-search-container {
   display: flex;
   align-items: center;

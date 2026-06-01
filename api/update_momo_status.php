@@ -1,20 +1,14 @@
 <?php
-/**
- * API UPDATE MOMO STATUS - BƯỚC 3
- * Nhận order_code từ frontend (momo_checkout.html)
- * Xác nhận thanh toán: cập nhật payment_status từ 'pending' -> 'completed' (hoặc 'paid')
- * Cập nhật status từ 'pending' -> 'processing'
- * Trả về JSON thông báo thành công
- */
+
 
 header("Content-Type: application/json; charset=utf-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 
-// Import database connection
+
 require_once __DIR__ . '/../includes/db.php';
 
-// Chỉ chấp nhận POST request
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode([
@@ -27,16 +21,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 try {
     $db = getDB();
 
-    // Đọc JSON payload
+    
     $input = json_decode(file_get_contents('php://input'), true);
     if (!$input) {
         http_response_code(400);
         throw new Exception("Dữ liệu đầu vào không hợp lệ.");
     }
 
-    // ============================================================
-    // VALIDATE INPUT
-    // ============================================================
+    
+    
+    
     $order_code = trim($input['order_code'] ?? '');
     $order_id = intval($input['order_id'] ?? 0);
 
@@ -49,9 +43,9 @@ try {
         exit;
     }
 
-    // ============================================================
-    // KIỂM TRA ĐƠN HÀNG CÓ TỒN TẠI VÀ THUỘC MOMO KHÔNG
-    // ============================================================
+    
+    
+    
     $checkStmt = $db->prepare("
         SELECT id, order_code, payment_method, payment_status, status 
         FROM orders 
@@ -69,7 +63,7 @@ try {
         exit;
     }
 
-    // Kiểm tra xem đơn hàng này có phải là MoMo không
+    
     if ($order['payment_method'] !== 'momo') {
         http_response_code(400);
         echo json_encode([
@@ -79,9 +73,9 @@ try {
         exit;
     }
 
-    // ============================================================
-    // KIỂM TRA NẾU ĐỀ HÀY ĐÃ THANH TOÁN RỒI (IDEMPOTENT)
-    // ============================================================
+    
+    
+    
     if ($order['payment_status'] === 'completed' || $order['payment_status'] === 'paid') {
         http_response_code(200);
         echo json_encode([
@@ -93,14 +87,14 @@ try {
         exit;
     }
 
-    // ============================================================
-    // BẮT ĐẦU TRANSACTION
-    // ============================================================
+    
+    
+    
     $db->beginTransaction();
 
     try {
-        // UPDATE trạng thái thanh toán từ 'pending' -> 'completed'
-        // UPDATE trạng thái đơn hàng từ 'pending' -> 'processing'
+        
+        
         $updateStmt = $db->prepare("
             UPDATE orders 
             SET payment_status = 'completed', 
@@ -111,12 +105,12 @@ try {
 
         $updateStmt->execute([$order_id, $order_code]);
 
-        // COMMIT transaction
+        
         $db->commit();
 
-        // ============================================================
-        // TRẢ VỀ RESPONSE THÀNH CÔNG
-        // ============================================================
+        
+        
+        
         http_response_code(200);
         echo json_encode([
             "success" => true,

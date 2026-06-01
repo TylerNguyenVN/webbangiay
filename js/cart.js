@@ -1,11 +1,8 @@
-/**
- * NIKE ELITE - Cart & Checkout Script
- * Quản lý giỏ hàng động từ LocalStorage, tăng/giảm/xoá sản phẩm, tính toán hóa đơn,
- */
+
 (() => {
-  // ==============================================
-  // HIỂN THỊ TRẠNG THÁI ĐĂNG NHẬP (HEADER)
-  // ==============================================
+  
+  
+  
   const currentUserStr = localStorage.getItem("nike_current_user");
   const authStatusLight = document.getElementById("auth-status-light");
   const authStatusDark = document.getElementById("auth-status-dark");
@@ -39,14 +36,14 @@
     });
   }
 
-  // ==============================================
-  // HÀM HIỂN THỊ WISHLIST OVERLAY (GLOBAL)
-  // ==============================================
-  window.renderWishlistOverlay = function() {
+  
+  
+  
+  window.renderWishlistOverlay = function () {
     const container = document.getElementById("wishlist-items-container");
     if (!container) return;
     const items = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
-    
+
     if (items.length === 0) {
       container.innerHTML = '<p style="color: #6b7280; text-align: center;">Danh sách yêu thích đang trống.</p>';
       return;
@@ -63,11 +60,11 @@
         <button onclick="window.removeFromWishlist('${item.id}')" style="background: transparent; border: none; color: #ef4444; cursor: pointer; padding: 0.5rem;"><i data-lucide="trash-2"></i></button>
       </div>
     `).join("");
-    
+
     if (typeof lucide !== "undefined") lucide.createIcons();
   };
 
-  window.removeFromWishlist = function(id) {
+  window.removeFromWishlist = function (id) {
     let items = JSON.parse(localStorage.getItem("nike_wishlist_items")) || [];
     items = items.filter(item => item.id !== id);
     localStorage.setItem("nike_wishlist_items", JSON.stringify(items));
@@ -75,19 +72,19 @@
   };
 
 
-  // ==============================================
-  // 1. DATA DEFINITIONS & STATE
-  // ==============================================
+  
+  
+  
   let cartItems = JSON.parse(localStorage.getItem("nike_cart_items")) || [];
   let activeOrder = null;
-  let selectedDeliveryMethod = "standard"; // "standard" | "express"
-  let trackerActiveStep = 2; // Bước giao vận mặc định (Shipped)
-  let dynamicShippingFee = 0; // Lưu phí ship tự động từ GHN API
-  const GHN_TOKEN = "YOUR_GHN_DEV_TOKEN_HERE"; // Thay bằng token thật của bạn
+  let selectedDeliveryMethod = "standard"; 
+  let trackerActiveStep = 2; 
+  let dynamicShippingFee = 0; 
+  const GHN_TOKEN = "YOUR_GHN_DEV_TOKEN_HERE"; 
 
-  // ==============================================
-  // 2. KHAI BÁO CÁC DOM ELEMENT
-  // ==============================================
+  
+  
+  
   const screenCart = document.getElementById("screen-cart");
   const screenConfirmation = document.getElementById("screen-confirmation");
   const screenTracker = document.getElementById("screen-tracker");
@@ -134,9 +131,9 @@
   const trackerManifestContainer = document.getElementById("tracker-manifest-container");
   const trackerDownloadInvoiceBtn = document.getElementById("tracker-download-invoice-btn");
 
-  // ==============================================
-  // 2.5. TỰ ĐỘNG ĐIỀN THÔNG TIN TỪ LOCALSTORAGE
-  // ==============================================
+  
+  
+  
   function autoFillUserInfo() {
     const userStr = localStorage.getItem("nike_current_user");
     if (userStr) {
@@ -148,9 +145,9 @@
   }
   autoFillUserInfo();
 
-  // ==============================================
-  // 3. ĐỒNG BỘ BADGE HEADER
-  // ==============================================
+  
+  
+  
   function updateCartHeaderBadge() {
     const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const headerCartCount = document.getElementById("header-cart-count");
@@ -164,9 +161,9 @@
     }
   }
 
-  // ==============================================
-  // 4. RENDER GIAO DIỆN GIỎ HÀNG & TÍNH TIỀN
-  // ==============================================
+  
+  
+  
   function renderCartScreen() {
     updateCartHeaderBadge();
 
@@ -179,7 +176,7 @@
     if (cartEmptyView) cartEmptyView.classList.add("hidden");
     if (cartContentView) cartContentView.classList.remove("hidden");
 
-    // Thay đổi: Sử dụng thuộc tính data-* thay vì onclick trực tiếp
+    
     cartItemsListContainer.innerHTML = cartItems.map((item, idx) => `
       <div class="cart-item-card">
         <div class="cart-item-left">
@@ -213,7 +210,7 @@
     calculateCartTotals();
   }
 
-  // Thay thế các hàm window.* bằng việc ủy quyền xử lý sự kiện trực tiếp tại thẻ Container cha
+  
   if (cartItemsListContainer) {
     cartItemsListContainer.addEventListener("click", (e) => {
       const target = e.target;
@@ -242,8 +239,8 @@
   function calculateCartTotals() {
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const subtotal = cartItems.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
+
     
-    // Nếu chọn giao hoả tốc (Express) thì tự cộng 150k, nếu tiêu chuẩn thì dùng phí GHN tính tự động
     const shippingFee = subtotal > 0 ? (selectedDeliveryMethod === "standard" ? dynamicShippingFee : 150000) : 0;
 
     const hasMercurial = cartItems.some(item => item.product.id && item.product.id.includes("mercurial"));
@@ -289,9 +286,9 @@
 
   renderCartScreen();
 
-  // ==============================================
-  // 5. VALIDATE FORM & QUY TRÌNH CHECKOUT
-  // ==============================================
+  
+  
+  
   if (payNowBtn) {
     payNowBtn.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -341,7 +338,7 @@
       const discount = hasMercurial ? 150000 : 0;
       const finalTotal = Math.max(0, subtotal + shippingFee - discount);
 
-      // Lấy phương thức thanh toán đang được chọn
+      
       const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
 
       activeOrder = {
@@ -386,16 +383,16 @@
         }).catch(err => console.error("Lỗi kết nối API update_profile: ", err));
       }
 
-      // GỌI API ĐỂ LƯU ĐƠN HÀNG VÀO DATABASE MySQL
-      // ============================================================
-      // CHUẨN BỊ PAYLOAD ĐẠT HÀNG KỂ CẢ PAYMENT METHOD
-      // ============================================================
+      
+      
+      
+      
       const orderPayload = {
         user_id: userId,
         fullname: activeOrder.shippingInfo.fullName,
         phone: activeOrder.shippingInfo.phone,
         address: activeOrder.shippingInfo.address,
-        payment_method: selectedPaymentMethod, // 'cod' hoặc 'momo'
+        payment_method: selectedPaymentMethod, 
         subtotal: activeOrder.subtotal,
         shipping_fee: activeOrder.shippingFee,
         discount_amount: activeOrder.discount,
@@ -409,14 +406,14 @@
       };
 
       try {
-        // ============================================================
-        // 🔴 BƯỚC QUYẾT ĐỊNH: KIỂM TRA PHƯƠNG THỨC THANH TOÁN
-        // ============================================================
         
-        // === TRƯỜNG HỢP MOMO ===
+        
+        
+
+        
         if (selectedPaymentMethod === 'momo') {
           try {
-            // Gọi API create_order.php để tạo order trong DB
+            
             const momoRes = await fetch("api/create_order.php", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -426,16 +423,16 @@
             const momoData = await momoRes.json();
 
             if (momoData.success) {
-              // ← LƯỚI MÃ ĐƠNHÀNG + TỔNG TIỀN VÀO sessionStorage
+              
               sessionStorage.setItem('momo_order_code', momoData.order_code);
               sessionStorage.setItem('momo_total_amount', momoData.total_amount);
               sessionStorage.setItem('momo_order_id', momoData.order_id);
 
-              // ← XÓA GIỎ HÀNG KHỎI localStorage
+              
               cartItems = [];
               localStorage.removeItem("nike_cart_items");
 
-              // ← CHUYỂN HƯỚNG SANG TRANG QR MOMO (momo_checkout.html)
+              
               window.location.href = "momo_checkout.html";
               return;
             } else {
@@ -449,7 +446,7 @@
           }
         }
 
-        // === TRƯỜNG HỢP COD HOẶC CÁC PHƯƠNG THỨC KHÁC ===
+        
         try {
           const response = await fetch("api/create_order.php", {
             method: "POST",
@@ -460,14 +457,14 @@
           const data = await response.json();
 
           if (data.success) {
-            // ← LƯỚI MÃ ĐƠN HÀNG THỰC TỪ DATABASE
+            
             activeOrder.id = data.order_code;
 
-            // ← XÓA GIỎ HÀNG
+            
             cartItems = [];
             localStorage.removeItem("nike_cart_items");
 
-            // ← CHUYỂN HƯỚNG SANG TRANG THÀNH CÔNG
+            
             window.location.href = `success.php?order_code=${data.order_code}`;
             return;
           } else {
@@ -497,9 +494,9 @@
     }
   });
 
-  // ==============================================
-  // 6. RENDER MÀN HÌNH ĐẶT HÀNG THÀNH CÔNG (CONFIRMATION)
-  // ==============================================
+  
+  
+  
   function renderConfirmationScreen() {
     if (!activeOrder) return;
     updateCartHeaderBadge();
@@ -561,9 +558,9 @@
     });
   }
 
-  // ==============================================
-  // 7. RENDER MÀN HÌNH THEO DÕI ĐƠN HÀNG (TRACKER)
-  // ==============================================
+  
+  
+  
   function renderTrackerScreen() {
     if (!activeOrder) return;
 
@@ -620,7 +617,7 @@
 
         let opacityStyle = isFuture ? "opacity: 0.55;" : (isPast ? "opacity: 0.85;" : "");
 
-        // Thay đổi: Thêm data-index để hứng sự kiện thay đổi mốc tiến trình bằng Event Delegation
+        
         return `
           <div class="timeline-step" data-action="change-step" data-index="${idx}" style="${opacityStyle}">
             <div class="timeline-indicator">${indicatorHTML}</div>
@@ -665,9 +662,9 @@
     });
   }
 
-  // ==============================================
-  // 8. GHN PUBLIC API INTEGRATION
-  // ==============================================
+  
+  
+  
   const provinceSelect = document.getElementById("ship-province");
   const districtSelect = document.getElementById("ship-district");
   const wardSelect = document.getElementById("ship-ward");
@@ -743,7 +740,7 @@
   async function calculateDynamicShippingFee() {
     const districtId = districtSelect?.value;
     const wardCode = wardSelect?.value;
-    
+
     if (districtId && wardCode && selectedDeliveryMethod === "standard") {
       try {
         const res = await fetch("api/shipping_fee.php", {
@@ -755,7 +752,7 @@
         if (data.success) {
           dynamicShippingFee = data.total_fee;
         } else {
-          dynamicShippingFee = 35000; // fallback
+          dynamicShippingFee = 35000; 
         }
       } catch (e) {
         console.error("Lỗi tính phí ship nội bộ:", e);

@@ -4,19 +4,19 @@ $user = 'root';
 $pass = '';
 
 try {
-    // Kết nối đến MySQL server
+    
     $pdo = new PDO("mysql:host=$host;charset=utf8mb4", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // 1. Tạo Database (nếu chưa có)
+    
     $sqlCreateDB = "CREATE DATABASE IF NOT EXISTS webbangiay_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
     $pdo->exec($sqlCreateDB);
     echo "<h3 style='color: blue;'>1. Đã tạo Database 'webbangiay_db' (hoặc đã tồn tại).</h3>";
 
-    // Chọn Database để làm việc
+    
     $pdo->exec("USE webbangiay_db");
 
-    // 2. Tạo Bảng Users 
+    
     $pdo->exec("DROP TABLE IF EXISTS users");
     
     $sqlCreateTable = "
@@ -35,7 +35,7 @@ try {
     $pdo->exec($sqlCreateTable);
     echo "<h3 style='color: blue;'>2. Đã tạo bảng 'users' (hoặc đã tồn tại).</h3>";
 
-    // Tự động tạo sẵn tài khoản Admin mặc định
+    
     $adminUsername = 'Admin';
     $adminEmail = 'admin';
     $adminPassword = '123';
@@ -46,7 +46,7 @@ try {
     echo "<h3 style='color: blue;'>2.5. Đã tự động tạo sẵn tài khoản Admin mặc định (admin / 123).</h3>";
 
 
-    // 3. Tạo Bảng Categories
+    
     $pdo->exec("DROP TABLE IF EXISTS categories");
     $sqlCreateCategories = "
         CREATE TABLE categories (
@@ -60,7 +60,7 @@ try {
     $pdo->exec($sqlCreateCategories);
     echo "<h3 style='color: blue;'>3. Đã tạo bảng 'categories'.</h3>";
 
-    // Insert dummy categories
+    
     $sqlInsertCategories = "
         INSERT INTO categories (id, parent_id, name, slug) VALUES 
         (1, NULL, 'Nam', 'nam'),
@@ -84,7 +84,7 @@ try {
     ";
     $pdo->exec($sqlInsertCategories);
 
-    // 4. Tạo Bảng Products
+    
     $pdo->exec("DROP TABLE IF EXISTS products");
     $sqlCreateProducts = "
         CREATE TABLE products (

@@ -1,9 +1,5 @@
 <?php
-/**
- * SMART INSTANT SEARCH API
- * Endpoint: /api/search.php?q=keyword&page=1&limit=10
- * Author: Senior Backend Developer & Database Optimization Expert
- */
+
 
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
@@ -12,34 +8,9 @@ header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: 0");
 
-/* =========================================================================
-   SQL DDL SCHEMA COMMANDS (As requested by user)
-   =========================================================================
-   To initialize or re-configure the products table with optimal FULLTEXT INDEX:
 
-   CREATE TABLE IF NOT EXISTS `products` (
-       `id` INT AUTO_INCREMENT PRIMARY KEY,
-       `category_id` INT DEFAULT NULL,
-       `name` VARCHAR(255) NOT NULL COMMENT 'product_name',
-       `slug` VARCHAR(255) NOT NULL UNIQUE,
-       `price` DECIMAL(12, 2) NOT NULL,
-       `sale_price` DECIMAL(12, 2) DEFAULT NULL,
-       `description` TEXT DEFAULT NULL COMMENT 'product_description',
-       `image_url` VARCHAR(255) DEFAULT NULL,
-       `status` ENUM('active', 'inactive', 'draft') DEFAULT 'active',
-       `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-       `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-       
-       CONSTRAINT `fk_products_category` 
-           FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) 
-           ON DELETE SET NULL ON UPDATE CASCADE
-   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-   -- Create Fulltext index on product_name (name) and product_description (description)
-   CREATE FULLTEXT INDEX `idx_products_fulltext` ON `products` (`name`, `description`);
-   ========================================================================= */
 
-// 1. Check HTTP Request Method
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
     echo json_encode([
@@ -49,30 +20,30 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-// 2. Read parameters and set defaults
+
 $raw_query = $_GET['q'] ?? '';
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $limit = isset($_GET['limit']) ? max(1, min(50, (int)$_GET['limit'])) : 10;
 $offset = ($page - 1) * $limit;
 
-// 3. Robust Input Sanitization (Sanitize input)
+
 function sanitize_search_query($input) {
     if ($input === null) return '';
     
-    // Convert to lowercase (multibyte safe)
+    
     $clean = mb_strtolower($input, 'UTF-8');
     
-    // Remove extra trailing/leading whitespaces
+    
     $clean = trim($clean);
     
-    // Protect against XSS by escaping HTML entities
+    
     $clean = htmlspecialchars($clean, ENT_QUOTES, 'UTF-8');
     
-    // Strip database query operators that could trigger syntax errors in BOOLEAN MODE
-    // e.g. + - < > ( ) ~ * " @
+    
+    
     $clean = preg_replace('/[+\-><\(\)~*\"@]/u', ' ', $clean);
     
-    // Consolidate duplicate spaces into a single space
+    
     $clean = preg_replace('/\s+/', ' ', $clean);
     
     return $clean;
@@ -80,7 +51,7 @@ function sanitize_search_query($input) {
 
 $q = sanitize_search_query($raw_query);
 
-// 4. Vietnamese Accent Stripper Function
+
 function remove_vietnamese_accents($str) {
     $unicode = array(
         'a'=>'á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ|å|ä|æ|ā|ą|å|ǎ',
@@ -104,7 +75,7 @@ function remove_vietnamese_accents($str) {
     return $str;
 }
 
-// 5. Interchangeable Vowels (y <-> i) and boolean subexpressions generator
+
 function generate_fulltext_boolean_query($clean_q) {
     if (empty($clean_q)) return '';
     $words = explode(' ', $clean_q);
@@ -115,27 +86,27 @@ function generate_fulltext_boolean_query($clean_q) {
         
         $unsigned_word = remove_vietnamese_accents($word);
         
-        // If the word ends with 'y' or 'i', perform suffix vowel replacement expansion
-        // Example: "my" -> alt: "mi", "mi" -> alt: "my"
+        
+        
         if (preg_match('/[yi]$/u', $unsigned_word)) {
             $alt_word = preg_replace('/y$/u', 'i', $unsigned_word);
             if ($alt_word === $unsigned_word) {
                 $alt_word = preg_replace('/i$/u', 'y', $unsigned_word);
             }
             
-            // Build subexpression to support matching accented original OR unsigned OR alternative
-            // Example: +(mỳ* my* mi*)
+            
+            
             $boolean_terms[] = "+(" . $word . "* " . $unsigned_word . "* " . $alt_word . "*)";
         } else {
-            // Normal word: MUST match prefix of original or unsigned
-            // Example: +(bánh* banh*)
+            
+            
             $boolean_terms[] = "+(" . $word . "* " . $unsigned_word . "*)";
         }
     }
     return implode(' ', $boolean_terms);
 }
 
-// 6. Define Static Fallback Pool (Guarantees uptime and matches original design parameters)
+
 $fallbackProducts = [
     [
         "id" => 101,
@@ -216,7 +187,7 @@ $fallbackProducts = [
     ]
 ];
 
-// Helper to filter static fallbacks in PHP for uptime safety
+
 function search_static_fallback($q, $offset, $limit) {
     global $fallbackProducts;
     if (empty($q)) {
@@ -231,7 +202,7 @@ function search_static_fallback($q, $offset, $limit) {
             
             $matchCount = 0;
             foreach ($searchWords as $sw) {
-                // Support interchangeable y/i matching in search fallback
+                
                 $sw_i_y = preg_replace('/y$/u', 'i', $sw);
                 if ($sw_i_y === $sw) {
                     $sw_i_y = preg_replace('/i$/u', 'y', $sw);
@@ -244,18 +215,18 @@ function search_static_fallback($q, $offset, $limit) {
                     $matchCount++;
                 }
             }
-            // If all search terms match some part of product, count it
+            
             if ($matchCount === count($searchWords)) {
                 $matches[] = $p;
             }
         }
     }
     
-    // Sort static results (mock relevance: names containing query first)
+    
     usort($matches, function($a, $b) use ($q) {
         $aq = (strpos(mb_strtolower($a['name'], 'UTF-8'), $q) !== false) ? 1 : 0;
         $bq = (strpos(mb_strtolower($b['name'], 'UTF-8'), $q) !== false) ? 1 : 0;
-        return $bq - $aq; // Higher score first
+        return $bq - $aq; 
     });
     
     $total_records = count($matches);
@@ -274,20 +245,20 @@ function search_static_fallback($q, $offset, $limit) {
     ];
 }
 
-// 7. Try Querying MySQL Database
+
 try {
     require_once 'db.php';
     $pdo = getDbConnection();
     
     if (!$pdo) {
-        // If connection fails silently, return static fallback
+        
         $response = search_static_fallback($q, $offset, $limit);
         echo json_encode($response);
         exit;
     }
     
     if (empty($q)) {
-        // Empty query: return latest active products
+        
         $countStmt = $pdo->query("SELECT COUNT(*) FROM products WHERE status = 'active'");
         $total_records = (int)$countStmt->fetchColumn();
         
@@ -304,7 +275,7 @@ try {
         $stmt->execute();
         $products = $stmt->fetchAll();
         
-        // Clean values types
+        
         foreach ($products as &$p) {
             $p['price'] = (float)$p['price'];
             $p['sale_price'] = $p['sale_price'] !== null ? (float)$p['sale_price'] : null;
@@ -324,11 +295,11 @@ try {
         exit;
     }
     
-    // Generate specialized Fulltext queries
+    
     $query_boolean = generate_fulltext_boolean_query($q);
     $query_natural = $q;
     
-    // Query Total Matches Count (Fast FULLTEXT Index lookup)
+    
     $countStmt = $pdo->prepare("
         SELECT COUNT(*) 
         FROM products p 
@@ -339,14 +310,14 @@ try {
     $countStmt->execute(['qb' => $query_boolean, 'qn' => $query_natural]);
     $total_records = (int)$countStmt->fetchColumn();
     
-    // If no records in database match, query fallback cache to guarantee dynamic mock results
+    
     if ($total_records === 0) {
         $response = search_static_fallback($q, $offset, $limit);
         echo json_encode($response);
         exit;
     }
     
-    // Query Paginated Results sorted by Relevance Score
+    
     $stmt = $pdo->prepare("
         SELECT p.*, c.name AS category_name,
                MATCH(p.name, p.description) AGAINST(:qn1) AS relevance
@@ -367,7 +338,7 @@ try {
     $stmt->execute();
     $products = $stmt->fetchAll();
     
-    // Cast variables and format floats
+    
     foreach ($products as &$p) {
         $p['price'] = (float)$p['price'];
         $p['sale_price'] = $p['sale_price'] !== null ? (float)$p['sale_price'] : null;
@@ -387,9 +358,9 @@ try {
     ]);
     
 } catch (\PDOException $e) {
-    // Graceful handling of DB failures, fall back to our elegant static search algorithm
+    
     $response = search_static_fallback($q, $offset, $limit);
-    // Add debugging log info to fallback metadata
+    
     $response['db_error'] = $e->getMessage();
     echo json_encode($response);
 }

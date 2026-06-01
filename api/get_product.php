@@ -1,10 +1,5 @@
 <?php
-/**
- * GET PRODUCT DETAILS API (ULTRA-ROBUST WITH FALLBACK CACHE)
- * Endpoint: /api/get_product.php?id={numeric_id_or_slug}
- * Author: Senior Fullstack Developer
- * Optimized to handle both numeric IDs and string SEO slugs safely using PDO.
- */
+
 
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
@@ -13,14 +8,14 @@ header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: 0");
 
-// 1. Validate request method
+
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
     echo json_encode(["success" => false, "message" => "Method Not Allowed. Use GET."]);
     exit;
 }
 
-// 2. Validate input parameter
+
 $idOrSlug = trim($_GET['id'] ?? '');
 
 if (empty($idOrSlug)) {
@@ -29,7 +24,7 @@ if (empty($idOrSlug)) {
     exit;
 }
 
-// 3. Embedded high-performance static fallback catalog (Guarantees uptime even when XAMPP MySQL is offline)
+
 $mockProducts = [
     'nike-pegasus-42-volt' => [
         'id' => 101,
@@ -167,7 +162,7 @@ $mockProducts = [
         ],
         'delivery_info' => 'Giao hàng nhanh 24h nội thành. Fullbox nguyên tem mác đại lý.'
     ],
-    // Backward compatibility keys
+    
     'nike-mercurial-vapor-16-elite' => [
         'id' => 1,
         'slug' => 'nike-mercurial-vapor-16-elite',
@@ -271,7 +266,7 @@ $mockProducts = [
     ]
 ];
 
-// 4. Try querying database
+
 try {
     require_once 'db.php';
     $pdo = getDbConnection();
@@ -279,9 +274,9 @@ try {
     if ($pdo) {
         $product = null;
         
-        // Partition checks to prevent MySQL from warning when casting string to int in WHERE clause
+        
         if (is_numeric($idOrSlug)) {
-            // Query by Numeric ID
+            
             $stmt = $pdo->prepare("
                 SELECT p.*, c.name AS category_name 
                 FROM products p 
@@ -292,7 +287,7 @@ try {
             $stmt->execute();
             $product = $stmt->fetch();
         } else {
-            // Query by SEO String Slug (Recommended for pretty URLs)
+            
             $stmt = $pdo->prepare("
                 SELECT p.*, c.name AS category_name 
                 FROM products p 
@@ -305,7 +300,7 @@ try {
         }
 
         if ($product) {
-            // Fetch product sizes and variations
+            
             $vStmt = $pdo->prepare("
                 SELECT DISTINCT size 
                 FROM product_variants 
@@ -336,11 +331,11 @@ try {
         }
     }
 } catch (\PDOException $e) {
-    // DB failed, failover smoothly to fallback mock cache
+    
     error_log("DB Error in get_product.php: " . $e->getMessage());
 }
 
-// 5. Fallback Lookup (Ensures perfect offline operation!)
+
 if (isset($mockProducts[$idOrSlug])) {
     http_response_code(200);
     echo json_encode([
@@ -351,7 +346,7 @@ if (isset($mockProducts[$idOrSlug])) {
     exit;
 }
 
-// Fallback search by ID key (1-107) inside mock keys
+
 foreach ($mockProducts as $slugKey => $item) {
     if ((string)$item['id'] === $idOrSlug) {
         http_response_code(200);
@@ -364,7 +359,7 @@ foreach ($mockProducts as $slugKey => $item) {
     }
 }
 
-// 6. Return 404 if not found in DB nor Fallback Cache
+
 http_response_code(404);
 echo json_encode([
     "success" => false,

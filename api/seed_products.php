@@ -1,8 +1,5 @@
 <?php
-/**
- * DATABASE SEEDER FOR PRODUCTS
- * Author: Senior Fullstack Developer
- */
+
 
 require_once 'db.php';
 
@@ -11,10 +8,10 @@ header("Content-Type: application/json");
 $pdo = getDbConnection();
 
 try {
-    // 1. Drop existing table to ensure clean schema update
+    
     $pdo->exec("DROP TABLE IF EXISTS products");
 
-    // 2. Re-create the products table with premium relational columns and JSON support
+    
     $sqlCreate = "
         CREATE TABLE products (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -35,7 +32,7 @@ try {
     ";
     $pdo->exec($sqlCreate);
 
-    // 3. Products dataset representing the showroom catalog
+    
     $products = [
         [
             'slug' => 'nike-mercurial-vapor-16-elite',
@@ -44,7 +41,7 @@ try {
             'category' => 'FOOTBALL / ELITE SERIES',
             'tag' => 'ELITE PERFORMANCE',
             'price' => 6499000,
-            // Fixed Bug: Swapped Puma cleat (photo-1608231387042) to highly recognized red Nike Sport Cleat (photo-1542291026)
+            
             'image' => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800', 
             'images' => json_encode([
                 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=600',
@@ -131,7 +128,7 @@ try {
         ]
     ];
 
-    // 4. Prepare SQL insert
+    
     $stmt = $pdo->prepare("
         INSERT INTO products (slug, name, brand, category, tag, price, image, images, sizes, description, specifications, delivery_info)
         VALUES (:slug, :name, :brand, :category, :tag, :price, :image, :images, :sizes, :description, :specifications, :delivery_info)

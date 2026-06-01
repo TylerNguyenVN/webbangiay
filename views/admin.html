@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TL Shop - Admin Dashboard</title>
 
-  <!-- CSS -->
+  
   <link rel="stylesheet" href="css/admin.css?v=1.0.1">
 
-  <!-- Lucide Icons -->
+  
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="admin-body">
 
-  <!-- LEFT SIDEBAR -->
+  
   <aside class="admin-sidebar">
     <div class="admin-brand">
       <h1>TL Shop</h1>
@@ -79,12 +79,12 @@
     </div>
   </aside>
 
-  <!-- MAIN AREA -->
+  
   <main class="admin-main">
 
     <section id="admin-dashboard" class="view-section active">
 
-      <!-- Header Row -->
+      
       <div class="header-row">
         <div class="header-title-wrapper">
           <span class="header-label">Admin Console</span>
@@ -103,7 +103,7 @@
         </div>
       </div>
 
-      <!-- Metrics Grid -->
+      
       <div class="metrics-grid">
         <div class="metric-card">
           <span class="metric-label">Doanh thu</span>
@@ -151,7 +151,7 @@
         </div>
       </div>
 
-      <!-- Chart Container -->
+      
       <div class="chart-container">
         <div class="chart-header">
           <div style="display:flex; flex-direction:column; gap:0.25rem;">
@@ -191,7 +191,7 @@
 
     <section id="admin-ai" class="view-section">
 
-      <!-- Header Row -->
+      
       <div class="header-row">
         <div class="header-title-wrapper">
           <span class="header-label" style="color:#047857;">AI AGENT TRAINING MODULE</span>
@@ -218,10 +218,10 @@
         </div>
       </div>
 
-      <!-- AI Grid Split -->
+      
       <div class="ai-grid">
 
-        <!-- Left: List -->
+        
         <div class="panel">
           <div class="panel-header">
             <h3 class="panel-title">Unresolved Queries</h3>
@@ -232,7 +232,7 @@
           </div>
 
           <div id="query-list-wrap" class="query-list">
-            <!-- Rendered by JS -->
+            
           </div>
 
           <div class="sim-input-area">
@@ -244,7 +244,7 @@
           </div>
         </div>
 
-        <!-- Right: Editor -->
+        
         <div class="panel editor-panel">
 
           <div
@@ -297,7 +297,7 @@
 
     </section>
 
-    <!-- SECTION DANH MỤC -->
+    
     <section id="admin-categories" class="view-section">
       <div class="header-row">
         <div class="header-title-wrapper">
@@ -308,7 +308,7 @@
       </div>
       
       <div class="ai-grid" style="grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem;">
-        <!-- Left: Form -->
+        
         <div class="panel editor-panel">
           <h3 class="panel-title" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.75rem; margin: 0; font-weight:700;">Thêm / Sửa Danh mục</h3>
           <form id="form-category" style="display:flex; flex-direction:column; gap: 1rem; margin-top: 1rem;">
@@ -338,7 +338,7 @@
           </form>
         </div>
 
-        <!-- Right: Table -->
+        
         <div class="panel">
           <div class="panel-header">
             <h3 class="panel-title">Danh sách danh mục đang có</h3>
@@ -356,7 +356,7 @@
                 </tr>
               </thead>
               <tbody id="table-categories-body">
-                <!-- Nạp dữ liệu tự động bằng JS -->
+                
               </tbody>
             </table>
           </div>
@@ -364,7 +364,7 @@
       </div>
     </section>
 
-    <!-- SECTION SẢN PHẨM -->
+    
     <section id="admin-products" class="view-section">
       <div class="header-row">
         <div class="header-title-wrapper">
@@ -375,7 +375,7 @@
         <button id="btn-open-product-modal" class="btn-save">+ Đăng sản phẩm mới</button>
       </div>
 
-      <!-- Bảng Sản phẩm -->
+      
       <div class="panel" style="margin-top: 1.5rem;">
         <div class="panel-header">
           <h3 class="panel-title">Danh sách giày trên hệ thống</h3>
@@ -395,13 +395,13 @@
               </tr>
             </thead>
             <tbody id="table-products-body">
-              <!-- Nạp dữ liệu bằng JS -->
+              
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- MODAL ĐĂNG SẢN PHẨM MỚI -->
+      
       <div id="product-modal" class="admin-modal" style="display:none;">
         <div class="modal-content">
           <div class="modal-header">
@@ -425,13 +425,13 @@
               <div class="editor-field">
                 <span class="editor-label">Danh mục</span>
                 <select id="product-category" class="editor-select" style="width:100%; padding:0.5rem;" required>
-                  <!-- Nạp danh mục bằng JS -->
+                  
                 </select>
               </div>
               <div class="editor-field">
                 <span class="editor-label">Ảnh chính (Tải lên)</span>
                 <input type="file" id="product-image-file" class="search-input" style="width:100%; padding:0.5rem;" accept="image/*">
-                <!-- Vẫn giữ trường hidden hoặc URL cũ nếu cần, nhưng ở đây dùng trực tiếp file -->
+                
               </div>
             </div>
 
@@ -451,7 +451,7 @@
               <textarea id="product-description" class="editor-textarea" style="height:80px;" placeholder="Mô tả giày..."></textarea>
             </div>
 
-            <!-- PHẦN THÊM BIẾN THỂ SIZE/MÀU/TỒN KHO -->
+            
             <div id="product-variants-section" style="border-top:1px dashed #e5e7eb; padding-top: 1rem;">
               <span class="editor-label" style="margin-bottom: 0.5rem; display:block; color:#047857;">Biến thể kích cỡ & Tồn kho ban đầu</span>
               <div id="variants-container" style="display:flex; flex-direction:column; gap:0.5rem;">
@@ -475,7 +475,7 @@
       </div>
     </section>
 
-    <!-- SECTION ĐƠN HÀNG -->
+    
     <section id="admin-orders" class="view-section">
       <div class="header-row">
         <div class="header-title-wrapper">
@@ -505,13 +505,13 @@
               </tr>
             </thead>
             <tbody id="table-orders-body">
-              <!-- Nạp dữ liệu tự động bằng JS -->
+              
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- MODAL CHI TIẾT HÓA ĐƠN -->
+      
       <div id="order-modal" class="admin-modal" style="display:none;">
         <div class="modal-content" style="max-width: 650px;">
           <div class="modal-header">
@@ -519,13 +519,13 @@
             <span class="close-modal" id="btn-close-order-modal" style="cursor:pointer; font-size:1.5rem; font-weight:700;">&times;</span>
           </div>
           <div style="padding: 1.5rem;" id="order-details-content">
-            <!-- Nạp nội dung bằng JS -->
+            
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION TÀI KHOẢN -->
+    
     <section id="admin-users" class="view-section">
       <div class="header-row">
         <div class="header-title-wrapper">
@@ -555,14 +555,14 @@
               </tr>
             </thead>
             <tbody id="table-users-body">
-              <!-- Nạp bằng JS -->
+              
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- SECTION MÃ GIẢM GIÁ -->
+    
     <section id="admin-coupons" class="view-section">
       <div class="header-row">
         <div class="header-title-wrapper">
@@ -573,7 +573,7 @@
       </div>
 
       <div class="ai-grid" style="grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem;">
-        <!-- Left: Form -->
+        
         <div class="panel editor-panel">
           <h3 class="panel-title" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 0.75rem; margin: 0; font-weight:700;">Khởi tạo mã mới</h3>
           <form id="form-coupon" style="display:flex; flex-direction:column; gap: 1rem; margin-top: 1rem;">
@@ -612,7 +612,7 @@
           </form>
         </div>
 
-        <!-- Right: Table -->
+        
         <div class="panel">
           <div class="panel-header">
             <h3 class="panel-title">Danh sách mã đang kích hoạt</h3>
@@ -632,7 +632,7 @@
                 </tr>
               </thead>
               <tbody id="table-coupons-body">
-                <!-- Nạp bằng JS -->
+                
               </tbody>
             </table>
           </div>
@@ -643,7 +643,7 @@
   </main>
 
   <script>
-    // Initialize icons
+    
     lucide.createIcons();
   </script>
   <script src="js/admin.js?v=1.0.1"></script>

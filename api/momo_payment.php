@@ -19,12 +19,12 @@ if (empty($orderId) || $amount <= 0) {
     exit;
 }
 
-// Tham số cấu hình MoMo Sandbox giả định (bạn cần đổi bằng tham số thật)
+
 $partnerCode = "MOMOBKUN20180529"; 
 $accessKey = "klm05TvNCpeazsji";
 $secretKey = "at67qH6mk8g5i10niA1lP0T912SLe2Yx";
 
-// Cấu hình URL endpoint
+
 $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
 $orderInfo = "Thanh toán đơn hàng " . $orderId . " tại TL Shop";
@@ -36,7 +36,7 @@ $extraData = "";
 $requestId = time() . "";
 $requestType = "captureWallet";
 
-// Tạo chuỗi thô để ký bảo mật (Sắp xếp đúng theo thứ tự bảng chữ cái key)
+
 $rawHash = "accessKey=" . $accessKey .
            "&amount=" . $amountStr .
            "&extraData=" . $extraData .
@@ -48,7 +48,7 @@ $rawHash = "accessKey=" . $accessKey .
            "&requestId=" . $requestId .
            "&requestType=" . $requestType;
 
-// Ký HMAC-SHA256
+
 $signature = hash_hmac("sha256", $rawHash, $secretKey);
 
 $data = [
@@ -91,7 +91,7 @@ $jsonResult = json_decode($result, true);
 if (isset($jsonResult['payUrl'])) {
     echo json_encode(["success" => true, "payUrl" => $jsonResult['payUrl']]);
 } else {
-    // Để frontend không bị kẹt khi test sandbox lỗi, trả về URL giả lập thành công (mock)
+    
     $mockSuccessUrl = "http://localhost/webbangiay/cart.html?payment=success&orderId=" . $orderId;
     echo json_encode([
         "success" => true, 

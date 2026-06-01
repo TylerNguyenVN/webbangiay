@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Tải dữ liệu mới nhất từ CSDL tương ứng thời gian thực
+      
       if (target === "admin-dashboard") loadDashboardStats();
       if (target === "admin-categories") loadCategories();
       if (target === "admin-products") {
@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   let activeQueryId = unresolvedQueries.length > 0 ? unresolvedQueries[0].id : null;
 
-  // DB Sync helper for unresolved queries list
+  
   const saveUnresolvedState = () => {
     fetch("live-chat/api.php?action=save_unresolved", {
       method: "POST",
@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(res => res.json())
       .then(data => {
         if (data.success && data.queries) {
-          unresolvedQueries.length = 0; // Clear array
+          unresolvedQueries.length = 0; 
           data.queries.forEach(q => unresolvedQueries.push(q));
           if (unresolvedQueries.length > 0) {
             activeQueryId = unresolvedQueries[0].id;
@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (editorAnswer) editorAnswer.value = q.answer || "";
   }
 
-  // Load unresolved list from MySQL
+  
   syncUnresolvedFromDB();
 
   const btnDraft = document.getElementById("btn-ai-draft");
@@ -308,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
         q.confidence = "Healthy";
         q.category = editorCategory.value;
         
-        // Push knowledge injection to database!
+        
         fetch("live-chat/api.php?action=inject_knowledge", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -321,7 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            saveUnresolvedState(); // save unresolved state list
+            saveUnresolvedState(); 
             renderQueries();
             showAdminNotification("Đã nạp tri thức và huấn luyện AI thành công vào MySQL CSDL!");
           } else {
@@ -352,7 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         activeQueryId = newId;
         inputSim.value = "";
-        saveUnresolvedState(); // persist new unresolved question
+        saveUnresolvedState(); 
         renderQueries();
         loadActiveQuery();
         showAdminNotification("Đã mô phỏng câu hỏi mới gửi về từ Web Client!");
@@ -360,9 +360,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ==========================================
-  // I. DOANH THU & DASHBOARD METRICS
-  // ==========================================
+  
+  
+  
   async function loadDashboardStats() {
     try {
       const res = await fetch("api/admin_api.php?action=get_dashboard_stats");
@@ -381,13 +381,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Tải chỉ số và danh mục ngay lập tức khi vào trang quản trị
+  
   loadDashboardStats();
   loadCategories();
 
-  // ==========================================
-  // II. PHÂN HỆ QUẢN LÝ DANH MỤC (CATEGORIES)
-  // ==========================================
+  
+  
+  
   async function loadCategories() {
     try {
       const res = await fetch("api/admin_api.php?action=get_categories");
@@ -514,9 +514,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // ==========================================
-  // III. PHÂN HỆ QUẢN LÝ SẢN PHẨM & BIẾN THỂ (PRODUCTS)
-  // ==========================================
+  
+  
+  
   async function loadProducts() {
     try {
       const res = await fetch("api/admin_api.php?action=get_products");
@@ -812,9 +812,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // ==========================================
-  // IV. PHÂN HỆ QUẢN LÝ ĐƠN HÀNG (ORDERS)
-  // ==========================================
+  
+  
+  
   async function loadOrders() {
     try {
       const res = await fetch("api/admin_api.php?action=get_orders");
@@ -965,9 +965,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ==========================================
-  // V. PHÂN HỆ QUẢN LÝ TÀI KHOẢN (USERS)
-  // ==========================================
+  
+  
+  
   async function loadUsers() {
     try {
       const res = await fetch("api/admin_api.php?action=get_users");
@@ -1051,9 +1051,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // ==========================================
-  // VI. PHÂN HỆ QUẢN LÝ MÃ GIẢM GIÁ (COUPONS)
-  // ==========================================
+  
+  
+  
   async function loadCoupons() {
     try {
       const res = await fetch("api/admin_api.php?action=get_coupons");

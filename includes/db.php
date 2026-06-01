@@ -1,8 +1,5 @@
 <?php
-/**
- * DATABASE CONNECTION HELPER
- * Chuẩn kết nối PDO dùng chung cho toàn bộ dự án
- */
+
 
 function getDB() {
     $host = 'localhost';
@@ -21,7 +18,7 @@ function getDB() {
     try {
         return new PDO($dsn, $user, $pass, $options);
     } catch (\PDOException $e) {
-        // Trả về JSON lỗi 500 nếu mất kết nối
+        
         header("Content-Type: application/json", true, 500);
         echo json_encode([
             "success" => false, 
@@ -31,7 +28,7 @@ function getDB() {
     }
 }
 
-// Helper function để đảm bảo tính tương thích với code cũ nếu có
+
 function getDbConnection() {
     return getDB();
 }

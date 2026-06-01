@@ -6,10 +6,10 @@ header("Content-Type: application/json");
 $pdo = getDbConnection();
 
 try {
-    // Tạm thời tắt khóa ngoại
+    
     $pdo->exec("SET FOREIGN_KEY_CHECKS = 0;");
 
-    // Thêm các danh mục theo yêu cầu
+    
     $pdo->exec("TRUNCATE TABLE categories;");
     $categories = [
         ['Dòng sản phẩm', 'dong-san-pham', 'Các dòng sản phẩm đặc trưng'],
@@ -21,11 +21,11 @@ try {
         $stmtCat->execute($cat);
     }
 
-    // Lấy ID của các danh mục vừa tạo
+    
     $idDongSanPham = $pdo->query("SELECT id FROM categories WHERE slug = 'dong-san-pham'")->fetchColumn();
     $idGiayTheThao = $pdo->query("SELECT id FROM categories WHERE slug = 'giay-the-thao'")->fetchColumn();
 
-    // Thêm sản phẩm mẫu
+    
     $pdo->exec("TRUNCATE TABLE products;");
     
     $products = [

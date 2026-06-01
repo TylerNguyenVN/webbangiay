@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Nhận dữ liệu từ Frontend gửi lên
+
 $data = json_decode(file_get_contents("php://input"), true);
 $username = trim($data['username'] ?? '');
 $email = trim($data['email'] ?? '');
@@ -20,7 +20,7 @@ $password = $data['password'] ?? '';
 $phone = trim($data['phone'] ?? '');
 $address = trim($data['address'] ?? '');
 
-// 1. Kiểm tra đầu vào
+
 if (empty($username) || empty($email) || empty($password)) {
     http_response_code(400);
     echo json_encode(["success" => false, "message" => "Vui lòng nhập đủ các trường bắt buộc (Tên, Email, Mật khẩu)."]);
@@ -33,7 +33,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-// 2. Kiểm tra trùng lặp Email
+
 $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
 $stmt->execute([$email]);
 if ($stmt->fetch()) {
@@ -42,10 +42,10 @@ if ($stmt->fetch()) {
     exit;
 }
 
-// 3. Mã hóa mật khẩu
+
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-// 4. Lưu vào DB
+
 try {
     $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, phone, address, role, is_locked) VALUES (?, ?, ?, ?, ?, 'customer', 0)");
     $insertStmt->execute([$username, $email, $hashedPassword, $phone, $address]);

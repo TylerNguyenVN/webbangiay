@@ -1,10 +1,9 @@
 CREATE DATABASE IF NOT EXISTS `webbangiay_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `webbangiay_db`;
 
--- Tạm thời tắt kiểm tra khóa ngoại để DROP bảng cũ không bị lỗi ràng buộc
 SET FOREIGN_KEY_CHECKS = 0;
 
--- Xóa các bảng cũ để cập nhật cấu trúc mới (chánh xung đột vì bảng products cũ của bạn không có cột slug)
+
 DROP TABLE IF EXISTS `payment_transactions`;
 DROP TABLE IF EXISTS `reviews`;
 DROP TABLE IF EXISTS `coupons`;
@@ -17,13 +16,9 @@ DROP TABLE IF EXISTS `product_images`;
 DROP TABLE IF EXISTS `products`;
 DROP TABLE IF EXISTS `categories`;
 
--- Bật lại kiểm tra khóa ngoại để tạo bảng và ràng buộc chính xác
 SET FOREIGN_KEY_CHECKS = 1;
 
 
--- ==========================================
--- 0. BẢNG NGƯỜI DÙNG (users)
--- ==========================================
 CREATE TABLE IF NOT EXISTS `users` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `username` VARCHAR(50) NOT NULL COMMENT 'Tên đăng nhập / Họ tên hiển thị',
@@ -189,9 +184,6 @@ CREATE TABLE IF NOT EXISTS `order_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bảng lưu chi tiết các sản phẩm trong hóa đơn mua hàng';
 
 
--- ==========================================
--- 6. BẢNG MÃ GIẢM GIÁ (coupons)
--- ==========================================
 CREATE TABLE IF NOT EXISTS `coupons` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `code` VARCHAR(50) NOT NULL UNIQUE COMMENT 'Mã giảm giá (ví dụ: NIKE100K, FREESHIP)',
@@ -208,9 +200,6 @@ CREATE TABLE IF NOT EXISTS `coupons` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bảng quản lý mã giảm giá toàn sàn';
 
 
--- ==========================================
--- 7. BẢNG ĐÁNH GIÁ SẢN PHẨM (reviews)
--- ==========================================
 CREATE TABLE IF NOT EXISTS `reviews` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `product_id` INT NOT NULL COMMENT 'Đánh giá cho sản phẩm nào',
@@ -225,9 +214,6 @@ CREATE TABLE IF NOT EXISTS `reviews` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bảng lưu đánh giá và xếp hạng sản phẩm';
 
 
--- ==========================================
--- 8. BẢNG LỊCH SỬ GIAO DỊCH THANH TOÁN (payment_transactions)
--- ==========================================
 CREATE TABLE IF NOT EXISTS `payment_transactions` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `order_id` INT NOT NULL COMMENT 'Giao dịch cho đơn hàng nào',
@@ -243,9 +229,6 @@ CREATE TABLE IF NOT EXISTS `payment_transactions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bảng đối soát dòng tiền và lịch sử giao dịch trực tuyến';
 
 
--- ==========================================
--- TẠO CÁC CHỈ MỤC (INDEX) ĐỂ TỐI ƯU HÓA TRUY VẤN
--- ==========================================
 CREATE INDEX `idx_products_slug` ON `products` (`slug`);
 CREATE INDEX `idx_categories_slug` ON `categories` (`slug`);
 CREATE INDEX `idx_variants_sku` ON `product_variants` (`sku`);
@@ -256,17 +239,10 @@ CREATE INDEX `idx_reviews_product_id` ON `reviews` (`product_id`);
 CREATE INDEX `idx_transactions_code` ON `payment_transactions` (`transaction_code`);
 
 
--- ==========================================
--- DỮ LIỆU KHỞI TẠO CƠ BẢN (INITIAL DATA)
--- ==========================================
-
--- Tự động tạo tài khoản Admin mặc định (Mật khẩu mặc định: 123)
--- Hash cho mật khẩu '123' tạo bằng password_hash() là: $2y$10$7vN34e9/wF4C3kE4fH7JeeQx5yK0Dp2XJvL4Fh6GgH8N/7WnKNu6Hq (hoặc tương tự)
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
 (1, 'Admin', 'admin', '$2y$10$7vN34e9/wF4C3kE4fH7JeeQx5yK0Dp2XJvL4Fh6GgH8N/7WnKNu6Hq', 'admin')
 ON DUPLICATE KEY UPDATE `role`='admin';
 
--- Tạo danh mục cha và các danh mục con mặc định
 INSERT INTO `categories` (`id`, `parent_id`, `name`, `slug`, `description`, `status`) VALUES
 (1, NULL, 'Nam', 'nam', 'Thời trang giày dành cho nam giới', 1),
 (2, NULL, 'Nữ', 'nu', 'Thời trang giày dành cho nữ giới', 1),
@@ -289,17 +265,4 @@ INSERT INTO `categories` (`id`, `parent_id`, `name`, `slug`, `description`, `sta
 ON DUPLICATE KEY UPDATE `status`=1;
 
 
--- ==========================================
--- HƯỚNG DẪN NẠP DỮ LIỆU DEMO 50 SẢN PHẨM MỖI LOẠI
--- ==========================================
--- Để tự động nạp 50 sản phẩm cao cấp cực đẹp kèm theo 4 biến thể size/màu và ảnh
--- cho mỗi loại danh mục (tổng cộng 750 sản phẩm và 3000 biến thể), bạn vui lòng thực hiện:
---
--- CÁCH 1: Chạy trực tiếp từ trình duyệt bằng cách truy cập đường dẫn:
--- http://localhost/webbangiay/api/seed_demo_50.php
---
--- CÁCH 2: Nếu có CLI PHP (XAMPP), chạy lệnh sau trong terminal:
--- C:\xampp\php\php.exe -f c:\xampp\htdocs\webbangiay\api\seed_demo_50.php
---
--- (Đảm bảo Module MySQL trong XAMPP đã được BẬT trước khi chạy!)
 

@@ -1,24 +1,20 @@
-/**
- * PREMIUM SMART INSTANT SEARCH CONTROLLER
- * Author: Senior Frontend Engineer
- * Features: Manual Debounce, Vietnamese Accent-insensitive matching, Interchangeable y/i support, LocalStorage search history, 100% Uptime Fallbacks
- */
+
 
 (() => {
-  // ==========================================
-  // 1. STATE & CONFIGURATION CONSTANTS
-  // ==========================================
+  
+  
+  
   let currentSearchQuery = '';
   let currentPage = 1;
   let totalPages = 1;
-  const searchLimit = 5; // Matches Nike's 5 columns horizontal mockup
+  const searchLimit = 5; 
   let debounceTimeout = null;
   let isInitialized = false;
 
   const HISTORY_KEY = 'nike_recent_searches';
   const TRENDING_KEYWORDS = ["Pegasus 42", "Air Max", "Jordan", "Vaporfly", "Alphafly", "Phantom GX"];
 
-  // Premium static catalog for instant fallback searches (Offline Uptime Insurance)
+  
   const JS_MOCK_CATALOG = [
     {
       "id": 101,
@@ -92,9 +88,9 @@
     }
   ];
 
-  // ==========================================
-  // 2. DOM CACHING WITH DEFENSIVE FALLBACKS
-  // ==========================================
+  
+  
+  
   let searchOverlay, searchInputField, searchClearBtn, cancelSearchBtn;
   let trendingTags, historySection, historyList, clearAllHistoryBtn;
   let featuredList, resultsView, resultsTitle, resultsList;
@@ -127,9 +123,9 @@
     paginationInfoText = document.getElementById('sh-pagination-info');
   }
 
-  // ==========================================
-  // 3. UTILITIES & FORMATTERS
-  // ==========================================
+  
+  
+  
   function debounce(func, delay) {
     return (...args) => {
       clearTimeout(debounceTimeout);
@@ -159,7 +155,7 @@
     
     let index = normalizedText.indexOf(normalizedKeyword);
     if (index === -1) {
-      // Support interchangeable y/i matching in highlighting
+      
       let altKeyword = normalizedKeyword;
       if (normalizedKeyword.endsWith('y')) {
         altKeyword = normalizedKeyword.replace(/y$/, 'i');
@@ -186,9 +182,9 @@
     return result;
   }
 
-  // ==========================================
-  // 4. RENDERING FUNCTIONS
-  // ==========================================
+  
+  
+  
   function renderTrendingTags() {
     if (!trendingTags) return;
     trendingTags.innerHTML = TRENDING_KEYWORDS.map(kw => 
@@ -376,9 +372,9 @@
     paginationNextBtn.disabled = (currentPage === totalPages);
   }
 
-  // ==========================================
-  // 5. ENGINES (API QUERY & fallback ENGINE)
-  // ==========================================
+  
+  
+  
   function executeLocalFallbackSearch(q, pageIndex) {
     let matched = [];
     const sanitizedQ = removeVietnameseAccentsJS(q).toLowerCase().trim();
@@ -496,9 +492,9 @@
     }
   }
 
-  // ==========================================
-  // 6. EVENT LISTENERS
-  // ==========================================
+  
+  
+  
   function initEventListeners() {
     if (searchInputField) {
       searchInputField.addEventListener('input', (e) => {
@@ -579,7 +575,7 @@
       });
     }
 
-    // Connect top bar submission button
+    
     const shSubmitBtn = document.getElementById('sh-submit-btn');
     if (shSubmitBtn) {
       shSubmitBtn.addEventListener('click', () => {
@@ -594,9 +590,9 @@
     }
   }
 
-  // ==========================================
-  // 7. EXPORT GLOBAL NAMESPACE CONTROLLERS
-  // ==========================================
+  
+  
+  
   window.TLSearch = {
     init: () => {
       if (isInitialized) return;
@@ -631,7 +627,7 @@
     }
   };
 
-  // Safe auto-initializer for normal loading sequences
+  
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     window.TLSearch.init();
   } else {

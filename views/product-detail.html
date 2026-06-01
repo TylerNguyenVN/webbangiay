@@ -6,36 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chi Tiết Sản Phẩm | TL Shop</title>
 
-  <!-- Preconnect and Google Fonts -->
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- Link Main Homepage Stylesheet and Custom Details Stylesheet -->
+  
   <link rel="stylesheet" href="css/style.css?v=1.0.3">
   <link rel="stylesheet" href="css/nike-elite.css?v=1.0.3">
 
-  <!-- Lucide Icons -->
+  
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="nike-body light-theme">
 
-  <!-- GLOBAL HEADER PLACEHOLDER -->
+  
   <div id="header-placeholder"></div>
 
-  <!-- CORE SCREEN CONTENT -->
+  
   <main class="nike-main">
     <div class="nike-container" style="padding: 2.5rem 1.5rem 1.5rem 1.5rem;">
 
-      <!-- ============================================== -->
-      <!-- SCREEN 1: PRODUCT DETAIL SCREEN -->
-      <!-- ============================================== -->
+      
+      
+      
       <section class="nike-screen active" id="screen-product">
         <div class="grid-cols-12">
 
-          <!-- Left Column: Images (Span 7) -->
+          
           <div class="col-span-7" style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <!-- Main big image view -->
+            
             <div class="image-showcase">
               <span class="nike-badge-green" id="prod-tag-badge"
                 style="position: absolute; top: 1rem; left: 1rem; z-index: 10;">
@@ -45,9 +45,9 @@
                 alt="Nike Mercurial Vapor 16 Elite" id="prod-main-img" referrerPolicy="no-referrer">
             </div>
 
-            <!-- Bottom ratings & detail thumbs -->
+            
             <div class="grid-cols-12">
-              <!-- Review ratings card (Span 6) -->
+              
               <div class="col-span-6 rating-card">
                 <div>
                   <div class="stars" style="margin-bottom: 0.5rem;">
@@ -75,7 +75,7 @@
                 </div>
               </div>
 
-              <!-- Thumbnails detailing list (Span 6) -->
+              
               <div class="col-span-6 thumb-grid" id="product-thumbnails">
                 <div class="thumb-card active"
                   data-url="https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=1200">
@@ -99,20 +99,20 @@
             </div>
           </div>
 
-          <!-- Right Column: Action Details (Span 5) -->
+          
           <div class="col-span-5"
             style="display: flex; flex-direction: column; justify-content: space-between; gap: 2rem;">
             <div>
-              <!-- Category tag -->
+              
               <p class="product-category-tag" id="prod-category-text">FOOTBALL / ELITE SERIES</p>
 
-              <!-- Main Title -->
+              
               <h1 class="product-title" id="prod-name-text">NIKE MERCURIAL VAPOR 16 ELITE</h1>
 
-              <!-- Price tag -->
+              
               <p class="product-price-tag" id="prod-price-text">6.499.000 đ</p>
 
-              <!-- Size selection -->
+              
               <div style="margin-bottom: 2rem;">
                 <div class="size-selector-header">
                   <span>Chọn Size (US)</span>
@@ -120,13 +120,13 @@
                     onclick="alert('Size Chart: US 7 = 40, US 8 = 41, US 9 = 42.5, US 10 = 44, US 11 = 45')">Size
                     Guide</button>
                 </div>
-                <!-- Premium Size Flex Selector -->
+                
                 <div class="size-flex-container" id="product-size-container">
-                  <!-- Dynamically populated by JS -->
+                  
                 </div>
               </div>
 
-              <!-- Core buttons actions -->
+              
               <div style="display: flex; gap: 0.75rem; margin-bottom: 2.5rem;">
                 <button type="button" class="add-to-cart-big-btn" id="prod-add-to-cart-btn">
                   THÊM VÀO GIỎ HÀNG
@@ -136,9 +136,9 @@
                 </button>
               </div>
 
-              <!-- Accordion Details List -->
+              
               <div class="accordion-list">
-                <!-- ACCORDION 1: Description -->
+                
                 <div class="accordion-item open" id="acc-description">
                   <button type="button" class="accordion-trigger">
                     <span>Giới thiệu sản phẩm</span>
@@ -152,7 +152,7 @@
                   </div>
                 </div>
 
-                <!-- ACCORDION 2: Delivery -->
+                
                 <div class="accordion-item" id="acc-delivery">
                   <button type="button" class="accordion-trigger">
                     <span>Giao hàng & Hoàn trả</span>
@@ -164,7 +164,7 @@
                   </div>
                 </div>
 
-                <!-- ACCORDION 3: Specifications -->
+                
                 <div class="accordion-item" id="acc-specs">
                   <button type="button" class="accordion-trigger">
                     <span>Thông số kỹ thuật</span>
@@ -173,14 +173,14 @@
                   <div class="accordion-body">
                     <div style="display: flex; flex-direction: column; gap: 0.65rem; padding: 0.25rem 0;"
                       id="prod-specs-body">
-                      <!-- Sẽ được điền động bằng JavaScript -->
+                      
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Authenticity Guaranteed Card -->
+            
             <div class="authenticity-card">
               <i data-lucide="shield-check"
                 style="color: var(--color-elite-primary); width: 22px; height: 22px; flex-shrink: 0; margin-top: 1px;"></i>
@@ -200,15 +200,15 @@
     </div>
   </main>
 
-  <!-- SUCCESS TOASTS NOTIFICATION ELEMENT -->
+  
   <div class="nike-toast-container" id="toast-container"></div>
 
-  <!-- GLOBAL FOOTER PLACEHOLDER -->
+  
   <div id="footer-placeholder"></div>
 
-  <!-- JavaScript Load Template & Initializations -->
+  
   <script>
-    // Hàm tải template tĩnh (Header, Footer)
+    
     async function loadTemplate(placeholderId, filePath) {
       try {
         const response = await fetch(filePath);
@@ -220,7 +220,7 @@
       }
     }
 
-    // Khởi tạo các component khi tải xong trang
+    
     async function initPageComponents() {
       await Promise.all([
         loadTemplate('header-placeholder', 'components/header.html?v=2'),
@@ -231,7 +231,7 @@
         lucide.createIcons();
       }
 
-      // Tải script xử lý tương tác chi tiết sản phẩm sau khi đã chèn xong header/footer
+      
       const script = document.createElement('script');
       script.src = 'js/product-detail.js?v=' + Date.now();
       document.body.appendChild(script);

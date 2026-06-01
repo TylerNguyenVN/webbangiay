@@ -1,19 +1,14 @@
 <?php
-/**
- * API Check MoMo Payment Status - BƯỚC 3 - Xác nhận thanh toán
- * Nhận order_code từ frontend (momo_checkout.php)
- * Cập nhật trạng thái đơn hàng từ 'pending' -> 'paid'
- * Trả về JSON thông báo thành công
- */
+
 
 header("Content-Type: application/json; charset=utf-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 
-// Import database connection
+
 require_once __DIR__ . '/db.php';
 
-// Chỉ chấp nhận POST request
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode([
@@ -23,13 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Đọc JSON payload
+
 $input = json_decode(file_get_contents("php://input"), true);
 
 $order_code = trim($input['order_code'] ?? '');
 $order_id = (int)($input['order_id'] ?? 0);
 
-// Validate input
+
 if (empty($order_code) || $order_id <= 0) {
     http_response_code(400);
     echo json_encode([
@@ -42,7 +37,7 @@ if (empty($order_code) || $order_id <= 0) {
 try {
     $pdo = getDbConnection();
 
-    // Kiểm tra xem đơn hàng có tồn tại hay không
+    
     $checkStmt = $pdo->prepare("
         SELECT id, order_code, payment_status, status 
         FROM orders 
@@ -64,7 +59,7 @@ try {
         exit;
     }
 
-    // Kiểm tra nếu đơn hàng đã thanh toán rồi
+    
     if ($order['payment_status'] === 'paid') {
         http_response_code(200);
         echo json_encode([
@@ -75,8 +70,8 @@ try {
         exit;
     }
 
-    // UPDATE trạng thái thanh toán từ 'pending' -> 'paid'
-    // Và UPDATE trạng thái đơn hàng từ 'pending' -> 'processing'
+    
+    
     $updateStmt = $pdo->prepare("
         UPDATE orders 
         SET payment_status = 'paid', 
@@ -90,7 +85,7 @@ try {
         ':order_code' => $order_code
     ]);
 
-    // Trả về response thành công
+    
     http_response_code(200);
     echo json_encode([
         "success" => true,

@@ -3,7 +3,7 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 
-// Kết nối Database
+
 $host = '127.0.0.1';
 $db   = 'webbangiay_db';
 $user = 'root';
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Nhận dữ liệu
+
 $data = json_decode(file_get_contents("php://input"), true);
 $credential = $data['credential'] ?? '';
 
@@ -34,7 +34,7 @@ if (empty($credential)) {
     exit;
 }
 
-// Gọi API của Google để giải mã và xác thực token
+
 $google_api_url = "https://oauth2.googleapis.com/tokeninfo?id_token=" . $credential;
 $response = @file_get_contents($google_api_url);
 
@@ -54,7 +54,7 @@ if (isset($payload['error'])) {
 
 $email = $payload['email'] ?? '';
 $name = $payload['name'] ?? 'Google User';
-$google_id = $payload['sub'] ?? ''; // ID duy nhất của tài khoản Google
+$google_id = $payload['sub'] ?? ''; 
 
 if (empty($email) || empty($google_id)) {
     http_response_code(400);
@@ -63,24 +63,24 @@ if (empty($email) || empty($google_id)) {
 }
 
 try {
-    // Kiểm tra user trong DB
+    
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
     $stmt->execute([$email]);
     $userRecord = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($userRecord) {
-        // Nếu user đã tồn tại (đăng ký bằng form hoặc google trước đó)
-        // Cập nhật google_id nếu chưa có
+        
+        
         if (!isset($userRecord['google_id']) || empty($userRecord['google_id'])) {
             $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, auth_provider = 'google' WHERE id = ?");
             $updateStmt->execute([$google_id, $userRecord['id']]);
         }
     } else {
-        // Nếu user chưa tồn tại, tự động tạo mới
+        
         $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, auth_provider, google_id) VALUES (?, ?, NULL, 'google', ?)");
         $insertStmt->execute([$name, $email, $google_id]);
         
-        // Lấy lại user vừa tạo
+        
         $stmt->execute([$email]);
         $userRecord = $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -90,7 +90,7 @@ try {
     exit;
 }
 
-// Trả về kết quả đăng nhập thành công
+
 http_response_code(200);
 echo json_encode([
     "success" => true,
