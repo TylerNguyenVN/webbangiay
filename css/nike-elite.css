@@ -447,35 +447,45 @@
   color: var(--color-elite-charcoal);
 }
 
-.size-grid {
+/* Premium Size Grid Selector — 5 sizes per row */
+.size-flex-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.65rem;
   margin-bottom: 2rem;
 }
 
-.size-btn {
+.size-pill-btn {
   background-color: #ffffff;
-  color: var(--color-elite-text);
+  color: var(--color-elite-charcoal);
   border: 1px solid var(--color-elite-border);
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
-  padding: 0.85rem 0;
-  border-radius: 0.75rem;
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  border-radius: 9999px; /* Bo tròn hoàn toàn */
   cursor: pointer;
-  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  user-select: none;
   font-family: var(--font-sans);
 }
 
-.size-btn:hover {
-  border-color: var(--color-elite-charcoal);
+.size-pill-btn:hover {
+  border-color: var(--color-elite-primary);
+  background-color: rgba(0, 102, 55, 0.03);
+  transform: translateY(-1px);
 }
 
-.size-btn.selected {
+.size-pill-btn.selected {
   background-color: var(--color-elite-primary);
   color: #ffffff;
   border-color: transparent;
-  box-shadow: 0 4px 6px rgba(0, 102, 55, 0.15);
+  box-shadow: 0 4px 8px rgba(0, 102, 55, 0.15);
   transform: translateY(-2px);
 }
 

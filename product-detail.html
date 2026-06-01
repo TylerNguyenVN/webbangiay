@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   
   <!-- Link Main Homepage Stylesheet and Custom Details Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/nike-elite.css">
+  <link rel="stylesheet" href="css/style.css?v=1.0.3">
+  <link rel="stylesheet" href="css/nike-elite.css?v=1.0.3">
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -101,16 +101,9 @@
                   <span>Chọn Size (US)</span>
                   <button type="button" class="size-guide-btn" onclick="alert('Size Chart: US 7 = 40, US 8 = 41, US 9 = 42.5, US 10 = 44, US 11 = 45')">Size Guide</button>
                 </div>
-                <!-- Size Grid buttons -->
-                <div class="size-grid" id="product-size-grid">
-                  <button type="button" class="size-btn">US 7</button>
-                  <button type="button" class="size-btn selected">US 8</button>
-                  <button type="button" class="size-btn">US 9</button>
-                  <button type="button" class="size-btn">US 10</button>
-                  <button type="button" class="size-btn">US 11</button>
-                  <button type="button" class="size-btn">US 12</button>
-                  <button type="button" class="size-btn">US 13</button>
-                  <button type="button" class="size-btn">US 14</button>
+                <!-- Premium Size Flex Selector -->
+                <div class="size-flex-container" id="product-size-container">
+                  <!-- Dynamically populated by JS -->
                 </div>
               </div>
 

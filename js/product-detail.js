@@ -88,16 +88,26 @@
   const paramId = urlParams.get('id');
 
   // Các biến trạng thái của trang chi tiết
-  let currentSelectedSize = "US 8";
+  let currentSelectedSize = "36";
   let activeWishlisted = false;
   let PRODUCT = null;
+
+  const SHOE_SIZES_EU = Array.from({ length: 10 }, (_, i) => String(36 + i));
+
+  function resolveDisplaySizes(sizes) {
+    if (!sizes || !Array.isArray(sizes)) return SHOE_SIZES_EU;
+    const normalized = sizes.map((s) => String(s).trim());
+    if (normalized.some((s) => /ml$/i.test(s))) return normalized;
+    if (normalized.every((s) => /^\d+(\.\d+)?$/.test(s))) return SHOE_SIZES_EU;
+    return normalized;
+  }
 
   // ==============================================
   // 2. KHAI BÁO CÁC DOM ELEMENT
   // ==============================================
   const prodMainImg = document.getElementById("prod-main-img");
   const productThumbGrid = document.getElementById("product-thumbnails");
-  const productSizeGrid = document.getElementById("product-size-grid");
+  const productSizeContainer = document.getElementById("product-size-container");
   const prodAddToCartBtn = document.getElementById("prod-add-to-cart-btn");
   const prodWishlistBtn = document.getElementById("prod-wishlist-btn");
   const prodSpecsBody = document.getElementById("prod-specs-body");
@@ -154,13 +164,16 @@
         }
       }
       
-      // Xử lý Sizes nếu có
-      if (productSizeGrid && PRODUCT.sizes) {
-         let sizes = typeof PRODUCT.sizes === 'string' ? JSON.parse(PRODUCT.sizes) : PRODUCT.sizes;
-         if(Array.isArray(sizes) && sizes.length > 0) {
+      // Xử lý Sizes (giày: 36–45, 5 size mỗi hàng)
+      if (productSizeContainer) {
+         let rawSizes = PRODUCT.sizes
+           ? (typeof PRODUCT.sizes === "string" ? JSON.parse(PRODUCT.sizes) : PRODUCT.sizes)
+           : null;
+         const sizes = resolveDisplaySizes(rawSizes);
+         if (Array.isArray(sizes) && sizes.length > 0) {
             currentSelectedSize = sizes[0];
-            productSizeGrid.innerHTML = sizes.map((s, idx) => `
-              <button class="size-btn ${idx === 0 ? 'selected' : ''}">${s}</button>
+            productSizeContainer.innerHTML = sizes.map((s, idx) => `
+              <button type="button" class="size-pill-btn ${idx === 0 ? "selected" : ""}" data-size="${s}">${s}</button>
             `).join("");
          }
       }
@@ -223,15 +236,15 @@ if (productThumbGrid) {
   });
 }
 
-// Chọn kích thước sản phẩm (Size US)
-if (productSizeGrid) {
-  productSizeGrid.addEventListener("click", (e) => {
-    const sizeBtn = e.target.closest(".size-btn");
-    if (!sizeBtn) return;
+// Selection interaction for sizes list
+if (productSizeContainer) {
+  productSizeContainer.addEventListener("click", (e) => {
+    const btn = e.target.closest(".size-pill-btn");
+    if (!btn) return;
 
-    productSizeGrid.querySelectorAll(".size-btn").forEach(btn => btn.classList.remove("selected"));
-    sizeBtn.classList.add("selected");
-    currentSelectedSize = sizeBtn.textContent.trim();
+    productSizeContainer.querySelectorAll(".size-pill-btn").forEach(el => el.classList.remove("selected"));
+    btn.classList.add("selected");
+    currentSelectedSize = btn.getAttribute("data-size");
   });
 }
 
