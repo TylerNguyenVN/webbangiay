@@ -81,6 +81,27 @@
                   </div>
                 </div>
 
+                <div class="form-group-row" style="margin-bottom: 1rem;">
+                  <div class="form-group">
+                    <label class="form-label" for="ship-province">Tỉnh/Thành phố</label>
+                    <select id="ship-province" class="form-input">
+                      <option value="">Chọn Tỉnh/Thành</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="ship-district">Quận/Huyện</label>
+                    <select id="ship-district" class="form-input" disabled>
+                      <option value="">Chọn Quận/Huyện</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="ship-ward">Phường/Xã</label>
+                    <select id="ship-ward" class="form-input" disabled>
+                      <option value="">Chọn Phường/Xã</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div class="form-group" style="margin-bottom: 1.5rem;">
                   <label class="form-label" for="ship-address">Địa chỉ chi tiết</label>
                   <input type="text" id="ship-address" placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."
@@ -116,6 +137,20 @@
                       </div>
                     </div>
 
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 1.5rem;">
+                  <label class="form-label">Phương thức thanh toán</label>
+                  <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                      <input type="radio" name="payment_method" value="cod" checked style="width: 18px; height: 18px; accent-color: var(--color-elite-primary);">
+                      <span style="font-size: 14px; font-weight: 500; color: #1c1917;">Thanh toán khi nhận hàng (COD)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                      <input type="radio" name="payment_method" value="momo" style="width: 18px; height: 18px; accent-color: #a50064;">
+                      <span style="font-size: 14px; font-weight: 500; color: #a50064;">Thanh toán qua Ví điện tử MoMo</span>
+                    </label>
                   </div>
                 </div>
               </form>
@@ -450,7 +485,7 @@
     // Khởi tạo các component khi tải xong trang
     async function initPageComponents() {
       await Promise.all([
-        loadTemplate('header-placeholder', 'components/header.html'),
+        loadTemplate('header-placeholder', 'components/header.html?v=2'),
         loadTemplate('footer-placeholder', 'components/footer.html')
       ]);
 

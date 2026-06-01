@@ -78,10 +78,12 @@
   // ==============================================
   // 1. DATA DEFINITIONS & STATE
   // ==============================================
-  let cartItems = JSON.parse(localStorage.getItem("nike_cart_items")) || [];
+  let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
   let activeOrder = null;
   let selectedDeliveryMethod = "standard"; // "standard" | "express"
   let trackerActiveStep = 2; // Bước giao vận mặc định (Shipped)
+  let dynamicShippingFee = 0; // Lưu phí ship tự động từ GHN API
+  const GHN_TOKEN = "YOUR_GHN_DEV_TOKEN_HERE"; // Thay bằng token thật của bạn
 
   // ==============================================
   // 2. KHAI BÁO CÁC DOM ELEMENT
@@ -232,7 +234,7 @@
         cartItems.splice(index, 1);
       }
 
-      localStorage.setItem("nike_cart_items", JSON.stringify(cartItems));
+      localStorage.setItem("cart", JSON.stringify(cartItems));
       renderCartScreen();
     });
   }
@@ -240,7 +242,9 @@
   function calculateCartTotals() {
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const subtotal = cartItems.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
-    const shippingFee = subtotal > 0 ? (selectedDeliveryMethod === "standard" ? 0 : 150000) : 0;
+    
+    // Nếu chọn giao hoả tốc (Express) thì tự cộng 150k, nếu tiêu chuẩn thì dùng phí GHN tính tự động
+    const shippingFee = subtotal > 0 ? (selectedDeliveryMethod === "standard" ? dynamicShippingFee : 150000) : 0;
 
     const hasMercurial = cartItems.some(item => item.product.id && item.product.id.includes("mercurial"));
     const discount = hasMercurial ? 150000 : 0;
@@ -332,10 +336,13 @@
       const dateFormatted = `${dateObj.getDate()} ${monthsVi[dateObj.getMonth()]}, ${dateObj.getFullYear()}`;
 
       const subtotal = cartItems.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
-      const shippingFee = selectedDeliveryMethod === "standard" ? 0 : 150000;
+      const shippingFee = subtotal > 0 ? (selectedDeliveryMethod === "standard" ? dynamicShippingFee : 150000) : 0;
       const hasMercurial = cartItems.some(item => item.product.id && item.product.id.includes("mercurial"));
       const discount = hasMercurial ? 150000 : 0;
       const finalTotal = Math.max(0, subtotal + shippingFee - discount);
+
+      // Lấy phương thức thanh toán đang được chọn
+      const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
 
       activeOrder = {
         id: `#NKE-${Math.floor(100000 + Math.random() * 900000)}`,
@@ -407,6 +414,29 @@
         
         if (data.success) {
           activeOrder.id = data.order_code; // Gán mã đơn thật từ DB trả về
+          
+          // Xử lý luồng thanh toán MoMo
+          if (selectedPaymentMethod === 'momo') {
+            const momoRes = await fetch("api/momo_payment.php", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                orderId: activeOrder.id,
+                amount: activeOrder.total
+              })
+            });
+            const momoData = await momoRes.json();
+            if (momoData.success && momoData.payUrl) {
+              cartItems = [];
+              localStorage.removeItem("cart");
+              window.location.href = momoData.payUrl;
+              return;
+            } else {
+              alert("Lỗi khởi tạo thanh toán MoMo: " + (momoData.message || "Unknown error"));
+              return;
+            }
+          }
+          
         } else {
           console.warn("Lưu đơn hàng vào DB thất bại: ", data.message);
         }
@@ -415,7 +445,7 @@
       }
 
       cartItems = [];
-      localStorage.removeItem("nike_cart_items");
+      localStorage.removeItem("cart");
 
       inputFullname.value = "";
       inputPhone.value = "";
@@ -606,4 +636,118 @@
       alert("Tính năng tải hoá đơn PDF đang giả lập thành công! Tệp NKE-INVOICE.pdf đã được ghi nhớ.");
     });
   }
+
+  // ==============================================
+  // 8. GHN PUBLIC API INTEGRATION
+  // ==============================================
+  const provinceSelect = document.getElementById("ship-province");
+  const districtSelect = document.getElementById("ship-district");
+  const wardSelect = document.getElementById("ship-ward");
+
+  async function fetchGHNProvinces() {
+    if (!provinceSelect) return;
+    try {
+      const res = await fetch("https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province", {
+        headers: { "Token": GHN_TOKEN }
+      });
+      const data = await res.json();
+      if (data.code === 200) {
+        data.data.forEach(p => {
+          const option = document.createElement("option");
+          option.value = p.ProvinceID;
+          option.textContent = p.ProvinceName;
+          provinceSelect.appendChild(option);
+        });
+      }
+    } catch (e) { console.error("GHN Fetch Province Error:", e); }
+  }
+
+  async function fetchGHNDistricts(provinceId) {
+    districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+    wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+    wardSelect.disabled = true;
+    if (!provinceId) {
+      districtSelect.disabled = true;
+      return;
+    }
+    districtSelect.disabled = false;
+    try {
+      const res = await fetch("https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district", {
+        method: "POST",
+        headers: { "Token": GHN_TOKEN, "Content-Type": "application/json" },
+        body: JSON.stringify({ province_id: parseInt(provinceId) })
+      });
+      const data = await res.json();
+      if (data.code === 200) {
+        data.data.forEach(d => {
+          const option = document.createElement("option");
+          option.value = d.DistrictID;
+          option.textContent = d.DistrictName;
+          districtSelect.appendChild(option);
+        });
+      }
+    } catch (e) { console.error("GHN Fetch District Error:", e); }
+  }
+
+  async function fetchGHNWards(districtId) {
+    wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+    if (!districtId) {
+      wardSelect.disabled = true;
+      return;
+    }
+    wardSelect.disabled = false;
+    try {
+      const res = await fetch("https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=" + districtId, {
+        headers: { "Token": GHN_TOKEN }
+      });
+      const data = await res.json();
+      if (data.code === 200) {
+        data.data.forEach(w => {
+          const option = document.createElement("option");
+          option.value = w.WardCode;
+          option.textContent = w.WardName;
+          wardSelect.appendChild(option);
+        });
+      }
+    } catch (e) { console.error("GHN Fetch Ward Error:", e); }
+  }
+
+  async function calculateDynamicShippingFee() {
+    const districtId = districtSelect?.value;
+    const wardCode = wardSelect?.value;
+    
+    if (districtId && wardCode && selectedDeliveryMethod === "standard") {
+      try {
+        const res = await fetch("api/shipping_fee.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ to_district_id: districtId, to_ward_code: wardCode })
+        });
+        const data = await res.json();
+        if (data.success) {
+          dynamicShippingFee = data.total_fee;
+        } else {
+          dynamicShippingFee = 35000; // fallback
+        }
+      } catch (e) {
+        console.error("Lỗi tính phí ship nội bộ:", e);
+        dynamicShippingFee = 35000;
+      }
+    } else {
+      dynamicShippingFee = 0;
+    }
+    calculateCartTotals();
+  }
+
+  if (provinceSelect) {
+    fetchGHNProvinces();
+    provinceSelect.addEventListener("change", (e) => fetchGHNDistricts(e.target.value));
+  }
+  if (districtSelect) {
+    districtSelect.addEventListener("change", (e) => fetchGHNWards(e.target.value));
+  }
+  if (wardSelect) {
+    wardSelect.addEventListener("change", () => calculateDynamicShippingFee());
+  }
+
 })();
