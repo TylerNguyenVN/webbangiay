@@ -1056,34 +1056,14 @@
     syncWithDatabase();
   }
 
-  const searchTriggerBtn = document.getElementById("search-trigger-btn");
-  const searchOverlay = document.getElementById("search-overlay");
-  const closeSearchBtn = document.getElementById("close-search-btn");
-  const searchInputField = document.getElementById("search-input-field");
-
-  if (searchTriggerBtn && searchOverlay && closeSearchBtn) {
-    searchTriggerBtn.addEventListener("click", () => {
-      searchOverlay.classList.remove("hidden");
-      setTimeout(() => {
-        searchInputField.focus();
-      }, 100); 
-    });
-
-    closeSearchBtn.addEventListener("click", () => {
-      searchOverlay.classList.add("hidden");
-    });
-
-    searchOverlay.addEventListener("click", (e) => {
-      if (e.target === searchOverlay) {
-        searchOverlay.classList.add("hidden");
-      }
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !searchOverlay.classList.contains("hidden")) {
-        searchOverlay.classList.add("hidden");
-      }
-    });
-  }
+  // Load search controller dynamically since scripts in innerHTML don't execute
+  const searchScript = document.createElement('script');
+  searchScript.src = 'js/search.js?v=' + Date.now();
+  searchScript.onload = () => {
+    if (window.TLSearch && typeof window.TLSearch.init === 'function') {
+      window.TLSearch.init();
+    }
+  };
+  document.body.appendChild(searchScript);
 
 })();

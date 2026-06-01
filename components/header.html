@@ -87,7 +87,38 @@
   </nav>
 
   <div class="utilities">
-    <button id="search-trigger-btn" class="icon-btn" title="Tìm kiếm" onclick="document.getElementById('search-overlay').classList.remove('hidden'); setTimeout(() => document.getElementById('search-input-field').focus(), 100);">
+    <button id="search-trigger-btn" class="icon-btn" title="Tìm kiếm" onclick="
+      (function() {
+        const openSearch = () => {
+          if (window.TLSearch && typeof window.TLSearch.open === 'function') {
+            window.TLSearch.open();
+          } else {
+            const overlay = document.getElementById('search-overlay');
+            if (overlay) {
+              overlay.classList.remove('sh-closed');
+              overlay.classList.add('sh-open');
+              setTimeout(() => {
+                const input = document.getElementById('search-input-field');
+                if (input) input.focus();
+              }, 100);
+            }
+          }
+        };
+        if (!window.TLSearch) {
+          const s = document.createElement('script');
+          s.src = 'js/search.js?v=' + Date.now();
+          s.onload = () => {
+            if (window.TLSearch && typeof window.TLSearch.init === 'function') {
+              window.TLSearch.init();
+            }
+            openSearch();
+          };
+          document.body.appendChild(s);
+        } else {
+          openSearch();
+        }
+      })();
+    ">
       <i data-lucide="search"></i>
     </button>
     <a href="wishlist.html" class="icon-btn" title="Yêu thích" style="text-decoration:none;">
@@ -107,22 +138,103 @@
   </div>
 </header>
 
-<!-- SEARCH OVERLAY -->
-<div id="search-overlay" class="search-overlay hidden" onclick="if(event.target === this) this.classList.add('hidden');">
-  <div class="search-overlay-container">
-    <div class="search-input-wrapper">
-      <i data-lucide="search" class="search-icon-lg"></i>
-      <input type="text" id="search-input-field" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
-      <button id="close-search-btn" class="icon-btn close-search" onclick="document.getElementById('search-overlay').classList.add('hidden');"><i data-lucide="x"></i></button>
+<!-- PREMIUM INSTANT SEARCH OVERLAY -->
+<link rel="stylesheet" href="css/search.css?v=3">
+
+<div id="search-overlay" class="search-overlay sh-closed">
+  <!-- Search top control bar -->
+  <div class="search-top-bar">
+    <div class="search-top-logo">
+      <a href="index.html">
+        <svg class="nike-swoosh-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 8.5c-3 1.5-6.5.5-9-1.5S6.5 3 3.5 3.5C2 3.75.5 5 1 7c1 3.5 6 9 11 11 4.5 1.75 7.5.5 9-1.5 1-1.25 1-4.75 0-8z" fill="currentColor"/>
+        </svg>
+      </a>
     </div>
-    <div class="search-suggestions">
-      <p>Gợi ý tìm kiếm:</p>
-      <div class="suggestion-tags">
-        <a href="#">Air Force 1</a>
-        <a href="#">Jordan</a>
-        <a href="#">Air Max</a>
-        <a href="#">Blazer</a>
+    
+    <div class="search-input-wrapper">
+      <button id="sh-submit-btn" class="search-submit-btn" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;" title="Tìm kiếm">
+        <i data-lucide="search" class="search-icon-lg"></i>
+      </button>
+      <input type="text" id="search-input-field" placeholder="Tìm kiếm sản phẩm..." autocomplete="off" spellcheck="false">
+      
+      <!-- Clear button (sh-clear-btn) -->
+      <button id="sh-clear-btn" class="search-clear-btn sh-hidden" title="Xóa từ khóa">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    
+    <!-- Close Search Button inside Top Bar (represented as cancel-search-btn/Hủy) -->
+    <button id="close-search-btn" class="cancel-search-btn">Hủy</button>
+  </div>
+  
+  <!-- Search body (grid system) -->
+  <div class="search-dropdown-body">
+    <div class="search-overlay-container">
+      
+      <!-- DEFAULT VIEW (Suggestions, History, Featured) -->
+      <div id="sh-default-view" class="sh-default-view-grid">
+        
+        <!-- Left Panel: Trending & History -->
+        <div class="sh-left-panel">
+          <!-- Trending Section -->
+          <div class="suggestions-section">
+            <h4 class="search-section-title">Xu hướng tìm kiếm</h4>
+            <div id="sh-trending-tags" class="sh-tag-container">
+              <!-- Rendered dynamically as button.sh-suggest-link.sh-tag -->
+            </div>
+          </div>
+          
+          <!-- History Section -->
+          <div id="sh-history-section" class="suggestions-section sh-hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.25rem;">
+              <h4 class="search-section-title" style="margin:0;">Lịch sử tìm kiếm</h4>
+              <button id="sh-clear-all-btn" style="background:none; border:none; color:var(--sh-text-secondary-light); font-size:0.75rem; font-weight:600; cursor:pointer; padding:0; text-transform:uppercase; letter-spacing:0.05em; transition:color 0.2s;" title="Xóa toàn bộ lịch sử">Xóa tất cả</button>
+            </div>
+            <ul id="sh-history-list" class="sh-history-list-items">
+              <!-- Rendered dynamically -->
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Right Panel: Featured / Top suggestions (5 cards horizontal) -->
+        <div class="sh-right-panel">
+          <h4 class="search-section-title">Gợi ý hàng đầu</h4>
+          <!-- Spinner inside list -->
+          <div id="sh-spinner" class="sh-spinner-container sh-hidden" style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:#707072;">
+            <div class="sh-loader-ring"></div> <span>Đang tải...</span>
+          </div>
+          <div id="sh-featured-list" class="search-products-grid">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+        
       </div>
+      
+      <!-- RESULTS VIEW (Dynamic matching results) -->
+      <div id="sh-results-view" class="sh-results-view-wrap sh-hidden">
+        <div class="sh-results-header">
+          <h4 id="sh-results-title" class="search-section-title">0 kết quả tìm kiếm</h4>
+        </div>
+        <div id="sh-results-list" class="search-products-grid">
+          <!-- Rendered dynamically -->
+        </div>
+        
+        <!-- Pagination controls inside overlay search results -->
+        <div id="sh-pagination-container" class="sh-hidden" style="display:flex; justify-content:center; align-items:center; gap:1.5rem; margin-top:2.5rem; padding-top:1.5rem; border-top: 1px solid var(--sh-border-light);">
+          <button id="sh-pagination-prev" class="sh-suggest-link" style="padding:0.4rem 1rem; font-size:0.8rem; font-weight:600;" title="Trang trước">Trước</button>
+          <span id="sh-pagination-info" style="font-size:0.85rem; font-weight:600; color:var(--sh-text-secondary-light);">Trang 1 / 1</span>
+          <button id="sh-pagination-next" class="sh-suggest-link" style="padding:0.4rem 1rem; font-size:0.8rem; font-weight:600;" title="Trang sau">Sau</button>
+        </div>
+      </div>
+      
     </div>
   </div>
+  
+  <!-- Search Footer Status bar -->
+  <div class="sh-footer-bar">
+    <span id="sh-footer-status">Sẵn sàng tìm kiếm</span>
+  </div>
 </div>
+
+<script src="js/search.js?v=3"></script>
