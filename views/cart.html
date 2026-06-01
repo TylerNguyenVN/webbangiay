@@ -495,7 +495,7 @@
 
       // Tải script xử lý riêng cho phần Giỏ hàng & Checkout sau khi đã chèn xong header/footer
       const script = document.createElement('script');
-      script.src = 'js/cart.js';
+      script.src = 'js/cart.js?v=' + new Date().getTime();
       document.body.appendChild(script);
     }
 

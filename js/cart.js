@@ -78,7 +78,7 @@
   // ==============================================
   // 1. DATA DEFINITIONS & STATE
   // ==============================================
-  let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  let cartItems = JSON.parse(localStorage.getItem("nike_cart_items")) || [];
   let activeOrder = null;
   let selectedDeliveryMethod = "standard"; // "standard" | "express"
   let trackerActiveStep = 2; // Bước giao vận mặc định (Shipped)
@@ -234,7 +234,7 @@
         cartItems.splice(index, 1);
       }
 
-      localStorage.setItem("cart", JSON.stringify(cartItems));
+      localStorage.setItem("nike_cart_items", JSON.stringify(cartItems));
       renderCartScreen();
     });
   }
@@ -387,11 +387,15 @@
       }
 
       // GỌI API ĐỂ LƯU ĐƠN HÀNG VÀO DATABASE MySQL
+      // ============================================================
+      // CHUẨN BỊ PAYLOAD ĐẠT HÀNG KỂ CẢ PAYMENT METHOD
+      // ============================================================
       const orderPayload = {
         user_id: userId,
         fullname: activeOrder.shippingInfo.fullName,
         phone: activeOrder.shippingInfo.phone,
         address: activeOrder.shippingInfo.address,
+        payment_method: selectedPaymentMethod, // 'cod' hoặc 'momo'
         subtotal: activeOrder.subtotal,
         shipping_fee: activeOrder.shippingFee,
         discount_amount: activeOrder.discount,
@@ -405,57 +409,81 @@
       };
 
       try {
-        const response = await fetch("api/create_order.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(orderPayload)
-        });
-        const data = await response.json();
+        // ============================================================
+        // 🔴 BƯỚC QUYẾT ĐỊNH: KIỂM TRA PHƯƠNG THỨC THANH TOÁN
+        // ============================================================
         
-        if (data.success) {
-          activeOrder.id = data.order_code; // Gán mã đơn thật từ DB trả về
-          
-          // Xử lý luồng thanh toán MoMo
-          if (selectedPaymentMethod === 'momo') {
-            const momoRes = await fetch("api/momo_payment.php", {
+        // === TRƯỜNG HỢP MOMO ===
+        if (selectedPaymentMethod === 'momo') {
+          try {
+            // Gọi API create_order.php để tạo order trong DB
+            const momoRes = await fetch("api/create_order.php", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                orderId: activeOrder.id,
-                amount: activeOrder.total
-              })
+              body: JSON.stringify(orderPayload)
             });
+
             const momoData = await momoRes.json();
-            if (momoData.success && momoData.payUrl) {
+
+            if (momoData.success) {
+              // ← LƯỚI MÃ ĐƠNHÀNG + TỔNG TIỀN VÀO sessionStorage
+              sessionStorage.setItem('momo_order_code', momoData.order_code);
+              sessionStorage.setItem('momo_total_amount', momoData.total_amount);
+              sessionStorage.setItem('momo_order_id', momoData.order_id);
+
+              // ← XÓA GIỎ HÀNG KHỎI localStorage
               cartItems = [];
-              localStorage.removeItem("cart");
-              window.location.href = momoData.payUrl;
+              localStorage.removeItem("nike_cart_items");
+
+              // ← CHUYỂN HƯỚNG SANG TRANG QR MOMO (momo_checkout.html)
+              window.location.href = "momo_checkout.html";
               return;
             } else {
-              alert("Lỗi khởi tạo thanh toán MoMo: " + (momoData.message || "Unknown error"));
+              alert("❌ Lỗi khởi tạo đơn hàng MoMo: " + (momoData.message || "Unknown error"));
               return;
             }
+          } catch (err) {
+            console.error("Lỗi gọi API create_order (MoMo):", err);
+            alert("❌ Lỗi kết nối server. Vui lòng thử lại.");
+            return;
           }
-          
-        } else {
-          console.warn("Lưu đơn hàng vào DB thất bại: ", data.message);
         }
+
+        // === TRƯỜNG HỢP COD HOẶC CÁC PHƯƠNG THỨC KHÁC ===
+        try {
+          const response = await fetch("api/create_order.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderPayload)
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // ← LƯỚI MÃ ĐƠN HÀNG THỰC TỪ DATABASE
+            activeOrder.id = data.order_code;
+
+            // ← XÓA GIỎ HÀNG
+            cartItems = [];
+            localStorage.removeItem("nike_cart_items");
+
+            // ← CHUYỂN HƯỚNG SANG TRANG THÀNH CÔNG
+            window.location.href = `success.php?order_code=${data.order_code}`;
+            return;
+          } else {
+            alert("❌ Lỗi tạo đơn hàng: " + (data.message || "Unknown error"));
+            return;
+          }
+        } catch (err) {
+          console.error("Lỗi gọi API create_order:", err);
+          alert("❌ Lỗi kết nối server. Vui lòng thử lại.");
+          return;
+        }
+
       } catch (err) {
-        console.error("Lỗi gọi API create_order:", err);
+        console.error("Lỗi xử lý thanh toán:", err);
+        alert("❌ Lỗi không xác định. Vui lòng thử lại.");
       }
-
-      cartItems = [];
-      localStorage.removeItem("cart");
-
-      inputFullname.value = "";
-      inputPhone.value = "";
-      inputAddress.value = "";
-
-      if (screenCart) screenCart.classList.remove("active");
-      if (screenConfirmation) screenConfirmation.classList.add("active");
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      renderConfirmationScreen();
     });
   }
 

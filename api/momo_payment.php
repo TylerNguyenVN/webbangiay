@@ -29,7 +29,7 @@ $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
 $orderInfo = "Thanh toán đơn hàng " . $orderId . " tại TL Shop";
 $amountStr = (string)$amount;
-$redirectUrl = "http://localhost/webbangiay/cart.php?payment=success"; 
+$redirectUrl = "http://localhost/webbangiay/cart.html?payment=success"; 
 $ipnUrl = "http://localhost/webbangiay/momo_ipn.php";
 $extraData = "";
 
@@ -92,7 +92,7 @@ if (isset($jsonResult['payUrl'])) {
     echo json_encode(["success" => true, "payUrl" => $jsonResult['payUrl']]);
 } else {
     // Để frontend không bị kẹt khi test sandbox lỗi, trả về URL giả lập thành công (mock)
-    $mockSuccessUrl = "http://localhost/webbangiay/cart.php?payment=success&orderId=" . $orderId;
+    $mockSuccessUrl = "http://localhost/webbangiay/cart.html?payment=success&orderId=" . $orderId;
     echo json_encode([
         "success" => true, 
         "payUrl" => $mockSuccessUrl, 

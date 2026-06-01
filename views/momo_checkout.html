@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán MoMo - TL Shop</title>
+    <!-- Preconnect and Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Link Main Homepage Stylesheet and Custom Details Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/nike-elite.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Tùy chỉnh màu nhấn MoMo */
+        .momo-pay-btn {
+            background-color: #ae2070 !important;
+            color: #fff !important;
+            border-color: #ae2070 !important;
+            transition: all 0.3s ease;
+        }
+        .momo-pay-btn:hover {
+            background-color: #8a1959 !important;
+            border-color: #8a1959 !important;
+        }
+        .momo-pay-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        /* Hiệu ứng Loader */
+        .loader {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ffffff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="nike-body light-theme" style="background-color: #f9fafb;">
+    <!-- GLOBAL HEADER PLACEHOLDER -->
+    <div id="header-placeholder"></div>
+
+    <main class="nike-main" style="padding-top: 3rem; padding-bottom: 4rem; min-height: 80vh;">
+        <div class="nike-container" style="max-width: 1100px;">
+            
+            <div class="grid-cols-12" style="gap: 2rem;">
+                <!-- ========================================== -->
+                <!-- CỘT TRÁI: THÔNG TIN ĐƠN HÀNG & CHỌN SỐ TIỀN -->
+                <!-- ========================================== -->
+                <div class="col-span-7" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    
+                    <!-- Khối thông báo trạng thái -->
+                    <div style="background-color: #fce7f3; border-left: 4px solid #ae2070; padding: 1rem 1.5rem; border-radius: 8px;">
+                        <p style="color: #831843; font-weight: 600; font-size: 14px; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="info" style="width: 18px; height: 18px;"></i>
+                            Quét QR thanh toán, hệ thống sẽ tự động cập nhật đơn hàng
+                        </p>
+                    </div>
+
+                    <!-- Khối Card thông tin chi tiết -->
+                    <div class="intel-card" style="padding: 2.5rem 2rem;">
+                        <!-- Khối hiển thị Mã đơn hàng -->
+                        <div style="margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid #e5e7eb;">
+                            <p class="intel-info-label" style="font-size: 13px; margin-bottom: 0.5rem;">MÃ ĐƠN HÀNG CỦA BẠN</p>
+                            <h2 id="displayOrderCode" style="font-family: var(--font-mono); font-weight: 800; font-size: 1.85rem; color: #1c1917; margin: 0;">NIKE-20260601-00000</h2>
+                        </div>
+
+                        <!-- Khối hiển thị Số tiền -->
+                        <div>
+                            <p class="intel-info-label" style="font-size: 13px; margin-bottom: 0.5rem;">SỐ TIỀN CẦN THANH TOÁN</p>
+                            <h2 id="displayTotalAmount" style="font-family: var(--font-display); font-weight: 900; font-size: 3rem; color: #ae2070; margin: 0; letter-spacing: -0.02em;">0đ</h2>
+                            
+                            <!-- Tính điểm tích lũy thưởng (Rewards) -->
+                            <div class="rewards-banner" style="margin-top: 1.5rem; display: inline-flex; width: auto; padding-right: 2rem;">
+                                <span class="rewards-star-badge" style="background-color: #fef3c7; color: #d97706;">★</span>
+                                <div>
+                                    <h3 class="rewards-tag" style="color: #b45309;">REWARDS ELITE</h3>
+                                    <p class="rewards-desc">Bạn sẽ tích luỹ thêm <strong id="displayRewardPoints" style="color: #78350f;">0 điểm</strong> thưởng.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Khối hiển thị Thông tin tài khoản MoMo -->
+                        <div style="margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+                            <p class="intel-info-label" style="font-size: 13px; margin-bottom: 1rem;">THÔNG TIN TÀI KHOẢN NHẬN TIỀN</p>
+                            <div style="background-color: #fce7f3; border-radius: 8px; padding: 1.25rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                                    <span style="color: #831843; font-weight: 600; font-size: 14px;">Chủ tài khoản:</span>
+                                    <span style="color: #ae2070; font-weight: 800; font-size: 15px;">TRẦN KHẢI</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: #831843; font-weight: 600; font-size: 14px;">Số điện thoại:</span>
+                                    <span style="color: #ae2070; font-weight: 800; font-size: 15px;">0908524908</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- CỘT PHẢI: KHỐI CHỨA MÃ QR MOMO -->
+                <!-- ========================================== -->
+                <div class="col-span-5">
+                    <div class="summary-card text-center" style="padding: 2.5rem 2rem; border-top: 5px solid #ae2070; position: sticky; top: 2rem;">
+                        
+                        <!-- Logo MoMo -->
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="width: 56px; height: 56px; background-color: #ae2070; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; box-shadow: 0 4px 6px -1px rgba(174, 32, 112, 0.2);">
+                                <i data-lucide="wallet" style="color: white; width: 28px; height: 28px;"></i>
+                            </div>
+                            <h3 style="font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; color: #1c1917; margin: 0;">Thanh Toán MoMo</h3>
+                        </div>
+
+                        <!-- Thời gian giữ mã -->
+                        <div style="background-color: #fef2f2; color: #b91c1c; border-radius: 6px; padding: 0.5rem; font-weight: 700; font-size: 14px; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <i data-lucide="clock" style="width: 16px; height: 16px;"></i>
+                            Thời gian giữ mã: <span id="countdownTimer">10:00</span>
+                        </div>
+
+                        <!-- Khối QR Code -->
+                        <div style="background: white; padding: 1.25rem; border-radius: 12px; border: 2px dashed #ae2070; display: inline-block; margin-bottom: 1.5rem;">
+                            <!-- ============================================== -->
+                            <!-- MÃ NHÚNG QR TẠI ĐÂY -->
+                            <!-- Vui lòng thay thế thẻ img dưới đây bằng mã nhúng QR cá nhân của bạn -->
+                            <!-- ============================================== -->
+                            <img id="qrCodeImage" src="" alt="Mã QR MoMo" style="width: 250px; height: 250px; display: block;" onerror="handleQRError()">
+                        </div>
+
+                        <!-- Hướng dẫn -->
+                        <p style="font-size: 13.5px; font-weight: 600; color: #57534e; margin-bottom: 2rem;">
+                            Mở app MoMo ➔ Quét QR ➔ Xác nhận thanh toán
+                        </p>
+
+                        <!-- Alert Box -->
+                        <div id="alertContainer" style="padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: none; font-weight: 600; font-size: 13.5px; text-align: left;"></div>
+
+                        <!-- Nút hành động -->
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <button id="btnConfirmPayment" class="pay-now-btn momo-pay-btn" style="width: 100%; justify-content: center; padding: 1.15rem;">
+                                <i data-lucide="check-circle-2" style="width: 20px; height: 20px; margin-right: 6px;"></i>
+                                <span>✅ Đã thanh toán xong → Xem đơn hàng</span>
+                            </button>
+                            
+                            <button onclick="window.location.href = 'cart.html'" class="confirm-btn-outline" style="width: 100%; justify-content: center; font-size: 13.5px; padding: 0.8rem; border-color: #d6d3d1; color: #57534e;">
+                                <span>Quay lại giỏ hàng</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- GLOBAL FOOTER PLACEHOLDER -->
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Tải Header & Footer động
+        async function loadTemplate(placeholderId, filePath) {
+            try {
+                const response = await fetch(filePath);
+                if (response.ok) {
+                    document.getElementById(placeholderId).innerHTML = await response.text();
+                }
+            } catch (error) { console.error('Error loading template:', error); }
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            await Promise.all([
+                loadTemplate('header-placeholder', 'components/header.html?v=2'),
+                loadTemplate('footer-placeholder', 'components/footer.html')
+            ]);
+            if (window.lucide) lucide.createIcons();
+            initializePage();
+        });
+
+        // ============================================================
+        // LẤY DỮ LIỆU TỪ SESSION STORAGE VÀ KHỞI TẠO TRANG
+        // ============================================================
+        let orderCode = sessionStorage.getItem('momo_order_code');
+        let totalAmount = sessionStorage.getItem('momo_total_amount');
+        let orderId = sessionStorage.getItem('momo_order_id');
+        let countdownInterval;
+
+        function startCountdown() {
+            let duration = 10 * 60; // 10 phút
+            const display = document.getElementById('countdownTimer');
+            
+            countdownInterval = setInterval(function () {
+                let minutes = parseInt(duration / 60, 10);
+                let seconds = parseInt(duration % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--duration < 0) {
+                    clearInterval(countdownInterval);
+                    showAlert('❌ Đã hết thời gian thanh toán. Đang quay lại giỏ hàng...', 'error');
+                    setTimeout(() => window.location.href = 'cart.html', 3000);
+                }
+            }, 1000);
+        }
+
+        function initializePage() {
+            if (!orderCode || !totalAmount || !orderId) {
+                showAlert('❌ Dữ liệu thanh toán không hợp lệ hoặc đã hết hạn. Đang quay lại giỏ hàng...', 'error');
+                setTimeout(() => window.location.href = 'cart.html', 3000);
+                return;
+            }
+
+            // Hiển thị Mã Đơn Hàng
+            document.getElementById('displayOrderCode').textContent = orderCode;
+            
+            // Hiển thị Số tiền
+            const amountNumber = parseInt(totalAmount, 10);
+            document.getElementById('displayTotalAmount').textContent = new Intl.NumberFormat('vi-VN').format(amountNumber) + 'đ';
+
+            // Tính điểm thưởng (10k = 1 điểm)
+            const rewardPoints = Math.round(amountNumber / 10000);
+            const rewardEl = document.getElementById('displayRewardPoints');
+            if(rewardEl) rewardEl.textContent = new Intl.NumberFormat('vi-VN').format(rewardPoints) + ' điểm';
+
+            // Tạo mã QR bằng API
+            const qrData = `MOMO_PAYMENT|ORDER:${orderCode}|AMOUNT:${amountNumber}VND`;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
+            document.getElementById('qrCodeImage').src = qrApiUrl;
+            
+            // Bắt đầu đếm ngược
+            startCountdown();
+        }
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertContainer');
+            alertBox.textContent = message;
+            alertBox.style.display = 'block';
+            if (type === 'error') {
+                alertBox.style.backgroundColor = '#fef2f2';
+                alertBox.style.color = '#b91c1c';
+                alertBox.style.border = '1px solid #fecaca';
+            } else {
+                alertBox.style.backgroundColor = '#ecfdf5';
+                alertBox.style.color = '#047857';
+                alertBox.style.border = '1px solid #a7f3d0';
+            }
+        }
+
+        function handleQRError() {
+            showAlert('❌ Lỗi tải mã QR động. Vui lòng tải lại trang.', 'error');
+        }
+
+        // ============================================================
+        // XỬ LÝ NÚT "ĐÃ THANH TOÁN XONG - XEM ĐƠN HÀNG"
+        // ============================================================
+        document.getElementById('btnConfirmPayment').addEventListener('click', async function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loader"></span><span>Đang xác nhận...</span>';
+
+            // Luôn thông báo thành công ngay lập tức để tránh người dùng chờ
+            showAlert('✓ Đã ghi nhận! Đang chuyển sang trang đơn hàng...', 'success');
+
+            // Gọi API cập nhật trạng thái (chạy nền, không chặn redirect)
+            try {
+                fetch('api/update_momo_status.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ order_code: orderCode, order_id: orderId })
+                }).catch(err => console.warn('Cập nhật trạng thái MoMo (nền):', err));
+            } catch (e) {
+                console.warn('Lỗi gọi API nền:', e);
+            }
+
+            // Xóa giỏ hàng và session dữ liệu tạm
+            localStorage.removeItem('cart');
+            sessionStorage.removeItem('momo_order_code');
+            sessionStorage.removeItem('momo_total_amount');
+            sessionStorage.removeItem('momo_order_id');
+
+            // Chuyển hướng sang trang đặt hàng thành công sau 1.5 giây
+            clearInterval(countdownInterval);
+            setTimeout(() => {
+                window.location.href = `success.php?order_code=${orderCode}`;
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

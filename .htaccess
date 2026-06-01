@@ -6,5 +6,5 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Rewrite các file .html và cart.php vào /views/
-RewriteRule ^(index\.html|san-pham\.html|product-detail\.html|cart\.php|admin\.html|auth\.html|profile\.html|wishlist\.html)$ views/$1 [L]
+# Rewrite các file .html và cart.html vào /views/
+RewriteRule ^(index\.html|san-pham\.html|product-detail\.html|cart\.html|momo_checkout\.html|admin\.html|auth\.html|profile\.html|wishlist\.html)$ views/$1 [L]
