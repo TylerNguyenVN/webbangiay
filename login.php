@@ -3,20 +3,8 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 
-// Kết nối Database
-$host = '127.0.0.1';
-$db   = 'webbangiay_db';
-$user = 'root';
-$pass = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (\PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Lỗi kết nối cơ sở dữ liệu."]);
-    exit;
-}
+require_once 'includes/db.php';
+$pdo = getDB();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -46,6 +34,13 @@ if (!$userRecord) {
     exit;
 }
 
+// Kiểm tra trạng thái khóa tài khoản
+if (isset($userRecord['is_locked']) && $userRecord['is_locked'] == 1) {
+    http_response_code(403);
+    echo json_encode(["success" => false, "message" => "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên."]);
+    exit;
+}
+
 // Kiểm tra mật khẩu
 if (!password_verify($password, $userRecord['password'])) {
     http_response_code(401);
@@ -61,10 +56,11 @@ echo json_encode([
     "user" => [
         "id" => $userRecord['id'],
         "username" => $userRecord['username'],
+        "name" => $userRecord['username'], // Frontend cart.js expects user.name
         "email" => $userRecord['email'],
         "phone" => $userRecord['phone'],
         "address" => $userRecord['address'],
-        "role" => ($userRecord['email'] === 'admin' || $userRecord['email'] === 'admin@nike.com') ? 'admin' : 'customer'
+        "role" => $userRecord['role']
     ]
 ]);
 ?>

@@ -3,20 +3,8 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 
-// Kết nối Database
-$host = '127.0.0.1';
-$db   = 'webbangiay_db';
-$user = 'root';
-$pass = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (\PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Lỗi kết nối cơ sở dữ liệu."]);
-    exit;
-}
+require_once 'includes/db.php';
+$pdo = getDB();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -45,12 +33,12 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-// 2. Kiểm tra trùng lặp Email hoặc Username
-$stmt = $pdo->prepare("SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1");
-$stmt->execute([$username, $email]);
+// 2. Kiểm tra trùng lặp Email
+$stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
+$stmt->execute([$email]);
 if ($stmt->fetch()) {
     http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Email hoặc Họ tên này đã được đăng ký."]);
+    echo json_encode(["success" => false, "message" => "Email này đã được đăng ký."]);
     exit;
 }
 
@@ -59,13 +47,13 @@ $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
 // 4. Lưu vào DB
 try {
-    $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, phone, address) VALUES (?, ?, ?, ?, ?)");
+    $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, phone, address, role, is_locked) VALUES (?, ?, ?, ?, ?, 'customer', 0)");
     $insertStmt->execute([$username, $email, $hashedPassword, $phone, $address]);
     
     http_response_code(201);
     echo json_encode(["success" => true, "message" => "Đăng ký tài khoản thành công!"]);
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Đã xảy ra lỗi khi lưu vào Database."]);
+    echo json_encode(["success" => false, "message" => "Đã xảy ra lỗi khi lưu vào Database: " . $e->getMessage()]);
 }
 ?>

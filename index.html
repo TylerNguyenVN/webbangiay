@@ -163,7 +163,7 @@
     // Load header and footer dynamically, then run scripts
     async function initPageComponents() {
       await Promise.all([
-        loadTemplate('header-placeholder', 'components/header.html'),
+        loadTemplate('header-placeholder', 'components/header.html?v=2'),
         loadTemplate('footer-placeholder', 'components/footer.html')
       ]);
 

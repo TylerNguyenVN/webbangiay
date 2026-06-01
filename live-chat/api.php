@@ -61,23 +61,72 @@ if ($method === 'POST') {
         exit;
     }
     
-    // Lắp ráp truy vấn AI (Khách gửi tin -> Quét khớp từ khóa trong CSDL)
+    // Gọi OpenAI API (ChatGPT) để trả lời khách hàng
     if ($action === 'query_ai') {
-        $question = trim($input['question'] ?? '');
-        if (empty($question)) {
+        $userQuestion = trim($input['question'] ?? '');
+        $chatHistory = $input['messages'] ?? []; // Có thể truyền lịch sử [ {role: "user", content: "..."}, ... ]
+        
+        if (empty($userQuestion) && empty($chatHistory)) {
             echo json_encode(["success" => true, "answer" => null]);
             exit;
         }
         
-        // Tìm kiếm khớp từ khóa hoặc chứa câu hỏi
-        $stmt = $pdo->prepare("SELECT answer FROM chatbot_knowledge WHERE ? LIKE CONCAT('%', query, '%') OR query LIKE ? LIMIT 1");
-        $stmt->execute([$question, "%$question%"]);
-        $match = $stmt->fetch(PDO::FETCH_ASSOC);
+        $openAiKey = "YOUR_OPENAI_API_KEY"; // Nhập API Key thực tế của bạn
         
-        if ($match) {
-            echo json_encode(["success" => true, "answer" => $match['answer']]);
+        $systemPrompt = [
+            "role" => "system",
+            "content" => "Bạn là trợ lý ảo thông minh của cửa hàng giày TL Shop (Tyler Store). Bạn chuyên tư vấn về các dòng giày đá bóng Nike như Tiempo, Mercurial, Phantom. Hãy trả lời thân thiện, ngắn gọn bằng tiếng Việt, tập trung vào việc hỗ trợ chọn size và giải đáp thắc mắc về đơn hàng."
+        ];
+        
+        // Lắp ráp tin nhắn
+        $messages = [$systemPrompt];
+        
+        // Nạp lịch sử nếu Frontend có truyền lên
+        if (is_array($chatHistory) && !empty($chatHistory)) {
+            foreach ($chatHistory as $msg) {
+                if (isset($msg['role']) && isset($msg['content'])) {
+                    $messages[] = ["role" => $msg['role'], "content" => $msg['content']];
+                }
+            }
+        }
+        
+        // Nạp tin nhắn hiện tại của User
+        if (!empty($userQuestion)) {
+            $messages[] = ["role" => "user", "content" => $userQuestion];
+        }
+
+        $postData = [
+            "model" => "gpt-4o-mini",
+            "messages" => $messages,
+            "max_tokens" => 250,
+            "temperature" => 0.7
+        ];
+
+        $ch = curl_init("https://api.openai.com/v1/chat/completions");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/json",
+            "Authorization: Bearer " . $openAiKey
+        ]);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        
+        $response = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+        
+        if ($err) {
+            echo json_encode(["success" => false, "answer" => "Xin lỗi, hiện tại hệ thống AI đang bảo trì. Vui lòng thử lại sau!"]);
+            exit;
+        }
+        
+        $result = json_decode($response, true);
+        if (isset($result['choices'][0]['message']['content'])) {
+            $aiAnswer = trim($result['choices'][0]['message']['content']);
+            echo json_encode(["success" => true, "answer" => $aiAnswer]);
         } else {
-            echo json_encode(["success" => true, "answer" => null]);
+            echo json_encode(["success" => true, "answer" => "Xin lỗi, tôi không thể trả lời câu hỏi này lúc này."]);
         }
         exit;
     }

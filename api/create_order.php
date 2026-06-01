@@ -2,7 +2,7 @@
 header("Content-Type: application/json");
 
 try {
-    require_once 'db.php';
+    require_once '../includes/db.php';
     $db = getDB();
 
     $input = json_decode(file_get_contents('php://input'), true);
