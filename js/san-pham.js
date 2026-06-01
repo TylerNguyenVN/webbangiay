@@ -3,36 +3,47 @@
   // MOCK DATA: 25 SẢN PHẨM PHỤC VỤ TEST THUẬT TOÁN PHÂN TRANG (MOCK DATA FOR TESTING)
   // ==========================================
   const mockProducts = [
-    { id: 101, name: "Nike Air Force 1 '07 Premium", price: 3590000, category_name: "Air Force 1", slug: "nike-air-force-1-07-premium", description: "Bản kỷ niệm đặc biệt với chất liệu da cao cấp và logo thêu chìm sang trọng.", image_url: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400" },
-    { id: 102, name: "Nike Air Max 270 React", price: 4190000, category_name: "Air Max", slug: "nike-air-max-270-react", description: "Sự kết hợp hoàn hảo giữa công nghệ Air Max 270 và đế đệm React siêu nhẹ.", image_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" },
-    { id: 103, name: "Air Jordan 1 Retro High OG", price: 5490000, category_name: "Air Jordan", slug: "air-jordan-1-retro-high-og", description: "Biểu tượng Retro huyền thoại phối màu nguyên bản đình đám nhất lịch sử.", image_url: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400" },
-    { id: 104, name: "Nike Dunk Low Retro Panda", price: 2990000, category_name: "Dunk", slug: "nike-dunk-low-retro-panda", description: "Phối màu đen trắng kinh điển thách thức thời gian, cực kỳ dễ phối đồ.", image_url: "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400" },
-    { id: 105, name: "Nike Zoom Vapor 16 Elite FG", price: 6890000, category_name: "Football", slug: "nike-zoom-vapor-16-elite-fg", description: "Giày bóng đá đinh cao dành cho sân cỏ tự nhiên, siêu nhẹ bứt phá tốc độ.", image_url: "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=400" },
-    { id: 106, name: "Nike Pegasus 41 Running", price: 3790000, category_name: "Running", slug: "nike-pegasus-41-running", description: "Dòng giày chạy bộ quốc dân với đệm bọt ReactX phản hồi năng lượng tối đa.", image_url: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400" },
-    { id: 107, name: "Nike Air Force 1 Shadow Women", price: 3490000, category_name: "Air Force 1", slug: "nike-air-force-1-shadow-women", description: "Thiết kế layer cá tính xếp chồng đầy chiều sâu dành riêng cho phái đẹp.", image_url: "https://images.unsplash.com/photo-1597045566677-8cf032ed6634?w=400" },
-    { id: 108, name: "Nike Air Max Plus Drift", price: 4990000, category_name: "Air Max", slug: "nike-air-max-plus-drift", description: "Cấu trúc khung TPU uốn lượn hầm hố, nâng đỡ bàn chân tối ưu.", image_url: "https://images.unsplash.com/photo-1539185441755-769473a23570?w=400" },
-    { id: 109, name: "Air Jordan 1 Mid SE Light Smoke", price: 4290000, category_name: "Air Jordan", slug: "air-jordan-1-mid-se-light-smoke", description: "Tông màu xám khói sang trọng kết hợp da lộn tinh xảo đầy phong cách.", image_url: "https://images.unsplash.com/photo-1607522370275-f14206abe5d3?w=400" },
-    { id: 110, name: "Nike Dunk Low Disrupt 2", price: 3290000, category_name: "Dunk", slug: "nike-dunk-low-disrupt-2", description: "Phiên bản biến tấu với các đường may nổi đầy phá cách và ngẫu hứng nghệ thuật.", image_url: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400" },
-    { id: 111, name: "Nike Tiempo Legend 10 Elite", price: 6290000, category_name: "Football", slug: "nike-tiempo-legend-10-elite", description: "Chất liệu da nhân tạo FlyTouch Plus siêu mềm cảm giác bóng hoàn hảo.", image_url: "https://images.unsplash.com/photo-1582588678413-dbf45f4823e9?w=400" },
-    { id: 112, name: "Nike Invincible 3 Cushioning", price: 5190000, category_name: "Running", slug: "nike-invincible-3-cushioning", description: "Đế ZoomX dày bản đem lại sự êm ái bảo vệ khớp gối tuyệt đối.", image_url: "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=400" },
-    { id: 113, name: "Nike Court Vision Low Premium", price: 2190000, category_name: "Air Force 1", slug: "nike-court-vision-low-premium", description: "Phong cách bóng rổ thập niên 80 retro tối giản cực kỳ bền bỉ.", image_url: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400" },
-    { id: 114, name: "Nike Air Max DN Modern", price: 4490000, category_name: "Air Max", slug: "nike-air-max-dn-modern", description: "Hệ thống đệm khí Dynamic Air thế hệ mới bứt phá giới hạn chuyển động.", image_url: "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=400" },
-    { id: 115, name: "Air Jordan 1 Low Golf Wolf Grey", price: 4690000, category_name: "Air Jordan", slug: "air-jordan-1-low-golf-wolf-grey", description: "Đế đinh cao su bám đường chuyên dụng cho bộ môn golf thời thượng.", image_url: "https://images.unsplash.com/photo-1514989940723-e8e51635b782?w=400" },
-    { id: 116, name: "Nike Dunk High Panda Classic", price: 3490000, category_name: "Dunk", slug: "nike-dunk-high-panda-classic", description: "Cổ cao cổ điển bảo vệ cổ chân tốt hơn, tăng vẻ cá tính mạnh mẽ.", image_url: "https://images.unsplash.com/photo-1535043934128-cf0b28d52f95?w=400" },
-    { id: 117, name: "Nike Mercurial Superfly 10 Academy", price: 3190000, category_name: "Football", slug: "nike-mercurial-superfly-10-academy", description: "Thiết kế cổ thun Dynamic Fit ôm gọn chân tạo cảm giác bọc thép hoàn hảo.", image_url: "https://images.unsplash.com/photo-1551201602-3f9a9aea7e93?w=400" },
-    { id: 118, name: "Nike Vomero 17 Breathable", price: 4390000, category_name: "Running", slug: "nike-vomero-17-breathable", description: "Đế kép Zoom Air kết hợp bọt Cushlon nâng niu bàn chân trên dặm dài.", image_url: "https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=400" },
-    { id: 119, name: "Nike Air Force 1 Wild Mountain", price: 3890000, category_name: "Air Force 1", slug: "nike-air-force-1-wild-mountain", description: "Chất liệu vải dệt bền bỉ và đế răng cưa thích hợp cho dã ngoại.", image_url: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400" },
-    { id: 120, name: "Nike Air Max 90 Infrared", price: 3890000, category_name: "Air Max", slug: "nike-air-max-90-infrared", description: "Phiên bản mang dấu ấn lịch sử với các chi tiết màu đỏ cam rực rỡ.", image_url: "https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?w=400" },
-    { id: 121, name: "Air Jordan 3 Retro Cement", price: 6290000, category_name: "Air Jordan", slug: "air-jordan-3-retro-cement", description: "Họa tiết da voi huyền thoại kết hợp đế Air êm ái phong cách đỉnh cao.", image_url: "https://images.unsplash.com/photo-1512374382149-4338530059cd?w=400" },
-    { id: 122, name: "Nike Dunk Low Retro Valerian Blue", price: 2990000, category_name: "Dunk", slug: "nike-dunk-low-retro-valerian-blue", description: "Sự hòa quyện màu sắc giữa xanh hải quân và đỏ rực cá tính năng động.", image_url: "https://images.unsplash.com/photo-1579338559194-a162d19bf892?w=400" },
-    { id: 123, name: "Nike Phantom GX 2 Pro TF", price: 3590000, category_name: "Football", slug: "nike-phantom-gx-2-pro-tf", description: "Cấu trúc bề mặt Generative Texture giúp kiểm soát bóng xoáy chuẩn xác.", image_url: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=400" },
-    { id: 124, name: "Nike Structure 25 Support", price: 3590000, category_name: "Running", slug: "nike-structure-25-support", description: "Hỗ trợ chống lệch trong bàn chân khi chạy, ổn định vững vàng.", image_url: "https://images.unsplash.com/photo-1506079946405-b005279ac550?w=400" },
-    { id: 125, name: "Nike Air Force 1 React Tech", price: 3990000, category_name: "Air Force 1", slug: "nike-air-force-1-react-tech", description: "Công nghệ đế lót React nguyên bàn chân êm ái gấp đôi so với bản thường.", image_url: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=400" }
+    { id: 101, name: "Nike Air Force 1 '07 Premium", price: 3590000, sales_count: 842, category_name: "Air Force 1", slug: "nike-air-force-1-07-premium", description: "Bản kỷ niệm đặc biệt với chất liệu da cao cấp và logo thêu chìm sang trọng.", image_url: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400" },
+    { id: 102, name: "Nike Air Max 270 React", price: 4190000, sales_count: 1205, category_name: "Air Max", slug: "nike-air-max-270-react", description: "Sự kết hợp hoàn hảo giữa công nghệ Air Max 270 và đế đệm React siêu nhẹ.", image_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" },
+    { id: 103, name: "Air Jordan 1 Retro High OG", price: 5490000, sales_count: 2103, category_name: "Air Jordan", slug: "air-jordan-1-retro-high-og", description: "Biểu tượng Retro huyền thoại phối màu nguyên bản đình đám nhất lịch sử.", image_url: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400" },
+    { id: 104, name: "Nike Dunk Low Retro Panda", price: 2990000, sales_count: 1876, category_name: "Dunk", slug: "nike-dunk-low-retro-panda", description: "Phối màu đen trắng kinh điển thách thức thời gian, cực kỳ dễ phối đồ.", image_url: "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400" },
+    { id: 105, name: "Nike Zoom Vapor 16 Elite FG", price: 6890000, sales_count: 534, category_name: "Football", slug: "nike-zoom-vapor-16-elite-fg", description: "Giày bóng đá đinh cao dành cho sân cỏ tự nhiên, siêu nhẹ bứt phá tốc độ.", image_url: "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=400" },
+    { id: 106, name: "Nike Pegasus 41 Running", price: 3790000, sales_count: 967, category_name: "Running", slug: "nike-pegasus-41-running", description: "Dòng giày chạy bộ quốc dân với đệm bọt ReactX phản hồi năng lượng tối đa.", image_url: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400" },
+    { id: 107, name: "Nike Air Force 1 Shadow Women", price: 3490000, sales_count: 721, category_name: "Air Force 1", slug: "nike-air-force-1-shadow-women", description: "Thiết kế layer cá tính xếp chồng đầy chiều sâu dành riêng cho phái đẹp.", image_url: "https://images.unsplash.com/photo-1597045566677-8cf032ed6634?w=400" },
+    { id: 108, name: "Nike Air Max Plus Drift", price: 4990000, sales_count: 612, category_name: "Air Max", slug: "nike-air-max-plus-drift", description: "Cấu trúc khung TPU uốn lượn hầm hố, nâng đỡ bàn chân tối ưu.", image_url: "https://images.unsplash.com/photo-1539185441755-769473a23570?w=400" },
+    { id: 109, name: "Air Jordan 1 Mid SE Light Smoke", price: 4290000, sales_count: 889, category_name: "Air Jordan", slug: "air-jordan-1-mid-se-light-smoke", description: "Tông màu xám khói sang trọng kết hợp da lộn tinh xảo đầy phong cách.", image_url: "https://images.unsplash.com/photo-1607522370275-f14206abe5d3?w=400" },
+    { id: 110, name: "Nike Dunk Low Disrupt 2", price: 3290000, sales_count: 445, category_name: "Dunk", slug: "nike-dunk-low-disrupt-2", description: "Phiên bản biến tấu với các đường may nổi đầy phá cách và ngẫu hứng nghệ thuật.", image_url: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400" },
+    { id: 111, name: "Nike Tiempo Legend 10 Elite", price: 6290000, sales_count: 318, category_name: "Football", slug: "nike-tiempo-legend-10-elite", description: "Chất liệu da nhân tạo FlyTouch Plus siêu mềm cảm giác bóng hoàn hảo.", image_url: "https://images.unsplash.com/photo-1582588678413-dbf45f4823e9?w=400" },
+    { id: 112, name: "Nike Invincible 3 Cushioning", price: 5190000, sales_count: 556, category_name: "Running", slug: "nike-invincible-3-cushioning", description: "Đế ZoomX dày bản đem lại sự êm ái bảo vệ khớp gối tuyệt đối.", image_url: "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=400" },
+    { id: 113, name: "Nike Court Vision Low Premium", price: 2190000, sales_count: 1540, category_name: "Air Force 1", slug: "nike-court-vision-low-premium", description: "Phong cách bóng rổ thập niên 80 retro tối giản cực kỳ bền bỉ.", image_url: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400" },
+    { id: 114, name: "Nike Air Max DN Modern", price: 4490000, sales_count: 673, category_name: "Air Max", slug: "nike-air-max-dn-modern", description: "Hệ thống đệm khí Dynamic Air thế hệ mới bứt phá giới hạn chuyển động.", image_url: "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=400" },
+    { id: 115, name: "Air Jordan 1 Low Golf Wolf Grey", price: 4690000, sales_count: 402, category_name: "Air Jordan", slug: "air-jordan-1-low-golf-wolf-grey", description: "Đế đinh cao su bám đường chuyên dụng cho bộ môn golf thời thượng.", image_url: "https://images.unsplash.com/photo-1514989940723-e8e51635b782?w=400" },
+    { id: 116, name: "Nike Dunk High Panda Classic", price: 3490000, sales_count: 998, category_name: "Dunk", slug: "nike-dunk-high-panda-classic", description: "Cổ cao cổ điển bảo vệ cổ chân tốt hơn, tăng vẻ cá tính mạnh mẽ.", image_url: "https://images.unsplash.com/photo-1535043934128-cf0b28d52f95?w=400" },
+    { id: 117, name: "Nike Mercurial Superfly 10 Academy", price: 3190000, sales_count: 811, category_name: "Football", slug: "nike-mercurial-superfly-10-academy", description: "Thiết kế cổ thun Dynamic Fit ôm gọn chân tạo cảm giác bọc thép hoàn hảo.", image_url: "https://images.unsplash.com/photo-1551201602-3f9a9aea7e93?w=400" },
+    { id: 118, name: "Nike Vomero 17 Breathable", price: 4390000, sales_count: 590, category_name: "Running", slug: "nike-vomero-17-breathable", description: "Đế kép Zoom Air kết hợp bọt Cushlon nâng niu bàn chân trên dặm dài.", image_url: "https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=400" },
+    { id: 119, name: "Nike Air Force 1 Wild Mountain", price: 3890000, sales_count: 477, category_name: "Air Force 1", slug: "nike-air-force-1-wild-mountain", description: "Chất liệu vải dệt bền bỉ và đế răng cưa thích hợp cho dã ngoại.", image_url: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400" },
+    { id: 120, name: "Nike Air Max 90 Infrared", price: 3890000, sales_count: 1034, category_name: "Air Max", slug: "nike-air-max-90-infrared", description: "Phiên bản mang dấu ấn lịch sử với các chi tiết màu đỏ cam rực rỡ.", image_url: "https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?w=400" },
+    { id: 121, name: "Air Jordan 3 Retro Cement", price: 6290000, sales_count: 765, category_name: "Air Jordan", slug: "air-jordan-3-retro-cement", description: "Họa tiết da voi huyền thoại kết hợp đế Air êm ái phong cách đỉnh cao.", image_url: "https://images.unsplash.com/photo-1512374382149-4338530059cd?w=400" },
+    { id: 122, name: "Nike Dunk Low Retro Valerian Blue", price: 2990000, sales_count: 1322, category_name: "Dunk", slug: "nike-dunk-low-retro-valerian-blue", description: "Sự hòa quyện màu sắc giữa xanh hải quân và đỏ rực cá tính năng động.", image_url: "https://images.unsplash.com/photo-1579338559194-a162d19bf892?w=400" },
+    { id: 123, name: "Nike Phantom GX 2 Pro TF", price: 3590000, sales_count: 388, category_name: "Football", slug: "nike-phantom-gx-2-pro-tf", description: "Cấu trúc bề mặt Generative Texture giúp kiểm soát bóng xoáy chuẩn xác.", image_url: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=400" },
+    { id: 124, name: "Nike Structure 25 Support", price: 3590000, sales_count: 501, category_name: "Running", slug: "nike-structure-25-support", description: "Hỗ trợ chống lệch trong bàn chân khi chạy, ổn định vững vàng.", image_url: "https://images.unsplash.com/photo-1506079946405-b005279ac550?w=400" },
+    { id: 125, name: "Nike Air Force 1 React Tech", price: 3990000, sales_count: 644, category_name: "Air Force 1", slug: "nike-air-force-1-react-tech", description: "Công nghệ đế lót React nguyên bàn chân êm ái gấp đôi so với bản thường.", image_url: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=400" }
+  ];
+
+  const SORT_OPTIONS = [
+    { value: "price-asc", label: "Giá: Thấp đến Cao" },
+    { value: "price-desc", label: "Giá: Cao đến Thấp" },
+    { value: "bestseller", label: "Bán chạy nhất" },
+    { value: "name-asc", label: "Tên: Từ A đến Z" },
+    { value: "name-desc", label: "Tên: Từ Z đến A" },
+    { value: "newest", label: "Hàng mới nhất" },
+    { value: "oldest", label: "Cũ nhất" },
   ];
 
   // Các biến toàn cục phục vụ thuật toán phân trang
   let allProducts = [];
   let currentPage = 1;
+  let currentSort = null;
   const itemsPerPage = 10;
 
   // Xử lý nút Mua ngay trên trang sản phẩm để chuyển hướng đến trang chi tiết
@@ -48,6 +59,82 @@
       }
     }
   });
+
+  // ==========================================
+  // SẮP XẾP SẢN PHẨM
+  // ==========================================
+  function getProductPrice(product) {
+    const sale = parseFloat(product.sale_price);
+    const base = parseFloat(product.price);
+    if (!Number.isNaN(sale) && sale > 0) return sale;
+    return Number.isNaN(base) ? 0 : base;
+  }
+
+  function getSalesCount(product) {
+    if (product.sales_count != null) return Number(product.sales_count) || 0;
+    if (Array.isArray(product.variants) && product.variants.length) {
+      return product.variants.reduce((sum, v) => sum + (parseInt(v.stock_qty, 10) || 0), 0);
+    }
+    return Number(product.id) || 0;
+  }
+
+  function sortProducts(products, sortKey) {
+    const list = [...products];
+    if (!sortKey) return list;
+
+    switch (sortKey) {
+      case "price-asc":
+        return list.sort((a, b) => getProductPrice(a) - getProductPrice(b));
+      case "price-desc":
+        return list.sort((a, b) => getProductPrice(b) - getProductPrice(a));
+      case "bestseller":
+        return list.sort((a, b) => getSalesCount(b) - getSalesCount(a));
+      case "name-asc":
+        return list.sort((a, b) => (a.name || "").localeCompare(b.name || "", "vi", { sensitivity: "base" }));
+      case "name-desc":
+        return list.sort((a, b) => (b.name || "").localeCompare(a.name || "", "vi", { sensitivity: "base" }));
+      case "newest":
+        return list.sort((a, b) => {
+          const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          if (dateA && dateB && dateA !== dateB) return dateB - dateA;
+          return (Number(b.id) || 0) - (Number(a.id) || 0);
+        });
+      case "oldest":
+        return list.sort((a, b) => {
+          const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          if (dateA && dateB && dateA !== dateB) return dateA - dateB;
+          return (Number(a.id) || 0) - (Number(b.id) || 0);
+        });
+      default:
+        return list;
+    }
+  }
+
+  function getSortedProducts() {
+    return sortProducts(allProducts, currentSort);
+  }
+
+  function updateProductCount(total) {
+    const countEl = document.getElementById("catalog-product-count");
+    if (countEl) countEl.textContent = `${total} sản phẩm`;
+  }
+
+  function initSortDropdown() {
+    const root = document.getElementById("product-sort-dropdown");
+    if (!root || typeof SortDropdown === "undefined") return;
+
+    new SortDropdown(root, {
+      options: SORT_OPTIONS,
+      defaultLabel: "Sắp xếp theo",
+      onChange: (value) => {
+        currentSort = value;
+        currentPage = 1;
+        updateCatalogPage();
+      },
+    });
+  }
 
   // ==========================================
   // HÀM LẤY SẢN PHẨM (FETCH PRODUCTS)
@@ -207,15 +294,17 @@
 
   // Cập nhật trạng thái trang
   function updateCatalogPage() {
+    const sorted = getSortedProducts();
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const pageProducts = allProducts.slice(startIndex, endIndex);
+    const pageProducts = sorted.slice(startIndex, endIndex);
 
+    updateProductCount(sorted.length);
     renderProducts(pageProducts);
-    renderPagination(allProducts.length);
+    renderPagination(sorted.length);
   }
 
-  // Khởi động lấy dữ liệu
+  initSortDropdown();
   fetchProducts();
 
 
