@@ -155,6 +155,159 @@
       margin: 0 auto;
       font-weight: 300;
     }
+
+    /* Sort Dropdown Toolbar */
+    .catalog-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 1rem;
+      width: 100%;
+      margin: 0 0 1.5rem;
+      padding: 0;
+    }
+
+    .catalog-toolbar-count {
+      font-size: 0.8125rem;
+      color: #78716c;
+      font-weight: 500;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .sort-dropdown {
+      position: relative;
+      display: inline-block;
+      text-align: left;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .sort-dropdown__trigger {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      min-width: 220px;
+      padding: 0.625rem 1rem;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #44403c;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .sort-dropdown__trigger:hover {
+      border-color: #d6d3d1;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .sort-dropdown__trigger:focus-visible {
+      outline: 2px solid rgba(13, 148, 136, 0.35);
+      outline-offset: 2px;
+    }
+
+    .sort-dropdown__label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sort-dropdown__chevron {
+      width: 1rem;
+      height: 1rem;
+      color: #a8a29e;
+      flex-shrink: 0;
+      transition: transform 0.2s ease-out;
+    }
+
+    .sort-dropdown__chevron.is-open {
+      transform: rotate(180deg);
+    }
+
+    .sort-dropdown__menu {
+      position: absolute;
+      right: 0;
+      z-index: 50;
+      margin-top: 0.5rem;
+      width: 100%;
+      min-width: 240px;
+      padding: 0.375rem 0;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(28, 25, 23, 0.08);
+      opacity: 0;
+      transform: scale(0.95);
+      transform-origin: top right;
+      pointer-events: none;
+      transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    }
+
+    .sort-dropdown__menu.is-open {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    .sort-dropdown__option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.625rem 1rem;
+      border: none;
+      background: transparent;
+      font-size: 0.875rem;
+      color: #44403c;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    .sort-dropdown__option:hover {
+      background: #fafaf9;
+    }
+
+    .sort-dropdown__option.is-selected {
+      background: #f0fdfa;
+      color: #115e59;
+      font-weight: 500;
+    }
+
+    .sort-dropdown__check {
+      width: 1rem;
+      height: 1rem;
+      color: #0d9488;
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .sort-dropdown__check.is-visible {
+      opacity: 1;
+    }
+
+    @media (max-width: 480px) {
+      .catalog-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .sort-dropdown {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .sort-dropdown__trigger {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
@@ -175,7 +328,72 @@
       <!-- SECTION HIỂN THỊ SẢN PHẨM -->
       <!-- Tận dụng các class CSS có sẵn của hệ thống: products-section, light-products -->
       <section class="products-section light-products" style="padding-top: 1rem;">
-        
+
+        <!-- Toolbar: Sắp xếp sản phẩm -->
+        <div class="catalog-toolbar">
+          <p class="catalog-toolbar-count" id="catalog-product-count"></p>
+
+          <div id="product-sort-dropdown" class="sort-dropdown">
+            <button
+              type="button"
+              class="sort-dropdown__trigger"
+              data-sort-trigger
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span class="sort-dropdown__label" data-sort-label>Sắp xếp theo</span>
+              <svg class="sort-dropdown__chevron" data-sort-chevron viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.94a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+              </svg>
+            </button>
+
+            <div class="sort-dropdown__menu" data-sort-menu role="listbox" aria-label="Sắp xếp sản phẩm">
+              <button type="button" class="sort-dropdown__option" role="option" data-sort-option data-value="price-asc" aria-selected="false">
+                <span>Giá: Thấp đến Cao</span>
+                <svg class="sort-dropdown__check" data-sort-check viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <button type="button" class="sort-dropdown__option" role="option" data-sort-option data-value="price-desc" aria-selected="false">
+                <span>Giá: Cao đến Thấp</span>
+                <svg class="sort-dropdown__check" data-sort-check viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <button type="button" class="sort-dropdown__option" role="option" data-sort-option data-value="bestseller" aria-selected="false">
+                <span>Bán chạy nhất</span>
+                <svg class="sort-dropdown__check" data-sort-check viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <button type="button" class="sort-dropdown__option" role="option" data-sort-option data-value="name-asc" aria-selected="false">
+                <span>Tên: Từ A đến Z</span>
+                <svg class="sort-dropdown__check" data-sort-check viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <button type="button" class="sort-dropdown__option" role="option" data-sort-option data-value="name-desc" aria-selected="false">
+                <span>Tên: Từ Z đến A</span>
+                <svg class="sort-dropdown__check" data-sort-check viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <button type="button" class="sort-dropdown__option" role="option" data-sort-option data-value="newest" aria-selected="false">
+                <span>Hàng mới nhất</span>
+                <svg class="sort-dropdown__check" data-sort-check viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <button type="button" class="sort-dropdown__option" role="option" data-sort-option data-value="oldest" aria-selected="false">
+                <span>Cũ nhất</span>
+                <svg class="sort-dropdown__check" data-sort-check viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Cấu trúc Lưới sản phẩm dùng lại class CSS gốc: product-list -->
         <div class="product-list" id="home-product-list">
           <!-- Rendered by JavaScript dynamically -->
@@ -256,10 +474,16 @@
         lucide.createIcons();
       }
 
-      // Tải động script logic xử lý phân trang và chatbot tương ứng cho san-pham.html
-      const script = document.createElement('script');
-      script.src = 'js/san-pham.js?v=' + Date.now();
-      document.body.appendChild(script);
+      // Tải Sort Dropdown rồi script trang sản phẩm
+      const sortScript = document.createElement('script');
+      sortScript.src = 'js/sort-dropdown.js?v=' + Date.now();
+      document.body.appendChild(sortScript);
+
+      sortScript.onload = () => {
+        const script = document.createElement('script');
+        script.src = 'js/san-pham.js?v=' + Date.now();
+        document.body.appendChild(script);
+      };
     }
 
     document.addEventListener("DOMContentLoaded", initPageComponents);
