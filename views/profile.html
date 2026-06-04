@@ -396,7 +396,7 @@
       document.getElementById("profile-member-since").textContent =
         formatMemberDate(user.member_since || user.created_at);
 
-      const loyaltyPoints = Number(user.loyalty_points) || 1500;
+      const loyaltyPoints = Number(user.loyalty_points) || 0;
       updateLoyaltyUI(loyaltyPoints);
       initLoyaltyModal();
 

@@ -23,6 +23,12 @@ try {
     if (!$checkLocked->fetch()) {
         $db->exec("ALTER TABLE `users` ADD COLUMN `is_locked` TINYINT(1) DEFAULT 0 COMMENT 'Trạng thái khóa tài khoản: 0 = Hoạt động, 1 = Đã khóa'");
     }
+
+    // Thêm cột 'loyalty_points' nếu chưa tồn tại (số điểm tích lũy của user)
+    $checkPoints = $db->query("SHOW COLUMNS FROM `users` LIKE 'loyalty_points'");
+    if (!$checkPoints->fetch()) {
+        $db->exec("ALTER TABLE `users` ADD COLUMN `loyalty_points` INT DEFAULT 0 COMMENT 'Số điểm tích lũy của khách hàng' AFTER `is_locked'");
+    }
 } catch (Exception $e) {
     
 }
@@ -42,7 +48,34 @@ try {
         
         
         
-        
+        case 'recompute_loyalty':
+            // Chế độ: 'reset' => đặt tất cả về 0; 'recompute' => tính lại từ đơn hàng đã hoàn thành
+            $mode = trim($input['mode'] ?? 'recompute');
+
+            if ($mode === 'reset') {
+                $update = $db->prepare("UPDATE users SET loyalty_points = 0");
+                $update->execute();
+                $response = ["success" => true, "message" => "Đặt lại điểm cho tất cả người dùng thành 0.", "updated" => $update->rowCount()];
+            } else {
+                // Tính lại dựa trên tổng tiền đã thanh toán của mỗi user (chỉ tính đơn 'completed')
+                $stmtUsers = $db->query("SELECT id FROM users");
+                $users = $stmtUsers->fetchAll();
+                $updated = 0;
+
+                $sumStmt = $db->prepare("SELECT COALESCE(SUM(total_amount),0) AS spent FROM orders WHERE user_id = ? AND status = 'completed'");
+                $updStmt = $db->prepare("UPDATE users SET loyalty_points = ? WHERE id = ?");
+
+                foreach ($users as $u) {
+                    $sumStmt->execute([$u['id']]);
+                    $spent = floatval($sumStmt->fetch()['spent'] ?? 0);
+                    $points = intval(floor($spent / 10000)); // 1 điểm mỗi 10.000đ
+                    $updStmt->execute([$points, $u['id']]);
+                    $updated += 1;
+                }
+
+                $response = ["success" => true, "message" => "Tính lại điểm hoàn tất.", "users_processed" => $updated];
+            }
+            break;
         case 'get_dashboard_stats':
             
             $stmtRev = $db->query("SELECT SUM(total_amount) AS revenue FROM orders WHERE status != 'cancelled'");

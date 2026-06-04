@@ -138,7 +138,8 @@ document.addEventListener("DOMContentLoaded", () => {
             address: user.address,
             role: user.role,
             created_at: user.created_at || null,
-            member_since: user.created_at || new Date().toISOString()
+            member_since: user.created_at || new Date().toISOString(),
+            loyalty_points: Number(user.loyalty_points) || 0
           };
           localStorage.setItem("nike_current_user", JSON.stringify(sessionUser));
           
@@ -208,7 +209,8 @@ window.handleGoogleCredentialResponse = async (response) => {
         address: user.address,
         role: user.role,
         created_at: user.created_at || null,
-        member_since: user.created_at || new Date().toISOString()
+        member_since: user.created_at || new Date().toISOString(),
+        loyalty_points: Number(user.loyalty_points) || 0
       };
       localStorage.setItem("nike_current_user", JSON.stringify(sessionUser));
       
