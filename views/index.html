@@ -30,7 +30,8 @@
         <div class="light-hero-container">
           <div class="light-hero-bg">
             <div class="light-hero-glow"></div>
-            <img src="https://i.pinimg.com/1200x/91/83/39/918339710f6a5617f9e6a7e37e0d09c8.jpg" alt="Nike Speed">
+            <img src="uploads/anhtrangchu.png" alt="Nike Speed"
+              style="max-width: 1500px; max-height: 2000px;transform: translateY(-30px);">
           </div>
           <div class="light-hero-content">
             <span class="hero-tag">BỘ SƯU TẬP MỚI</span>
@@ -51,7 +52,7 @@
           <div class="title-divider"></div>
         </div>
         <div class="product-list" id="home-product-list">
-          
+
         </div>
         <div id="show-more-wrap" style="text-align: center; margin-top: 2rem; display: none;">
           <button id="btn-show-more"
@@ -155,7 +156,7 @@
 
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
-    
+
     async function loadTemplate(placeholderId, filePath) {
       try {
         const response = await fetch(filePath);
@@ -167,20 +168,20 @@
       }
     }
 
-    
+
     async function initPageComponents() {
       await Promise.all([
         loadTemplate('header-placeholder', 'components/header.html?v=2'),
         loadTemplate('footer-placeholder', 'components/footer.html')
       ]);
 
-      
+
       if (window.lucide) {
         lucide.createIcons();
       }
 
-      
-      
+
+
       const script = document.createElement('script');
       script.src = 'js/script.js?v=' + Date.now();
       document.body.appendChild(script);
