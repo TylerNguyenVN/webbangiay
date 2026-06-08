@@ -103,6 +103,9 @@
   const deliveryMethodStandard = document.getElementById("delivery-method-standard");
   const deliveryMethodExpress = document.getElementById("delivery-method-express");
 
+  const provinceSelect = document.getElementById("ship-province");
+  const wardSelect = document.getElementById("ship-ward");
+
   const summaryItemsCount = document.getElementById("summary-items-count");
   const summarySubtotal = document.getElementById("summary-subtotal");
   const summaryShipping = document.getElementById("summary-shipping");
@@ -410,10 +413,15 @@
     payNowBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       let hasError = false;
+      let firstErrorElement = null;
+
+      const errProvince = document.getElementById("error-province");
+      const errWard = document.getElementById("error-ward");
 
       if (!inputFullname.value.trim()) {
         inputFullname.classList.add("error");
         if (errFullname) errFullname.classList.remove("hidden");
+        if (!firstErrorElement) firstErrorElement = inputFullname;
         hasError = true;
       } else {
         inputFullname.classList.remove("error");
@@ -423,6 +431,7 @@
       if (!inputPhone.value.trim()) {
         inputPhone.classList.add("error");
         if (errPhone) errPhone.classList.remove("hidden");
+        if (!firstErrorElement) firstErrorElement = inputPhone;
         hasError = true;
       } else {
         inputPhone.classList.remove("error");
@@ -431,28 +440,41 @@
 
       if (provinceSelect && !provinceSelect.value) {
         provinceSelect.classList.add("error");
+        if (errProvince) errProvince.classList.remove("hidden");
+        if (!firstErrorElement) firstErrorElement = provinceSelect;
         hasError = true;
       } else if (provinceSelect) {
         provinceSelect.classList.remove("error");
+        if (errProvince) errProvince.classList.add("hidden");
       }
 
       if (wardSelect && !wardSelect.value) {
         wardSelect.classList.add("error");
+        if (errWard) errWard.classList.remove("hidden");
+        if (!firstErrorElement) firstErrorElement = wardSelect;
         hasError = true;
       } else if (wardSelect) {
         wardSelect.classList.remove("error");
+        if (errWard) errWard.classList.add("hidden");
       }
 
       if (!inputAddress.value.trim()) {
         inputAddress.classList.add("error");
         if (errAddress) errAddress.classList.remove("hidden");
+        if (!firstErrorElement) firstErrorElement = inputAddress;
         hasError = true;
       } else {
         inputAddress.classList.remove("error");
         if (errAddress) errAddress.classList.add("hidden");
       }
 
-      if (hasError) return;
+      if (hasError) {
+        if (firstErrorElement) {
+          firstErrorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+          firstErrorElement.focus();
+        }
+        return;
+      }
 
       if (cartItems.length === 0) {
         alert("Giỏ hàng rỗng! Vui lòng quay lại Cửa hàng để chọn sản phẩm.");
@@ -654,16 +676,7 @@
     }
   });
 
-  if (provinceSelect) {
-    provinceSelect.addEventListener("change", () => {
-      provinceSelect.classList.remove("error");
-    });
-  }
-  if (wardSelect) {
-    wardSelect.addEventListener("change", () => {
-      wardSelect.classList.remove("error");
-    });
-  }
+
 
 
 
@@ -847,9 +860,6 @@
 
 
 
-  const provinceSelect = document.getElementById("ship-province");
-  const wardSelect = document.getElementById("ship-ward");
-
   // Keep a copy of all original ward options from HTML
   let originalWardOptions = [];
   if (wardSelect) {
@@ -897,12 +907,18 @@
 
   if (provinceSelect) {
     provinceSelect.addEventListener("change", (e) => {
+      provinceSelect.classList.remove("error");
+      const errProvince = document.getElementById("error-province");
+      if (errProvince) errProvince.classList.add("hidden");
       updateWards(e.target.value);
       calculateDynamicShippingFee();
     });
   }
   if (wardSelect) {
     wardSelect.addEventListener("change", () => {
+      wardSelect.classList.remove("error");
+      const errWard = document.getElementById("error-ward");
+      if (errWard) errWard.classList.add("hidden");
       calculateDynamicShippingFee();
     });
   }
