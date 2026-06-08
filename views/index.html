@@ -156,7 +156,6 @@
   </div>
 
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="js/footer-modals.js" defer></script>
   <script>
 
     async function loadTemplate(placeholderId, filePath) {
@@ -174,7 +173,7 @@
     async function initPageComponents() {
       await Promise.all([
         loadTemplate('header-placeholder', 'components/header.html?v=2'),
-        loadTemplate('footer-placeholder', 'components/footer.html')
+        loadTemplate('footer-placeholder', 'components/footer.html?v=3')
       ]);
 
 

@@ -20,7 +20,7 @@
           if (!code) return;
           result.classList.remove("hidden");
           result.textContent = "Đang tra cứu...";
-          fetch(`api/get_order.php?code=${encodeURIComponent(code)}`)
+          fetch(`${getApiBase()}api/get_order.php?code=${encodeURIComponent(code)}`)
             .then((r) => r.json())
             .then((data) => {
               if (data.success && data.order) {
@@ -150,7 +150,11 @@
   };
 
   let modalEl = null;
-  let initialized = false;
+
+  function getApiBase() {
+    if (window.location.pathname.includes("/views/")) return "../";
+    return "";
+  }
 
   function ensureModalShell() {
     if (document.getElementById("footer-info-modal")) return;
@@ -208,38 +212,18 @@
   }
 
   function bindFooterLinks() {
-    const links = document.querySelectorAll("[data-footer-modal]");
-    if (!links.length) return false;
-
-    links.forEach((link) => {
-      if (link.dataset.footerBound === "1") return;
-      link.dataset.footerBound = "1";
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        openModal(link.getAttribute("data-footer-modal"));
-      });
+    document.addEventListener("click", (e) => {
+      const link = e.target.closest("[data-footer-modal]");
+      if (!link) return;
+      e.preventDefault();
+      openModal(link.getAttribute("data-footer-modal"));
     });
-    return true;
   }
 
-  function initFooterModals() {
+  ensureModalShell();
+  bindFooterLinks();
+
+  window.initFooterModals = () => {
     ensureModalShell();
-    bindFooterLinks();
-    initialized = true;
-  }
-
-  function tryInit() {
-    if (bindFooterLinks()) initialized = true;
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", tryInit);
-  } else {
-    tryInit();
-  }
-
-  const observer = new MutationObserver(() => tryInit());
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  window.initFooterModals = initFooterModals;
+  };
 })();

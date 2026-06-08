@@ -569,7 +569,7 @@ function formatVND($amount) {
         document.addEventListener("DOMContentLoaded", async () => {
             await Promise.all([
                 loadTemplate('header-placeholder', 'components/header.html?v=2'),
-                loadTemplate('footer-placeholder', 'components/footer.html')
+                loadTemplate('footer-placeholder', 'components/footer.html?v=3')
             ]);
             
             
