@@ -61,6 +61,7 @@ echo json_encode([
         "phone" => $userRecord['phone'],
         "address" => $userRecord['address'],
         "role" => $userRecord['role'],
+        "loyalty_points" => isset($userRecord['loyalty_points']) ? intval($userRecord['loyalty_points']) : 0,
         "created_at" => $userRecord['created_at'] ?? null
     ]
 ]);
