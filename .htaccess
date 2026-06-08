@@ -8,3 +8,6 @@ RewriteRule ^ - [L]
 
 # Rewrite các file .html và cart.html vào /views/
 RewriteRule ^(index\.html|san-pham\.html|product-detail\.html|cart\.html|momo_checkout\.html|admin\.html|auth\.html|profile\.html|wishlist\.html|success\.html)$ views/$1 [L]
+
+# Rewrite các trang Trợ giúp vào /views/
+RewriteRule ^(order-status\.html|shipping\.html|returns\.html|payment-methods\.html|contact\.html)$ views/$1 [L]

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tình Trạng Đơn Hàng — TL Shop</title>
+  <meta name="description" content="Tra cứu tình trạng đơn hàng của bạn tại TL Shop. Nhập mã đơn hàng để kiểm tra trạng thái giao hàng nhanh chóng.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/help-pages.css">
+</head>
+<body class="help-page">
+
+  <!-- Navbar -->
+  <nav class="hp-navbar">
+    <a href="index.html" class="hp-navbar__brand">
+      TL<span class="hp-navbar__dot"></span>
+    </a>
+    <a href="javascript:history.back()" class="hp-navbar__back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      Quay lại
+    </a>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hp-hero">
+    <div class="hp-hero__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+      </svg>
+    </div>
+    <div class="hp-hero__tag">Trợ giúp / Đơn hàng</div>
+    <h1 class="hp-hero__title">Tình Trạng Đơn Hàng</h1>
+    <p class="hp-hero__sub">Nhập mã đơn hàng để kiểm tra tiến trình giao hàng của bạn theo thời gian thực.</p>
+  </div>
+
+  <!-- Content -->
+  <main class="hp-container">
+
+    <!-- Lookup Card -->
+    <div class="hp-card" style="margin-bottom:1.5rem;">
+      <div class="hp-section-label">Tra cứu đơn hàng</div>
+
+      <form class="hp-form" id="os-form" novalidate>
+        <div class="hp-field">
+          <label class="hp-label" for="os-code">Mã đơn hàng</label>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+            <input
+              type="text"
+              id="os-code"
+              class="hp-input"
+              placeholder="Ví dụ: TL-20260601-01234"
+              autocomplete="off"
+              style="flex:1;min-width:180px;"
+            >
+            <button type="submit" class="hp-btn hp-btn--primary" id="os-submit-btn" style="white-space:nowrap;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+              Tra cứu
+            </button>
+          </div>
+          <span id="os-input-error" class="hp-hidden" style="font-size:0.8125rem;color:#fca5a5;margin-top:0.25rem;">
+            Vui lòng nhập mã đơn hàng.
+          </span>
+        </div>
+      </form>
+
+      <!-- Result Area -->
+      <div id="os-result" class="hp-status-result">
+        <div class="hp-status-label">Kết quả tra cứu</div>
+        <div id="os-status-pill"></div>
+        <div id="os-status-detail" class="hp-status-detail"></div>
+      </div>
+    </div>
+
+    <!-- Info cards -->
+    <div class="hp-section-label" style="margin-top:2.5rem;">Các trạng thái đơn hàng</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.875rem;">
+
+      <div class="hp-card" style="padding:1.1rem 1.25rem;display:flex;align-items:center;gap:0.875rem;">
+        <span style="font-size:1.4rem;">📦</span>
+        <div>
+          <div style="font-size:0.8rem;font-weight:700;color:#fbbf24;margin-bottom:0.2rem;">Đang đóng gói</div>
+          <div style="font-size:0.75rem;color:#6b7280;line-height:1.5;">Kho đang chuẩn bị kiện hàng</div>
+        </div>
+      </div>
+
+      <div class="hp-card" style="padding:1.1rem 1.25rem;display:flex;align-items:center;gap:0.875rem;">
+        <span style="font-size:1.4rem;">🚚</span>
+        <div>
+          <div style="font-size:0.8rem;font-weight:700;color:#93c5fd;margin-bottom:0.2rem;">Đang giao hàng</div>
+          <div style="font-size:0.75rem;color:#6b7280;line-height:1.5;">Đơn hàng đang trên đường đến</div>
+        </div>
+      </div>
+
+      <div class="hp-card" style="padding:1.1rem 1.25rem;display:flex;align-items:center;gap:0.875rem;">
+        <span style="font-size:1.4rem;">✅</span>
+        <div>
+          <div style="font-size:0.8rem;font-weight:700;color:#34d399;margin-bottom:0.2rem;">Đã giao thành công</div>
+          <div style="font-size:0.75rem;color:#6b7280;line-height:1.5;">Bạn đã nhận được hàng</div>
+        </div>
+      </div>
+
+      <div class="hp-card" style="padding:1.1rem 1.25rem;display:flex;align-items:center;gap:0.875rem;">
+        <span style="font-size:1.4rem;">↩️</span>
+        <div>
+          <div style="font-size:0.8rem;font-weight:700;color:#f9a8d4;margin-bottom:0.2rem;">Đang hoàn hàng</div>
+          <div style="font-size:0.75rem;color:#6b7280;line-height:1.5;">Đơn hàng đang được trả về</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tip -->
+    <div class="hp-alert hp-alert--info" style="margin-top:2rem;">
+      <svg class="hp-alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span>Mã đơn hàng có trong email xác nhận hoặc trong mục <strong>"Đơn hàng của tôi"</strong> ở trang cá nhân.</span>
+    </div>
+
+  </main>
+
+  <!-- Footer Strip -->
+  <footer class="hp-footer">
+    © 2026 TL Shop, Inc. — <a href="order-status.html">Đơn hàng</a> · <a href="shipping.html">Giao hàng</a> · <a href="contact.html">Liên hệ</a>
+  
+  </footer>
+
+  <script>
+    (() => {
+      const form      = document.getElementById('os-form');
+      const codeInput = document.getElementById('os-code');
+      const resultBox = document.getElementById('os-result');
+      const pillEl    = document.getElementById('os-status-pill');
+      const detailEl  = document.getElementById('os-status-detail');
+      const errEl     = document.getElementById('os-input-error');
+      const submitBtn = document.getElementById('os-submit-btn');
+
+      /* ---- Simulated order database ---- */
+      const MOCK_DB = {
+        'TL-20260601-00001': { status: 'shipped',    note: 'Dự kiến giao ngày 10/06/2026. Đơn vị vận chuyển: GHTK.' },
+        'TL-20260601-00002': { status: 'processing', note: 'Kho đang đóng gói sản phẩm, sẽ bàn giao bưu tá trong 24h.' },
+        'TL-20260601-00003': { status: 'delivered',  note: 'Đã giao thành công lúc 09:32 ngày 07/06/2026.' },
+        'TL-20260601-00004': { status: 'cancelled',  note: 'Đơn hàng đã bị hủy theo yêu cầu. Hoàn tiền trong 3–5 ngày.' },
+      };
+
+      const STATUS_MAP = {
+        processing: { label: '📦 Đang đóng gói',     cls: 'hp-status-pill--processing' },
+        shipped:    { label: '🚚 Đang giao hàng',     cls: 'hp-status-pill--shipping'   },
+        delivered:  { label: '✅ Đã giao thành công', cls: 'hp-status-pill--delivered'  },
+        cancelled:  { label: '❌ Đã hủy',             cls: 'hp-status-pill--cancelled'  },
+      };
+
+      function showResult(statusKey, note) {
+        const map = STATUS_MAP[statusKey] || { label: '❓ Không xác định', cls: 'hp-status-pill--notfound' };
+        pillEl.innerHTML = `<span class="hp-status-pill ${map.cls}"><span class="hp-pulse"></span>${map.label}</span>`;
+        detailEl.textContent = note || '';
+        resultBox.classList.add('is-visible');
+      }
+
+      function showNotFound(code) {
+        pillEl.innerHTML = `<span class="hp-status-pill hp-status-pill--notfound">🔍 Không tìm thấy đơn hàng</span>`;
+        detailEl.textContent = `Không có đơn hàng nào ứng với mã "${code}". Vui lòng kiểm tra lại hoặc liên hệ hotline 1900 1234.`;
+        resultBox.classList.add('is-visible');
+      }
+
+      function setLoading(on) {
+        submitBtn.disabled = on;
+        submitBtn.innerHTML = on
+          ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" style="animation:spin .8s linear infinite;transform-origin:center"/></svg> Đang tra cứu...`
+          : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Tra cứu`;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const code = codeInput.value.trim().toUpperCase();
+
+        if (!code) {
+          errEl.classList.remove('hp-hidden');
+          codeInput.focus();
+          return;
+        }
+        errEl.classList.add('hp-hidden');
+        resultBox.classList.remove('is-visible');
+        setLoading(true);
+
+        /* Simulate network delay */
+        await new Promise(r => setTimeout(r, 900));
+
+        /* Try real API first, fallback to mock */
+        try {
+          const apiBase = window.location.pathname.includes('/views/') ? '../' : '';
+          const res  = await fetch(`${apiBase}api/get_order.php?code=${encodeURIComponent(code)}`);
+          const data = await res.json();
+
+          if (data.success && data.order) {
+            const sMap = { pending:'processing', processing:'processing', shipped:'shipped', delivered:'delivered', completed:'delivered', cancelled:'cancelled' };
+            const st = sMap[data.order.status] || 'processing';
+            const note = `Tổng tiền: ${Number(data.order.total_amount).toLocaleString('vi-VN')} ₫`;
+            showResult(st, note);
+          } else {
+            showNotFound(code);
+          }
+        } catch {
+          /* Fallback mock */
+          const mockEntry = MOCK_DB[code];
+          if (mockEntry) {
+            showResult(mockEntry.status, mockEntry.note);
+          } else {
+            showNotFound(code);
+          }
+        }
+
+        setLoading(false);
+      });
+
+      /* Add spin keyframe */
+      const style = document.createElement('style');
+      style.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+      document.head.appendChild(style);
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tùy Chọn Thanh Toán — TL Shop</title>
+  <meta name="description" content="TL Shop hỗ trợ thanh toán COD, chuyển khoản ngân hàng và ví điện tử MoMo. An toàn, tiện lợi, nhanh chóng.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/help-pages.css">
+  <style>
+    .pm-security-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: #4b5563;
+      padding: 0.65rem 1rem;
+      background: rgba(20,184,166,0.05);
+      border: 1px solid rgba(45,212,191,0.1);
+      border-radius: 9999px;
+      margin-bottom: 2rem;
+      width: fit-content;
+    }
+    .pm-security-bar span { color: #2dd4bf; font-weight: 600; }
+
+    .pm-faq { display:flex; flex-direction:column; gap:0.75rem; margin-top:2rem; }
+    .pm-faq__q {
+      font-size:0.9rem; font-weight:600; color:#e5e7eb;
+      margin-bottom:0.35rem;
+      display:flex; align-items:flex-start; gap:0.5rem;
+    }
+    .pm-faq__q::before {
+      content:'Q';
+      font-family:'JetBrains Mono',monospace;
+      font-size:0.6875rem;
+      font-weight:800;
+      background:rgba(20,184,166,0.15);
+      color:#2dd4bf;
+      border:1px solid rgba(45,212,191,0.2);
+      border-radius:4px;
+      padding:0.1rem 0.35rem;
+      flex-shrink:0;
+      margin-top:0.1rem;
+    }
+    .pm-faq__a { font-size:0.8375rem; color:#6b7280; line-height:1.65; padding-left:1.75rem; }
+  </style>
+</head>
+<body class="help-page">
+
+  <!-- Navbar -->
+  <nav class="hp-navbar">
+    <a href="../views/index.html" class="hp-navbar__brand">
+      TL<span class="hp-navbar__dot"></span>
+    </a>
+    <a href="javascript:history.back()" class="hp-navbar__back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      Quay lại
+    </a>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hp-hero">
+    <div class="hp-hero__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+        <line x1="1" y1="10" x2="23" y2="10"/>
+      </svg>
+    </div>
+    <div class="hp-hero__tag">Trợ giúp / Thanh toán</div>
+    <h1 class="hp-hero__title">Tùy Chọn Thanh Toán</h1>
+    <p class="hp-hero__sub">Chọn phương thức thanh toán phù hợp nhất với bạn — mọi giao dịch đều an toàn và được mã hóa.</p>
+  </div>
+
+  <!-- Content -->
+  <main class="hp-container">
+
+    <!-- Security badge -->
+    <div class="pm-security-bar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span>Bảo mật SSL 256-bit</span> — Mọi giao dịch được mã hóa và bảo vệ tuyệt đối
+    </div>
+
+    <!-- Payment Method Cards -->
+    <div class="hp-section-label">Phương thức thanh toán</div>
+    <div class="hp-pay-grid" style="margin-bottom:2.5rem;">
+
+      <!-- COD -->
+      <div class="hp-pay-card hp-pay-card--cod">
+        <div class="hp-pay-card__icon-wrap" style="font-size:1.5rem;">🛵</div>
+        <div>
+          <span class="hp-badge hp-badge--green" style="margin-bottom:0.5rem;display:inline-block;">Phổ biến nhất</span>
+          <div class="hp-pay-card__name">Thanh toán khi nhận hàng (COD)</div>
+        </div>
+        <div class="hp-pay-card__desc">
+          Kiểm tra sản phẩm trước khi thanh toán. Không cần thẻ ngân hàng hay tài khoản điện tử.
+        </div>
+        <div class="hp-pay-card__detail">
+          <strong>Lưu ý:</strong> Vui lòng chuẩn bị tiền mặt chính xác. Áp dụng với đơn hàng dưới 5.000.000 ₫.
+        </div>
+        <div style="margin-top:auto;display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:#34d399;font-weight:600;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Miễn phí · Không cần đăng ký
+        </div>
+      </div>
+
+      <!-- Bank Transfer -->
+      <div class="hp-pay-card hp-pay-card--bank">
+        <div class="hp-pay-card__icon-wrap" style="font-size:1.5rem;">🏦</div>
+        <div>
+          <span class="hp-badge hp-badge--blue" style="margin-bottom:0.5rem;display:inline-block;">Chuyển khoản</span>
+          <div class="hp-pay-card__name">Chuyển khoản ngân hàng</div>
+        </div>
+        <div class="hp-pay-card__desc">
+          Hỗ trợ chuyển khoản qua ATM, Internet Banking hoặc ứng dụng Mobile Banking.
+        </div>
+        <div class="hp-pay-card__detail">
+          <strong>Ngân hàng hỗ trợ:</strong><br>
+          Vietcombank · Techcombank · MB Bank · VietinBank · BIDV · TPBank
+        </div>
+        <div style="margin-top:auto;display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:#93c5fd;font-weight:600;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Xác nhận tự động sau 15 phút
+        </div>
+      </div>
+
+      <!-- MoMo -->
+      <div class="hp-pay-card hp-pay-card--momo">
+        <div class="hp-pay-card__icon-wrap" style="font-size:1.5rem;">💜</div>
+        <div>
+          <span class="hp-badge hp-badge--pink" style="margin-bottom:0.5rem;display:inline-block;">Ví điện tử</span>
+          <div class="hp-pay-card__name">Ví điện tử MoMo</div>
+        </div>
+        <div class="hp-pay-card__desc">
+          Thanh toán nhanh bằng ví MoMo, xác nhận tức thì qua OTP. Bảo mật 2 lớp.
+        </div>
+        <div class="hp-pay-card__detail">
+          <strong>Ưu đãi:</strong> Hoàn tiền 5% (tối đa 50.000 ₫) cho đơn đầu tiên dùng MoMo.
+        </div>
+        <div style="margin-top:auto;display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:#f9a8d4;font-weight:600;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Xác nhận tức thì · Bảo mật OTP
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bank info -->
+    <div class="hp-section-label">Thông tin tài khoản ngân hàng</div>
+    <div class="hp-card" style="margin-bottom:2.5rem;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.25rem;">
+
+        <div>
+          <div style="font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;color:#4b5563;font-weight:700;margin-bottom:0.5rem;font-family:'JetBrains Mono',monospace;">Vietcombank</div>
+          <div style="font-size:0.9rem;font-weight:600;color:#e5e7eb;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;">1234 5678 9012</div>
+          <div style="font-size:0.8125rem;color:#6b7280;margin-top:0.2rem;">Chủ TK: NGUYEN VAN A</div>
+        </div>
+
+        <div>
+          <div style="font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;color:#4b5563;font-weight:700;margin-bottom:0.5rem;font-family:'JetBrains Mono',monospace;">Techcombank</div>
+          <div style="font-size:0.9rem;font-weight:600;color:#e5e7eb;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;">1900 8888 0001</div>
+          <div style="font-size:0.8125rem;color:#6b7280;margin-top:0.2rem;">Chủ TK: TL SHOP CO LTD</div>
+        </div>
+
+        <div style="grid-column:1/-1;">
+          <div style="font-size:0.75rem;color:#4b5563;margin-top:0.25rem;line-height:1.6;">
+            📌 <strong style="color:#9ca3af;">Nội dung chuyển khoản:</strong> Ghi rõ <span style="color:#2dd4bf;font-weight:600;">Mã đơn hàng + Số điện thoại</span> để hệ thống xác nhận tự động.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="hp-section-label">Câu hỏi thường gặp</div>
+    <div class="hp-card">
+      <div class="pm-faq">
+        <div>
+          <div class="pm-faq__q">Tôi chuyển khoản rồi, bao lâu thì đơn được xác nhận?</div>
+          <div class="pm-faq__a">Hệ thống tự động xác nhận trong vòng 15 phút sau khi nhận được giao dịch. Ngoài giờ hành chính, đơn hàng sẽ được xử lý vào sáng hôm sau.</div>
+        </div>
+        <div>
+          <div class="pm-faq__q">Tôi có thể đổi phương thức thanh toán sau khi đặt hàng không?</div>
+          <div class="pm-faq__a">Có thể, nhưng chỉ khi đơn hàng chưa được đóng gói. Vui lòng liên hệ hotline <strong style="color:#2dd4bf;">1900 1234</strong> ngay sau khi đặt hàng.</div>
+        </div>
+        <div>
+          <div class="pm-faq__q">Hoàn tiền mất bao lâu?</div>
+          <div class="pm-faq__a">Hoàn tiền qua chuyển khoản: 3–5 ngày làm việc. Hoàn về ví MoMo: 1–2 ngày làm việc. Tiền mặt (COD) hoàn qua chuyển khoản.</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="hp-footer">
+    © 2026 TL Shop, Inc. — <a href="order-status.html">Đơn hàng</a> · <a href="shipping.html">Giao hàng</a> · <a href="contact.html">Liên hệ</a>
+  </footer>
+
+</body>
+</html>
