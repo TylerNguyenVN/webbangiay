@@ -1,6 +1,10 @@
 RewriteEngine On
 RewriteBase /webbangiay/
 
+# Redirect direct access to views/*.html to root /*.html to ensure relative paths resolve from root
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^views/(.*)$ $1 [R=301,L]
+
 # Nếu request là file/thư mục thật → phục vụ trực tiếp
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d

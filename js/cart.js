@@ -1,8 +1,8 @@
 
 (() => {
-  
-  
-  
+
+
+
   const currentUserStr = localStorage.getItem("nike_current_user");
   const authStatusLight = document.getElementById("auth-status-light");
   const authStatusDark = document.getElementById("auth-status-dark");
@@ -36,9 +36,9 @@
     });
   }
 
-  
-  
-  
+
+
+
   window.renderWishlistOverlay = function () {
     const container = document.getElementById("wishlist-items-container");
     if (!container) return;
@@ -72,19 +72,20 @@
   };
 
 
-  
-  
-  
+
+
+
   let cartItems = JSON.parse(localStorage.getItem("nike_cart_items")) || [];
   let activeOrder = null;
-  let selectedDeliveryMethod = "standard"; 
-  let trackerActiveStep = 2; 
-  let dynamicShippingFee = 0; 
-  const GHN_TOKEN = "YOUR_GHN_DEV_TOKEN_HERE"; 
+  let selectedDeliveryMethod = "standard";
+  let trackerActiveStep = 2;
+  let dynamicShippingFee = 0;
+  let appliedCoupon = null;
+  const GHN_TOKEN = "YOUR_GHN_DEV_TOKEN_HERE";
 
-  
-  
-  
+
+
+
   const screenCart = document.getElementById("screen-cart");
   const screenConfirmation = document.getElementById("screen-confirmation");
   const screenTracker = document.getElementById("screen-tracker");
@@ -107,9 +108,17 @@
   const summaryShipping = document.getElementById("summary-shipping");
   const summaryDiscountRow = document.getElementById("summary-discount-row");
   const summaryDiscount = document.getElementById("summary-discount");
+  const summaryCouponRow = document.getElementById("summary-coupon-row");
+  const summaryCouponLabel = document.getElementById("summary-coupon-label");
+  const summaryCouponValue = document.getElementById("summary-coupon-value");
   const summaryTotalPrice = document.getElementById("summary-total-price");
   const summaryRewardPoints = document.getElementById("summary-reward-points");
   const payNowBtn = document.getElementById("pay-now-btn");
+
+  const inputCoupon = document.getElementById("ship-coupon");
+  const applyCouponBtn = document.getElementById("apply-coupon-btn");
+  const errCoupon = document.getElementById("error-coupon");
+  const successCoupon = document.getElementById("success-coupon");
 
   const confirmOrderId = document.getElementById("confirm-order-id");
   const confirmOrderDate = document.getElementById("confirm-order-date");
@@ -119,6 +128,9 @@
   const confirmShipping = document.getElementById("confirm-shipping");
   const confirmDiscountRow = document.getElementById("confirm-discount-row");
   const confirmDiscount = document.getElementById("confirm-discount");
+  const confirmCouponRow = document.getElementById("confirm-coupon-row");
+  const confirmCouponLabel = document.getElementById("confirm-coupon-label");
+  const confirmCouponValue = document.getElementById("confirm-coupon-value");
   const confirmTotalPrice = document.getElementById("confirm-total-price");
   const confirmContinueShoppingBtn = document.getElementById("confirm-continue-shopping-btn");
   const confirmTrackOrderBtn = document.getElementById("confirm-track-order-btn");
@@ -131,9 +143,9 @@
   const trackerManifestContainer = document.getElementById("tracker-manifest-container");
   const trackerDownloadInvoiceBtn = document.getElementById("tracker-download-invoice-btn");
 
-  
-  
-  
+
+
+
   function autoFillUserInfo() {
     const userStr = localStorage.getItem("nike_current_user");
     if (userStr) {
@@ -145,9 +157,9 @@
   }
   autoFillUserInfo();
 
-  
-  
-  
+
+
+
   function updateCartHeaderBadge() {
     const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const headerCartCount = document.getElementById("header-cart-count");
@@ -161,9 +173,9 @@
     }
   }
 
-  
-  
-  
+
+
+
   function renderCartScreen() {
     updateCartHeaderBadge();
 
@@ -176,7 +188,7 @@
     if (cartEmptyView) cartEmptyView.classList.add("hidden");
     if (cartContentView) cartContentView.classList.remove("hidden");
 
-    
+
     cartItemsListContainer.innerHTML = cartItems.map((item, idx) => `
       <div class="cart-item-card">
         <div class="cart-item-left">
@@ -210,7 +222,7 @@
     calculateCartTotals();
   }
 
-  
+
   if (cartItemsListContainer) {
     cartItemsListContainer.addEventListener("click", (e) => {
       const target = e.target;
@@ -240,13 +252,42 @@
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const subtotal = cartItems.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
 
-    
+
     const shippingFee = subtotal > 0 ? (selectedDeliveryMethod === "standard" ? dynamicShippingFee : 150000) : 0;
 
     const hasMercurial = cartItems.some(item => item.product.id && item.product.id.includes("mercurial"));
     const discount = hasMercurial ? 150000 : 0;
 
-    const finalTotal = Math.max(0, subtotal + shippingFee - discount);
+    let couponDiscount = 0;
+    if (appliedCoupon) {
+      if (subtotal < appliedCoupon.minOrderValue) {
+        appliedCoupon = null;
+        if (errCoupon) {
+          errCoupon.textContent = `Mã giảm giá đã bị huỷ vì đơn hàng tối thiểu chưa đạt.`;
+          errCoupon.classList.remove("hidden");
+        }
+        if (successCoupon) {
+          successCoupon.classList.add("hidden");
+        }
+        if (inputCoupon) {
+          inputCoupon.value = "";
+        }
+      } else {
+        if (appliedCoupon.type === 'fixed') {
+          couponDiscount = appliedCoupon.value;
+        } else if (appliedCoupon.type === 'percentage') {
+          couponDiscount = subtotal * (appliedCoupon.value / 100);
+          if (appliedCoupon.maxDiscount !== null && couponDiscount > appliedCoupon.maxDiscount) {
+            couponDiscount = appliedCoupon.maxDiscount;
+          }
+        }
+        if (couponDiscount > subtotal) {
+          couponDiscount = subtotal;
+        }
+      }
+    }
+
+    const finalTotal = Math.max(0, subtotal + shippingFee - discount - couponDiscount);
     const rewardPoints = subtotal > 0 ? Math.round(subtotal / 10000) : 0;
 
     if (summaryItemsCount) summaryItemsCount.textContent = `Tạm tính (${totalItems} sản phẩm)`;
@@ -259,6 +300,16 @@
         if (summaryDiscount) summaryDiscount.textContent = `-${discount.toLocaleString("vi-VN")}đ`;
       } else {
         summaryDiscountRow.classList.add("hidden");
+      }
+    }
+
+    if (summaryCouponRow) {
+      if (couponDiscount > 0) {
+        summaryCouponRow.classList.remove("hidden");
+        if (summaryCouponLabel) summaryCouponLabel.textContent = `Mã giảm giá (${appliedCoupon.code})`;
+        if (summaryCouponValue) summaryCouponValue.textContent = `-${couponDiscount.toLocaleString("vi-VN")}đ`;
+      } else {
+        summaryCouponRow.classList.add("hidden");
       }
     }
 
@@ -284,11 +335,77 @@
     });
   }
 
+  if (applyCouponBtn && inputCoupon) {
+    applyCouponBtn.addEventListener("click", async () => {
+      const code = inputCoupon.value.trim();
+      if (!code) {
+        showCouponError("Vui lòng nhập mã giảm giá.");
+        return;
+      }
+
+      const subtotal = cartItems.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
+
+      try {
+        const response = await fetch("api/check_coupon.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ coupon_code: code, subtotal: subtotal })
+        });
+        const data = await response.json();
+        if (data.success) {
+          appliedCoupon = {
+            code: data.code,
+            type: data.type,
+            value: data.value,
+            minOrderValue: data.min_order_value,
+            maxDiscount: data.max_discount
+          };
+          showCouponSuccess(data.message);
+          calculateCartTotals();
+        } else {
+          appliedCoupon = null;
+          showCouponError(data.message);
+          calculateCartTotals();
+        }
+      } catch (err) {
+        console.error("Lỗi áp dụng mã giảm giá:", err);
+        showCouponError("Lỗi kết nối máy chủ. Vui lòng thử lại.");
+      }
+    });
+  }
+
+  if (inputCoupon) {
+    inputCoupon.addEventListener("input", () => {
+      if (errCoupon) errCoupon.classList.add("hidden");
+      if (successCoupon) successCoupon.classList.add("hidden");
+    });
+  }
+
+  function showCouponError(msg) {
+    if (errCoupon) {
+      errCoupon.textContent = msg;
+      errCoupon.classList.remove("hidden");
+    }
+    if (successCoupon) {
+      successCoupon.classList.add("hidden");
+    }
+  }
+
+  function showCouponSuccess(msg) {
+    if (successCoupon) {
+      successCoupon.textContent = msg;
+      successCoupon.classList.remove("hidden");
+    }
+    if (errCoupon) {
+      errCoupon.classList.add("hidden");
+    }
+  }
+
   renderCartScreen();
 
-  
-  
-  
+
+
+
   if (payNowBtn) {
     payNowBtn.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -310,6 +427,20 @@
       } else {
         inputPhone.classList.remove("error");
         if (errPhone) errPhone.classList.add("hidden");
+      }
+
+      if (provinceSelect && !provinceSelect.value) {
+        provinceSelect.classList.add("error");
+        hasError = true;
+      } else if (provinceSelect) {
+        provinceSelect.classList.remove("error");
+      }
+
+      if (wardSelect && !wardSelect.value) {
+        wardSelect.classList.add("error");
+        hasError = true;
+      } else if (wardSelect) {
+        wardSelect.classList.remove("error");
       }
 
       if (!inputAddress.value.trim()) {
@@ -336,10 +467,36 @@
       const shippingFee = subtotal > 0 ? (selectedDeliveryMethod === "standard" ? dynamicShippingFee : 150000) : 0;
       const hasMercurial = cartItems.some(item => item.product.id && item.product.id.includes("mercurial"));
       const discount = hasMercurial ? 150000 : 0;
-      const finalTotal = Math.max(0, subtotal + shippingFee - discount);
+      let couponDiscount = 0;
+      if (appliedCoupon) {
+        if (appliedCoupon.type === 'fixed') {
+          couponDiscount = appliedCoupon.value;
+        } else if (appliedCoupon.type === 'percentage') {
+          couponDiscount = subtotal * (appliedCoupon.value / 100);
+          if (appliedCoupon.maxDiscount !== null && couponDiscount > appliedCoupon.maxDiscount) {
+            couponDiscount = appliedCoupon.maxDiscount;
+          }
+        }
+        if (couponDiscount > subtotal) {
+          couponDiscount = subtotal;
+        }
+      }
+      const finalTotal = Math.max(0, subtotal + shippingFee - discount - couponDiscount);
 
-      
+
       const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
+
+      const detailAddress = inputAddress.value.trim();
+      const selectedProvince = provinceSelect ? (provinceSelect.options[provinceSelect.selectedIndex]?.text || '') : '';
+      const selectedWard = wardSelect ? (wardSelect.options[wardSelect.selectedIndex]?.text || '') : '';
+
+      let fullAddress = detailAddress;
+      if (selectedWard && selectedWard !== "Chọn Phường/Xã") {
+        fullAddress += `, ${selectedWard}`;
+      }
+      if (selectedProvince && selectedProvince !== "Chọn Tỉnh/Thành") {
+        fullAddress += `, ${selectedProvince}`;
+      }
 
       activeOrder = {
         id: `#NKE-${Math.floor(100000 + Math.random() * 900000)}`,
@@ -348,11 +505,13 @@
         subtotal: subtotal,
         shippingFee: shippingFee,
         discount: discount,
+        couponDiscount: couponDiscount,
+        couponCode: appliedCoupon ? appliedCoupon.code : null,
         total: finalTotal,
         shippingInfo: {
           fullName: inputFullname.value.trim(),
           phone: inputPhone.value.trim(),
-          address: inputAddress.value.trim(),
+          address: fullAddress,
           method: selectedDeliveryMethod
         }
       };
@@ -383,20 +542,21 @@
         }).catch(err => console.error("Lỗi kết nối API update_profile: ", err));
       }
 
-      
-      
-      
-      
+
+
+
+
       const orderPayload = {
         user_id: userId,
         fullname: activeOrder.shippingInfo.fullName,
         phone: activeOrder.shippingInfo.phone,
         address: activeOrder.shippingInfo.address,
-        payment_method: selectedPaymentMethod, 
+        payment_method: selectedPaymentMethod,
         subtotal: activeOrder.subtotal,
         shipping_fee: activeOrder.shippingFee,
-        discount_amount: activeOrder.discount,
+        discount_amount: activeOrder.discount + activeOrder.couponDiscount,
         total_amount: activeOrder.total,
+        coupon_code: activeOrder.couponCode,
         items: cartItems.map(item => ({
           product_name: item.product.name,
           variant_info: `Size: ${item.selectedSize}`,
@@ -406,14 +566,14 @@
       };
 
       try {
-        
-        
-        
 
-        
+
+
+
+
         if (selectedPaymentMethod === 'momo') {
           try {
-            
+
             const momoRes = await fetch("api/create_order.php", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -423,16 +583,16 @@
             const momoData = await momoRes.json();
 
             if (momoData.success) {
-              
+
               sessionStorage.setItem('momo_order_code', momoData.order_code);
               sessionStorage.setItem('momo_total_amount', momoData.total_amount);
               sessionStorage.setItem('momo_order_id', momoData.order_id);
 
-              
+
               cartItems = [];
               localStorage.removeItem("nike_cart_items");
 
-              
+
               window.location.href = "momo_checkout.html";
               return;
             } else {
@@ -446,7 +606,7 @@
           }
         }
 
-        
+
         try {
           const response = await fetch("api/create_order.php", {
             method: "POST",
@@ -457,14 +617,14 @@
           const data = await response.json();
 
           if (data.success) {
-            
+
             activeOrder.id = data.order_code;
 
-            
+
             cartItems = [];
             localStorage.removeItem("nike_cart_items");
 
-            
+
             window.location.href = `success.php?order_code=${data.order_code}`;
             return;
           } else {
@@ -494,9 +654,20 @@
     }
   });
 
-  
-  
-  
+  if (provinceSelect) {
+    provinceSelect.addEventListener("change", () => {
+      provinceSelect.classList.remove("error");
+    });
+  }
+  if (wardSelect) {
+    wardSelect.addEventListener("change", () => {
+      wardSelect.classList.remove("error");
+    });
+  }
+
+
+
+
   function renderConfirmationScreen() {
     if (!activeOrder) return;
     updateCartHeaderBadge();
@@ -504,6 +675,7 @@
     const subtotal = activeOrder.subtotal;
     const shippingFee = activeOrder.shippingFee;
     const discount = activeOrder.discount;
+    const couponDiscount = activeOrder.couponDiscount || 0;
     const finalTotal = activeOrder.total;
     const rewardPoints = Math.round(subtotal / 10000);
 
@@ -519,6 +691,16 @@
         if (confirmDiscount) confirmDiscount.textContent = `-${discount.toLocaleString("vi-VN")}đ`;
       } else {
         confirmDiscountRow.classList.add("hidden");
+      }
+    }
+
+    if (confirmCouponRow) {
+      if (couponDiscount > 0) {
+        confirmCouponRow.classList.remove("hidden");
+        if (confirmCouponLabel) confirmCouponLabel.textContent = `Mã giảm giá (${activeOrder.couponCode})`;
+        if (confirmCouponValue) confirmCouponValue.textContent = `-${couponDiscount.toLocaleString("vi-VN")}đ`;
+      } else {
+        confirmCouponRow.classList.add("hidden");
       }
     }
 
@@ -558,9 +740,9 @@
     });
   }
 
-  
-  
-  
+
+
+
   function renderTrackerScreen() {
     if (!activeOrder) return;
 
@@ -617,7 +799,7 @@
 
         let opacityStyle = isFuture ? "opacity: 0.55;" : (isPast ? "opacity: 0.85;" : "");
 
-        
+
         return `
           <div class="timeline-step" data-action="change-step" data-index="${idx}" style="${opacityStyle}">
             <div class="timeline-indicator">${indicatorHTML}</div>
@@ -662,100 +844,49 @@
     });
   }
 
-  
-  
-  
+
+
+
   const provinceSelect = document.getElementById("ship-province");
-  const districtSelect = document.getElementById("ship-district");
   const wardSelect = document.getElementById("ship-ward");
 
-  async function fetchGHNProvinces() {
-    if (!provinceSelect) return;
-    try {
-      const res = await fetch("https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province", {
-        headers: { "Token": GHN_TOKEN }
-      });
-      const data = await res.json();
-      if (data.code === 200) {
-        data.data.forEach(p => {
-          const option = document.createElement("option");
-          option.value = p.ProvinceID;
-          option.textContent = p.ProvinceName;
-          provinceSelect.appendChild(option);
-        });
-      }
-    } catch (e) { console.error("GHN Fetch Province Error:", e); }
+  // Keep a copy of all original ward options from HTML
+  let originalWardOptions = [];
+  if (wardSelect) {
+    originalWardOptions = Array.from(wardSelect.options);
   }
 
-  async function fetchGHNDistricts(provinceId) {
-    districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+  function updateWards(province) {
+    if (!wardSelect) return;
     wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
-    wardSelect.disabled = true;
-    if (!provinceId) {
-      districtSelect.disabled = true;
-      return;
-    }
-    districtSelect.disabled = false;
-    try {
-      const res = await fetch("https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district", {
-        method: "POST",
-        headers: { "Token": GHN_TOKEN, "Content-Type": "application/json" },
-        body: JSON.stringify({ province_id: parseInt(provinceId) })
-      });
-      const data = await res.json();
-      if (data.code === 200) {
-        data.data.forEach(d => {
-          const option = document.createElement("option");
-          option.value = d.DistrictID;
-          option.textContent = d.DistrictName;
-          districtSelect.appendChild(option);
-        });
-      }
-    } catch (e) { console.error("GHN Fetch District Error:", e); }
-  }
-
-  async function fetchGHNWards(districtId) {
-    wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
-    if (!districtId) {
+    if (!province) {
       wardSelect.disabled = true;
+      dynamicShippingFee = 0;
+      calculateCartTotals();
       return;
     }
+
     wardSelect.disabled = false;
-    try {
-      const res = await fetch("https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=" + districtId, {
-        headers: { "Token": GHN_TOKEN }
-      });
-      const data = await res.json();
-      if (data.code === 200) {
-        data.data.forEach(w => {
-          const option = document.createElement("option");
-          option.value = w.WardCode;
-          option.textContent = w.WardName;
-          wardSelect.appendChild(option);
-        });
+    // Filter and add only matching wards from the static list in HTML
+    originalWardOptions.forEach(opt => {
+      if (opt.value && opt.value.includes(`(${province})`)) {
+        wardSelect.appendChild(opt.cloneNode(true));
       }
-    } catch (e) { console.error("GHN Fetch Ward Error:", e); }
+    });
   }
 
-  async function calculateDynamicShippingFee() {
-    const districtId = districtSelect?.value;
-    const wardCode = wardSelect?.value;
+  function calculateDynamicShippingFee() {
+    const province = provinceSelect?.value;
+    const ward = wardSelect?.value;
 
-    if (districtId && wardCode && selectedDeliveryMethod === "standard") {
-      try {
-        const res = await fetch("api/shipping_fee.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ to_district_id: districtId, to_ward_code: wardCode })
-        });
-        const data = await res.json();
-        if (data.success) {
-          dynamicShippingFee = data.total_fee;
-        } else {
-          dynamicShippingFee = 35000; 
-        }
-      } catch (e) {
-        console.error("Lỗi tính phí ship nội bộ:", e);
+    if (province && ward && selectedDeliveryMethod === "standard") {
+      if (province === "TP.HCM") {
+        dynamicShippingFee = 20000;
+      } else if (province === "Bình Dương") {
+        dynamicShippingFee = 30000;
+      } else if (province === "Bà Rịa - Vũng Tàu") {
+        dynamicShippingFee = 35000;
+      } else {
         dynamicShippingFee = 35000;
       }
     } else {
@@ -765,14 +896,15 @@
   }
 
   if (provinceSelect) {
-    fetchGHNProvinces();
-    provinceSelect.addEventListener("change", (e) => fetchGHNDistricts(e.target.value));
-  }
-  if (districtSelect) {
-    districtSelect.addEventListener("change", (e) => fetchGHNWards(e.target.value));
+    provinceSelect.addEventListener("change", (e) => {
+      updateWards(e.target.value);
+      calculateDynamicShippingFee();
+    });
   }
   if (wardSelect) {
-    wardSelect.addEventListener("change", () => calculateDynamicShippingFee());
+    wardSelect.addEventListener("change", () => {
+      calculateDynamicShippingFee();
+    });
   }
 
 })();
