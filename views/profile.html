@@ -101,11 +101,11 @@
               <div class="flex justify-between items-start gap-4">
                 <div>
                   <p class="text-[10px] font-sans font-bold text-[#BC8E5C] uppercase tracking-widest mb-1">Thẻ Khách Hàng Thân Thiết</p>
-                  <h3 id="loyalty-points-label" class="font-display text-xl md:text-2xl font-bold text-[#2D3025] dark:text-[#FDFBF7]">Điểm hiện tại: 1,500 PTS</h3>
-                  <p id="loyalty-tier-label" class="font-sans text-sm text-[#5B634E] dark:text-[#b4bda5] font-semibold mt-1">Hạng Vàng</p>
+                  <h3 id="loyalty-points-label" class="font-display text-xl md:text-2xl font-bold text-[#2D3025] dark:text-[#FDFBF7]">Điểm hiện tại: 0 PTS</h3>
+                  <p id="loyalty-tier-label" class="font-sans text-sm text-[#5B634E] dark:text-[#b4bda5] font-semibold mt-1">Hạng Đồng</p>
                 </div>
                 <div class="flex flex-col items-end gap-2 shrink-0">
-                  <span id="loyalty-progress-text" class="text-[10px] font-sans text-[#7C7F6E] dark:text-[#9ea390] font-semibold text-right max-w-[120px]">33% lên hạng Bạch Kim</span>
+                  <span id="loyalty-progress-text" class="text-[10px] font-sans text-[#7C7F6E] dark:text-[#9ea390] font-semibold text-right max-w-[140px]">Mua sắm để tích điểm</span>
                   <span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[#BC8E5C] group-hover:gap-2 transition-all">
                     Xem hạng thành viên
                     <i data-lucide="chevron-right" class="w-4 h-4"></i>
@@ -113,11 +113,11 @@
                 </div>
               </div>
               <div class="w-full bg-white dark:bg-[#1a1d17] rounded-full h-3 p-0.5 border border-[#EAE5D8] dark:border-[#2c2f25]">
-                <div id="loyalty-progress-bar" class="h-full rounded-full bg-gradient-to-r from-[#5B634E] to-[#BC8E5C] transition-all duration-500" style="width: 33%"></div>
+                <div id="loyalty-progress-bar" class="h-full rounded-full bg-gradient-to-r from-[#5B634E] to-[#BC8E5C] transition-all duration-500" style="width: 0%"></div>
               </div>
               <div class="flex justify-between text-[10px] font-sans text-[#7C7F6E] dark:text-[#9ea390] font-bold uppercase tracking-wider">
-                <span id="loyalty-current-tier-short" class="text-[#BC8E5C]">Hạng Vàng</span>
-                <span id="loyalty-next-tier-short" class="opacity-60">Hạng Bạch Kim</span>
+                <span id="loyalty-current-tier-short" class="text-[#BC8E5C]">Hạng Đồng</span>
+                <span id="loyalty-next-tier-short" class="opacity-60">Hạng Vàng</span>
               </div>
             </div>
           </button>
@@ -274,6 +274,7 @@
   </div>
 
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/footer-modals.js" defer></script>
   <script>
     lucide.createIcons();
 
@@ -327,7 +328,9 @@
 
       if (next) {
         progressBar.style.width = `${percent}%`;
-        progressText.textContent = `${percent}% lên ${next.name}`;
+        progressText.textContent = points === 0
+          ? `Còn ${(next.minPoints - points).toLocaleString("vi-VN")} PTS lên ${next.name}`
+          : `${percent}% lên ${next.name}`;
         nextShort.textContent = next.name;
         nextShort.classList.remove("opacity-30");
       } else {
@@ -399,6 +402,19 @@
       const loyaltyPoints = Number(user.loyalty_points) || 0;
       updateLoyaltyUI(loyaltyPoints);
       initLoyaltyModal();
+
+      if (user.id) {
+        fetch(`api/get_loyalty_points.php?user_id=${user.id}`)
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.success) {
+              user.loyalty_points = Number(data.loyalty_points) || 0;
+              localStorage.setItem("nike_current_user", JSON.stringify(user));
+              updateLoyaltyUI(user.loyalty_points);
+            }
+          })
+          .catch(() => {});
+      }
 
       
       const editBtn = document.getElementById("edit-btn");

@@ -44,6 +44,7 @@ function formatVND($amount) {
 
     
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/footer-modals.js" defer></script>
 
     <style>
         

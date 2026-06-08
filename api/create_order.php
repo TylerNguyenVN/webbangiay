@@ -123,6 +123,15 @@ try {
         $stmtItem->execute([$orderId, $pName, $vInfo, $price, $qty]);
     }
 
+    $pointsEarned = 0;
+    if ($userId && $paymentMethod !== 'momo') {
+        $pointsEarned = intval(floor($subtotal / 10000));
+        if ($pointsEarned > 0) {
+            $stmtPts = $db->prepare("UPDATE users SET loyalty_points = COALESCE(loyalty_points, 0) + ? WHERE id = ?");
+            $stmtPts->execute([$pointsEarned, $userId]);
+        }
+    }
+
     
     $db->commit();
 
@@ -136,7 +145,8 @@ try {
         "order_code" => $orderCode,
         "order_id" => $orderId,
         "payment_method" => $paymentMethod,
-        "total_amount" => $totalAmount
+        "total_amount" => $totalAmount,
+        "points_earned" => $pointsEarned
     ]);
 
 } catch (Exception $e) {

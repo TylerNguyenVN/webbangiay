@@ -460,6 +460,15 @@
             
             activeOrder.id = data.order_code;
 
+            if (data.points_earned) {
+              const userStr = localStorage.getItem("nike_current_user");
+              if (userStr) {
+                const u = JSON.parse(userStr);
+                u.loyalty_points = (Number(u.loyalty_points) || 0) + Number(data.points_earned);
+                localStorage.setItem("nike_current_user", JSON.stringify(u));
+              }
+            }
+
             
             cartItems = [];
             localStorage.removeItem("nike_cart_items");
