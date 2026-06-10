@@ -1153,3 +1153,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const themeBtn = document.getElementById("btn-toggle-theme");
+
+    if (themeBtn) {
+        themeBtn.addEventListener("click", function () {
+            document.body.classList.toggle("dark-theme");
+
+            const icon = themeBtn.querySelector("i");
+            if (document.body.classList.contains("dark-theme")) {
+                icon.setAttribute("data-lucide", "sun");
+            } else {
+                icon.setAttribute("data-lucide", "moon");
+            }
+            lucide.createIcons();
+        });
+    }
+});
+document.getElementById("btn-export-excel").addEventListener("click", function () {
+    const table = document.getElementById("table-products-body");
+
+    const wb = XLSX.utils.table_to_book(document.querySelector(".admin-table"), { sheet: "SanPham" });
+
+    XLSX.writeFile(wb, "Danh_Sach_San_Pham.xlsx");
+});
