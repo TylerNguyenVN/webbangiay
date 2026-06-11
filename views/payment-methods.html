@@ -53,7 +53,7 @@
 
   <!-- Navbar -->
   <nav class="hp-navbar">
-    <a href="../views/index.html" class="hp-navbar__brand">
+    <a href="../index.html" class="hp-navbar__brand">
       TL<span class="hp-navbar__dot"></span>
     </a>
     <a href="javascript:history.back()" class="hp-navbar__back">
@@ -199,9 +199,30 @@
 
   </main>
 
+  <!-- Footer -->
   <footer class="hp-footer">
-    © 2026 TL Shop, Inc. — <a href="order-status.html">Đơn hàng</a> · <a href="shipping.html">Giao hàng</a> · <a href="contact.html">Liên hệ</a>
+    <div class="hp-footer__cols">
+      <div class="hp-footer__col">
+        <span class="hp-footer__title">TRỢ GIÚP</span>
+        <a href="order-status.html">Tình trạng đơn hàng</a>
+        <a href="shipping.html">Giao hàng</a>
+        <a href="returns.html">Đổi trả</a>
+        <a href="payment-methods.html">Tùy chọn thanh toán</a>
+        <a href="contact.html">Liên hệ</a>
+      </div>
+      <div class="hp-footer__col">
+        <span class="hp-footer__title">VỀ CHÚNG TÔI</span>
+        <a href="#" data-footer-modal="news">Tin tức</a>
+        <a href="#" data-footer-modal="careers">Nghề nghiệp</a>
+        <a href="#" data-footer-modal="investors">Nhà đầu tư</a>
+        <a href="#" data-footer-modal="sustainability">Bền vững</a>
+      </div>
+    </div>
+    <div class="hp-footer__bottom">
+      © 2026 TL Shop, Inc. All Rights Reserved
+    </div>
   </footer>
 
+  <script src="../js/footer-modals.js" defer></script>
 </body>
 </html>

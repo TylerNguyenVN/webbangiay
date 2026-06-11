@@ -54,7 +54,7 @@ try {
     $attempt = 0;
 
     while ($attempt < $maxAttempts) {
-        $orderCode = 'NIKE-' . date('Ymd') . '-' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
+        $orderCode = 'DH' . str_pad(rand(100000, 999999), 6, '0', STR_PAD_LEFT);
         
         
         $checkStmt = $db->prepare("SELECT COUNT(*) as cnt FROM orders WHERE order_code = ?");

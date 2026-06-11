@@ -10,13 +10,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/help-pages.css">
+  <link rel="stylesheet" href="../css/help-pages.css">
 </head>
 <body class="help-page">
 
   <!-- Navbar -->
   <nav class="hp-navbar">
-    <a href="index.html" class="hp-navbar__brand">
+    <a href="../index.html" class="hp-navbar__brand">
       TL<span class="hp-navbar__dot"></span>
     </a>
     <a href="javascript:history.back()" class="hp-navbar__back">
@@ -127,10 +127,28 @@
 
   </main>
 
-  <!-- Footer Strip -->
+  <!-- Footer -->
   <footer class="hp-footer">
-    © 2026 TL Shop, Inc. — <a href="order-status.html">Đơn hàng</a> · <a href="shipping.html">Giao hàng</a> · <a href="contact.html">Liên hệ</a>
-  
+    <div class="hp-footer__cols">
+      <div class="hp-footer__col">
+        <span class="hp-footer__title">TRỢ GIÚP</span>
+        <a href="order-status.html">Tình trạng đơn hàng</a>
+        <a href="shipping.html">Giao hàng</a>
+        <a href="returns.html">Đổi trả</a>
+        <a href="payment-methods.html">Tùy chọn thanh toán</a>
+        <a href="contact.html">Liên hệ</a>
+      </div>
+      <div class="hp-footer__col">
+        <span class="hp-footer__title">VỀ CHÚNG TÔI</span>
+        <a href="#" data-footer-modal="news">Tin tức</a>
+        <a href="#" data-footer-modal="careers">Nghề nghiệp</a>
+        <a href="#" data-footer-modal="investors">Nhà đầu tư</a>
+        <a href="#" data-footer-modal="sustainability">Bền vững</a>
+      </div>
+    </div>
+    <div class="hp-footer__bottom">
+      © 2026 TL Shop, Inc. All Rights Reserved
+    </div>
   </footer>
 
   <script>
@@ -152,16 +170,33 @@
       };
 
       const STATUS_MAP = {
-        processing: { label: '📦 Đang đóng gói',     cls: 'hp-status-pill--processing' },
+        pending:    { label: '⚙️ Đang xử lý',         cls: 'hp-status-pill--processing' },
+        processing: { label: '⚙️ Đang xử lý',         cls: 'hp-status-pill--processing' },
         shipped:    { label: '🚚 Đang giao hàng',     cls: 'hp-status-pill--shipping'   },
         delivered:  { label: '✅ Đã giao thành công', cls: 'hp-status-pill--delivered'  },
         cancelled:  { label: '❌ Đã hủy',             cls: 'hp-status-pill--cancelled'  },
       };
 
-      function showResult(statusKey, note) {
+      function showResult(statusKey, noteOrOrder, itemsArr) {
         const map = STATUS_MAP[statusKey] || { label: '❓ Không xác định', cls: 'hp-status-pill--notfound' };
         pillEl.innerHTML = `<span class="hp-status-pill ${map.cls}"><span class="hp-pulse"></span>${map.label}</span>`;
-        detailEl.textContent = note || '';
+        
+        if (typeof noteOrOrder === 'object' && noteOrOrder !== null && itemsArr) {
+          const itemsStr = itemsArr.map(item => `<strong>${item.product_name}</strong> (${item.variant_info || ''}) x${item.quantity || 1}`).join("<br>");
+          const date = new Date(noteOrOrder.created_at);
+          const formattedDate = isNaN(date) ? noteOrOrder.created_at : date.toLocaleString('vi-VN');
+          
+          detailEl.innerHTML = `
+            <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem; text-align: left; font-size: 0.875rem; color: #9ca3af; border-top: 1px solid #1a2728; padding-top: 1rem;">
+              <div>Mã đơn hàng: <strong style="color: #fff; font-family: 'JetBrains Mono', monospace;">${noteOrOrder.order_code}</strong></div>
+              <div>Sản phẩm: <span style="color: #fff;">${itemsStr}</span></div>
+              <div>Tổng tiền: <strong style="color: #2dd4bf;">${Number(noteOrOrder.total_amount).toLocaleString('vi-VN')} ₫</strong></div>
+              <div>Thời gian đặt: <span style="color: #fff;">${formattedDate}</span></div>
+            </div>
+          `;
+        } else {
+          detailEl.textContent = noteOrOrder || '';
+        }
         resultBox.classList.add('is-visible');
       }
 
@@ -201,10 +236,9 @@
           const data = await res.json();
 
           if (data.success && data.order) {
-            const sMap = { pending:'processing', processing:'processing', shipped:'shipped', delivered:'delivered', completed:'delivered', cancelled:'cancelled' };
-            const st = sMap[data.order.status] || 'processing';
-            const note = `Tổng tiền: ${Number(data.order.total_amount).toLocaleString('vi-VN')} ₫`;
-            showResult(st, note);
+            const sMap = { pending:'pending', processing:'processing', shipped:'shipped', delivered:'delivered', completed:'delivered', cancelled:'cancelled' };
+            const st = sMap[data.order.status] || 'pending';
+            showResult(st, data.order, data.items);
           } else {
             showNotFound(code);
           }
@@ -228,5 +262,6 @@
     })();
   </script>
 
+  <script src="../js/footer-modals.js" defer></script>
 </body>
 </html>
