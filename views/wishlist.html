@@ -11,6 +11,7 @@
   
   <link rel="stylesheet" href="css/style.css">
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/footer-modals.js" defer></script>
 
   <style>
     .wishlist-container {
@@ -129,7 +130,7 @@
     async function initPageComponents() {
       await Promise.all([
         loadTemplate('header-placeholder', 'components/header.html?v=2'),
-        loadTemplate('footer-placeholder', 'components/footer.html')
+        loadTemplate('footer-placeholder', 'components/footer.html?v=3')
       ]);
 
       if (window.lucide) {

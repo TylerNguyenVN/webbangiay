@@ -1,42 +1,7 @@
 (() => {
-  const currentUserStr = localStorage.getItem("nike_current_user");
-  const authStatusLight = document.getElementById("auth-status-light");
-  const authStatusDark = document.getElementById("auth-status-dark");
-
-  if (currentUserStr) {
-    const user = JSON.parse(currentUserStr);
-
-    const renderLoggedInBtn = (container) => {
-      if (!container) return;
-      container.innerHTML = `
-        <div style="display:flex; align-items:center; gap:10px;">
-          <a href="${user.role === 'admin' ? 'admin.html' : 'profile.html'}" class="admin-btn" style="text-decoration:none; background:transparent; border:none; padding:0;">
-            <i data-lucide="user-check"></i>
-            <span>${user.name}</span>
-          </a>
-          <button id="logout-btn-${container.id}" class="icon-btn" title="Đăng xuất" style="background:transparent; border:none; cursor:pointer;">
-            <i data-lucide="log-out"></i>
-          </button>
-        </div>
-      `;
-
-      const logoutBtn = document.getElementById(`logout-btn-${container.id}`);
-      if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-          localStorage.removeItem("nike_current_user");
-          window.location.reload();
-        });
-      }
-    };
-
-    renderLoggedInBtn(authStatusLight);
-    renderLoggedInBtn(authStatusDark);
-
-    if (typeof lucide !== "undefined") {
-      lucide.createIcons();
-    }
-  }
-
+  
+  
+  
   const mockProducts = [
     { id: 101, name: "Nike Air Force 1 '07 Premium", price: 3590000, sales_count: 842, category_name: "Air Force 1", slug: "nike-air-force-1-07-premium", description: "Bản kỷ niệm đặc biệt với chất liệu da cao cấp và logo thêu chìm sang trọng.", image_url: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400" },
     { id: 102, name: "Nike Air Max 270 React", price: 4190000, sales_count: 1205, category_name: "Air Max", slug: "nike-air-max-270-react", description: "Sự kết hợp hoàn hảo giữa công nghệ Air Max 270 và đế đệm React siêu nhẹ.", image_url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" },

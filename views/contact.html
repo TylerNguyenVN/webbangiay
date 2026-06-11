@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liên Hệ — TL Shop</title>
+  <meta name="description" content="Liên hệ với TL Shop qua form, hotline hoặc địa chỉ cửa hàng. Chúng tôi phản hồi trong vòng 24 giờ.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/help-pages.css">
+  <style>
+    /* ---- Toast notification ---- */
+    .ct-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 1.5rem;
+      z-index: 9999;
+      min-width: 300px;
+      max-width: 400px;
+      background: #0d1718;
+      border: 1px solid rgba(52,211,153,0.35);
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.875rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.35s ease;
+      pointer-events: none;
+    }
+    .ct-toast.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .ct-toast__icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(4,120,87,0.2);
+      border: 1px solid rgba(52,211,153,0.25);
+      display: flex; align-items: center; justify-content: center;
+      color: #34d399;
+      flex-shrink: 0;
+    }
+    .ct-toast__title { font-size:0.9375rem; font-weight:700; color:#e5e7eb; margin-bottom:0.2rem; }
+    .ct-toast__sub   { font-size:0.8125rem; color:#6b7280; line-height:1.5; }
+    .ct-toast__close {
+      margin-left:auto; flex-shrink:0;
+      background:none; border:none; cursor:pointer;
+      color:#4b5563; padding:0.25rem;
+      transition:color 0.2s;
+    }
+    .ct-toast__close:hover { color:#e5e7eb; }
+
+    /* ---- Submit button loading state ---- */
+    .hp-btn[data-loading="true"] { opacity:0.75; pointer-events:none; }
+
+    /* ---- Map placeholder ---- */
+    .ct-map {
+      width:100%;
+      height:200px;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid #1a2728;
+      background: linear-gradient(135deg, #0d1718, #0a1112);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:0.75rem;
+      color:#4b5563;
+      font-size:0.8125rem;
+      text-align:center;
+      position:relative;
+    }
+    .ct-map__pin {
+      width:40px; height:40px;
+      border-radius:50%;
+      background:rgba(20,184,166,0.1);
+      border:1px solid rgba(45,212,191,0.2);
+      display:flex;align-items:center;justify-content:center;
+      color:#2dd4bf;
+    }
+    .ct-map__label { color:#6b7280; line-height:1.5; }
+    .ct-map__label strong { color:#9ca3af; }
+
+    /* ---- Hours table ---- */
+    .ct-hours { width:100%; font-size:0.8375rem; border-collapse:collapse; }
+    .ct-hours td { padding:0.45rem 0; color:#6b7280; }
+    .ct-hours td:last-child { text-align:right; color:#d1d5db; font-weight:500; }
+    .ct-hours tr.today td { color:#2dd4bf; font-weight:600; }
+  </style>
+</head>
+<body class="help-page">
+
+  <!-- Navbar -->
+  <nav class="hp-navbar">
+    <a href="../views/index.html" class="hp-navbar__brand">
+      TL<span class="hp-navbar__dot"></span>
+    </a>
+    <a href="javascript:history.back()" class="hp-navbar__back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      Quay lại
+    </a>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hp-hero">
+    <div class="hp-hero__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+    </div>
+    <div class="hp-hero__tag">Trợ giúp / Liên hệ</div>
+    <h1 class="hp-hero__title">Liên Hệ Với Chúng Tôi</h1>
+    <p class="hp-hero__sub">Đội ngũ TL Shop luôn sẵn sàng lắng nghe. Gửi tin nhắn và chúng tôi sẽ phản hồi trong vòng 24 giờ.</p>
+  </div>
+
+  <!-- Content -->
+  <main class="hp-container hp-container--wide">
+
+    <div class="hp-contact-grid">
+
+      <!-- ======== FORM SIDE ======== -->
+      <div>
+        <div class="hp-section-label">Gửi tin nhắn</div>
+        <div class="hp-card">
+          <form class="hp-form" id="ct-form" novalidate>
+
+            <!-- Row: Name + Phone -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+              <div class="hp-field">
+                <label class="hp-label" for="ct-name">Họ và tên <span style="color:#ef4444;">*</span></label>
+                <input type="text" id="ct-name" class="hp-input" placeholder="Nguyễn Văn A" autocomplete="name">
+              </div>
+              <div class="hp-field">
+                <label class="hp-label" for="ct-phone">Số điện thoại <span style="color:#ef4444;">*</span></label>
+                <input type="tel" id="ct-phone" class="hp-input" placeholder="09xx xxx xxx" autocomplete="tel">
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="hp-field">
+              <label class="hp-label" for="ct-email">Email</label>
+              <input type="email" id="ct-email" class="hp-input" placeholder="email@example.com" autocomplete="email">
+            </div>
+
+            <!-- Topic -->
+            <div class="hp-field">
+              <label class="hp-label" for="ct-topic">Chủ đề</label>
+              <select id="ct-topic" class="hp-input" style="appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 0.75rem center;cursor:pointer;">
+                <option value="">-- Chọn chủ đề --</option>
+                <option value="order">Đơn hàng & giao hàng</option>
+                <option value="return">Đổi trả sản phẩm</option>
+                <option value="payment">Thanh toán</option>
+                <option value="product">Tư vấn sản phẩm</option>
+                <option value="other">Khác</option>
+              </select>
+            </div>
+
+            <!-- Message -->
+            <div class="hp-field">
+              <label class="hp-label" for="ct-message">Nội dung tin nhắn <span style="color:#ef4444;">*</span></label>
+              <textarea id="ct-message" class="hp-textarea" placeholder="Mô tả chi tiết vấn đề bạn cần hỗ trợ..." rows="5"></textarea>
+              <span id="ct-char-count" style="font-size:0.75rem;color:#374151;text-align:right;margin-top:0.25rem;">0 / 500</span>
+            </div>
+
+            <!-- Submit -->
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+              <button type="submit" class="hp-btn hp-btn--primary" id="ct-submit-btn" style="width:fit-content;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+                Gửi liên hệ
+              </button>
+              <span style="font-size:0.75rem;color:#4b5563;">Chúng tôi phản hồi trong <strong style="color:#9ca3af;">24 giờ</strong></span>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- ======== INFO SIDE ======== -->
+      <div>
+        <div class="hp-section-label">Thông tin liên hệ</div>
+        <div class="hp-contact-info">
+
+          <div class="hp-info-row">
+            <div class="hp-info-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.5 1.18 2 2 0 012.18 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.57-.57a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="hp-info-row__label">Hotline hỗ trợ</div>
+              <div class="hp-info-row__val">
+                <a href="tel:19001234" style="color:#2dd4bf;font-weight:700;font-size:1.05rem;">1900 1234</a>
+              </div>
+              <div style="font-size:0.75rem;color:#4b5563;margin-top:0.15rem;">Thứ 2 – Chủ nhật · 8:00 – 21:00</div>
+            </div>
+          </div>
+
+          <div class="hp-info-row">
+            <div class="hp-info-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div>
+              <div class="hp-info-row__label">Email</div>
+              <div class="hp-info-row__val">
+                <a href="mailto:support@tlshop.vn" style="color:#2dd4bf;">support@tlshop.vn</a>
+              </div>
+              <div style="font-size:0.75rem;color:#4b5563;margin-top:0.15rem;">Phản hồi trong 24 giờ làm việc</div>
+            </div>
+          </div>
+
+          <div class="hp-info-row">
+            <div class="hp-info-row__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <div class="hp-info-row__label">Địa chỉ cửa hàng</div>
+              <div class="hp-info-row__val">123 Đường Giải Phóng, Hai Bà Trưng, Hà Nội</div>
+              <div style="font-size:0.75rem;color:#4b5563;margin-top:0.15rem;">Chi nhánh 2: 456 Lê Văn Việt, TP.HCM</div>
+            </div>
+          </div>
+
+          <!-- Giờ làm việc -->
+          <div class="hp-card" style="padding:1.25rem;">
+            <div style="font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.1em;color:#2dd4bf;font-weight:700;margin-bottom:0.875rem;font-family:'JetBrains Mono',monospace;">Giờ làm việc</div>
+            <table class="ct-hours">
+              <tbody id="ct-hours-table">
+                <tr data-days="1,2,3,4,5"><td>Thứ 2 – Thứ 6</td><td>8:00 – 21:00</td></tr>
+                <tr data-days="6"><td>Thứ 7</td><td>9:00 – 20:00</td></tr>
+                <tr data-days="0"><td>Chủ nhật</td><td>9:00 – 18:00</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Map placeholder -->
+          <div class="ct-map">
+            <div class="ct-map__pin">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div class="ct-map__label">
+              <strong>TL Shop — Hà Nội</strong><br>
+              123 Đường Giải Phóng, Hai Bà Trưng
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="ct-toast" class="ct-toast" role="alert" aria-live="polite">
+    <div class="ct-toast__icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div>
+      <div class="ct-toast__title">Gửi thành công! 🎉</div>
+      <div class="ct-toast__sub">Chúng tôi đã nhận được tin nhắn của bạn. Đội ngũ TL Shop sẽ phản hồi trong vòng 24 giờ.</div>
+    </div>
+    <button class="ct-toast__close" id="ct-toast-close" aria-label="Đóng thông báo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <footer class="hp-footer">
+    © 2026 TL Shop, Inc. — <a href="order-status.html">Đơn hàng</a> · <a href="shipping.html">Giao hàng</a> · <a href="returns.html">Đổi trả</a>
+  </footer>
+
+  <script>
+    (() => {
+      /* ---- Char counter ---- */
+      const msgEl   = document.getElementById('ct-message');
+      const countEl = document.getElementById('ct-char-count');
+      msgEl.addEventListener('input', () => {
+        const len = msgEl.value.length;
+        countEl.textContent = `${len} / 500`;
+        countEl.style.color = len > 450 ? '#fbbf24' : '#374151';
+        if (len > 500) msgEl.value = msgEl.value.slice(0, 500);
+      });
+
+      /* ---- Highlight today's hours ---- */
+      const today = new Date().getDay();
+      document.querySelectorAll('#ct-hours-table tr').forEach(row => {
+        const days = row.dataset.days.split(',').map(Number);
+        if (days.includes(today)) row.classList.add('today');
+      });
+
+      /* ---- Toast helpers ---- */
+      const toast = document.getElementById('ct-toast');
+      let toastTimer;
+      function showToast() {
+        toast.classList.add('is-visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 5500);
+      }
+      document.getElementById('ct-toast-close').addEventListener('click', () => {
+        toast.classList.remove('is-visible');
+      });
+
+      /* ---- Form submit ---- */
+      const form      = document.getElementById('ct-form');
+      const submitBtn = document.getElementById('ct-submit-btn');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name    = document.getElementById('ct-name').value.trim();
+        const phone   = document.getElementById('ct-phone').value.trim();
+        const message = document.getElementById('ct-message').value.trim();
+
+        /* Basic validation */
+        let valid = true;
+        [
+          { el: document.getElementById('ct-name'),    val: name    },
+          { el: document.getElementById('ct-phone'),   val: phone   },
+          { el: document.getElementById('ct-message'), val: message },
+        ].forEach(({ el, val }) => {
+          if (!val) {
+            el.style.borderColor = 'rgba(239,68,68,0.6)';
+            el.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.1)';
+            valid = false;
+          } else {
+            el.style.borderColor = '';
+            el.style.boxShadow   = '';
+          }
+        });
+        if (!valid) return;
+
+        /* Loading state */
+        submitBtn.setAttribute('data-loading', 'true');
+        submitBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" style="animation:spin .8s linear infinite;transform-origin:center"/>
+          </svg>
+          Đang gửi...
+        `;
+
+        /* Simulate send */
+        await new Promise(r => setTimeout(r, 1200));
+
+        /* Reset form */
+        form.reset();
+        countEl.textContent = '0 / 500';
+        submitBtn.removeAttribute('data-loading');
+        submitBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Gửi liên hệ
+        `;
+
+        /* Show toast */
+        showToast();
+      });
+
+      /* Spin keyframe */
+      const style = document.createElement('style');
+      style.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+      document.head.appendChild(style);
+    })();
+  </script>
+
+</body>
+</html>

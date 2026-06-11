@@ -47,7 +47,7 @@ try {
     
     
     $checkStmt = $db->prepare("
-        SELECT id, order_code, payment_method, payment_status, status 
+        SELECT id, order_code, user_id, subtotal, payment_method, payment_status, status 
         FROM orders 
         WHERE order_code = ? AND id = ?
     ");
@@ -105,6 +105,15 @@ try {
 
         $updateStmt->execute([$order_id, $order_code]);
 
+        $pointsEarned = 0;
+        if (!empty($order['user_id'])) {
+            $pointsEarned = intval(floor(floatval($order['subtotal']) / 10000));
+            if ($pointsEarned > 0) {
+                $stmtPts = $db->prepare("UPDATE users SET loyalty_points = COALESCE(loyalty_points, 0) + ? WHERE id = ?");
+                $stmtPts->execute([$pointsEarned, $order['user_id']]);
+            }
+        }
+
         
         $db->commit();
 
@@ -117,7 +126,8 @@ try {
             "message" => "Payment confirmed successfully.",
             "order_code" => $order_code,
             "payment_status" => "completed",
-            "status" => "processing"
+            "status" => "processing",
+            "points_earned" => $pointsEarned
         ]);
 
     } catch (Exception $innerError) {

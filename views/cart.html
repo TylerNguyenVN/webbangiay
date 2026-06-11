@@ -6,34 +6,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Giỏ Hàng & Thanh Toán | TL Shop</title>
 
-
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-
+  
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/nike-elite.css">
 
-
+  
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/footer-modals.js" defer></script>
 </head>
 
 <body class="nike-body light-theme">
 
-
+  
   <div id="header-placeholder"></div>
 
-
+  
   <main class="nike-main">
     <div class="nike-container" style="padding: 2.5rem 1.5rem 1.5rem 1.5rem;">
 
-
-
-
+      
+      
+      
       <section class="nike-screen active" id="screen-cart">
         <h1 class="cart-title-row">GIỎ HÀNG CỦA BẠN</h1>
 
-
+        
         <div class="empty-cart-card hidden" id="cart-empty-view">
           <i data-lucide="alert-triangle"
             style="width: 56px; height: 56px; color: var(--color-elite-muted); margin: 0 auto 1.5rem auto;"></i>
@@ -54,17 +55,17 @@
           </div>
         </div>
 
-
+        
         <div class="grid-cols-12" id="cart-content-view">
 
-
+          
           <div class="col-span-8" style="display: flex; flex-direction: column; gap: 2rem;">
-
+            
             <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="cart-items-list-container">
-
+              
             </div>
 
-
+            
             <div class="shipping-card">
               <h2 class="shipping-title">THÔNG TIN GIAO HÀNG</h2>
               <form id="shipping-form" novalidate>
@@ -86,132 +87,19 @@
                     <label class="form-label" for="ship-province">Tỉnh/Thành phố</label>
                     <select id="ship-province" class="form-input">
                       <option value="">Chọn Tỉnh/Thành</option>
-                      <option value="TP.HCM">TP. Hồ Chí Minh</option>
-                      <option value="Bình Dương">Bình Dương</option>
-                      <option value="Bà Rịa - Vũng Tàu">Bà Rịa - Vũng Tàu</option>
                     </select>
-                    <p class="form-error-msg hidden" id="error-province">Vui lòng chọn Tỉnh/Thành phố</p>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="ship-district">Quận/Huyện</label>
+                    <select id="ship-district" class="form-input" disabled>
+                      <option value="">Chọn Quận/Huyện</option>
+                    </select>
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="ship-ward">Phường/Xã</label>
-                    <select id="ship-ward" class="form-input">
+                    <select id="ship-ward" class="form-input" disabled>
                       <option value="">Chọn Phường/Xã</option>
-                      <option value="Phường An Đông (TP.HCM)">Phường An Đông (TP.HCM)</option>
-                      <option value="Phường An Hội Đông (TP.HCM)">Phường An Hội Đông (TP.HCM)</option>
-                      <option value="Phường An Hội Tây (TP.HCM)">Phường An Hội Tây (TP.HCM)</option>
-                      <option value="Phường An Khánh (TP.HCM)">Phường An Khánh (TP.HCM)</option>
-                      <option value="Phường An Lạc (TP.HCM)">Phường An Lạc (TP.HCM)</option>
-                      <option value="Phường An Nhơn (TP.HCM)">Phường An Nhơn (TP.HCM)</option>
-                      <option value="Phường An Phú (Bình Dương)">Phường An Phú (Bình Dương)</option>
-                      <option value="Phường An Phú Đông (TP.HCM)">Phường An Phú Đông (TP.HCM)</option>
-                      <option value="Phường Bàn Cờ (TP.HCM)">Phường Bàn Cờ (TP.HCM)</option>
-                      <option value="Phường Bảy Hiền (TP.HCM)">Phường Bảy Hiền (TP.HCM)</option>
-                      <option value="Phường Bà Rịa (Bà Rịa - Vũng Tàu)">Phường Bà Rịa (Bà Rịa - Vũng Tàu)</option>
-                      <option value="Phường Bến Cát (Bình Dương)">Phường Bến Cát (Bình Dương)</option>
-                      <option value="Phường Bến Thành (TP.HCM)">Phường Bến Thành (TP.HCM)</option>
-                      <option value="Phường Bình Cơ (Bình Dương)">Phường Bình Cơ (Bình Dương)</option>
-                      <option value="Phường Bình Dương (Bình Dương)">Phường Bình Dương (Bình Dương)</option>
-                      <option value="Phường Bình Đông (TP.HCM)">Phường Bình Đông (TP.HCM)</option>
-                      <option value="Phường Bình Hòa (Bình Dương)">Phường Bình Hòa (Bình Dương)</option>
-                      <option value="Phường Bình Hưng Hòa (TP.HCM)">Phường Bình Hưng Hòa (TP.HCM)</option>
-                      <option value="Phường Bình Lợi Trung (TP.HCM)">Phường Bình Lợi Trung (TP.HCM)</option>
-                      <option value="Phường Bình Phú (TP.HCM)">Phường Bình Phú (TP.HCM)</option>
-                      <option value="Phường Bình Quới (TP.HCM)">Phường Bình Quới (TP.HCM)</option>
-                      <option value="Phường Bình Tân (TP.HCM)">Phường Bình Tân (TP.HCM)</option>
-                      <option value="Phường Bình Tây (TP.HCM)">Phường Bình Tây (TP.HCM)</option>
-                      <option value="Phường Bình Thạnh (TP.HCM)">Phường Bình Thạnh (TP.HCM)</option>
-                      <option value="Phường Bình Thới (TP.HCM)">Phường Bình Thới (TP.HCM)</option>
-                      <option value="Phường Bình Tiên (TP.HCM)">Phường Bình Tiên (TP.HCM)</option>
-                      <option value="Phường Bình Trưng (TP.HCM)">Phường Bình Trưng (TP.HCM)</option>
-                      <option value="Phường Bình Trị Đông (TP.HCM)">Phường Bình Trị Đông (TP.HCM)</option>
-                      <option value="Phường Cát Lái (TP.HCM)">Phường Cát Lái (TP.HCM)</option>
-                      <option value="Phường Cầu Kiệu (TP.HCM)">Phường Cầu Kiệu (TP.HCM)</option>
-                      <option value="Phường Cầu Ông Lãnh (TP.HCM)">Phường Cầu Ông Lãnh (TP.HCM)</option>
-                      <option value="Phường Chánh Hiệp (Bình Dương)">Phường Chánh Hiệp (Bình Dương)</option>
-                      <option value="Phường Chánh Hưng (TP.HCM)">Phường Chánh Hưng (TP.HCM)</option>
-                      <option value="Phường Chánh Phú Hòa (Bình Dương)">Phường Chánh Phú Hòa (Bình Dương)</option>
-                      <option value="Phường Chợ Lớn (TP.HCM)">Phường Chợ Lớn (TP.HCM)</option>
-                      <option value="Phường Chợ Quán (TP.HCM)">Phường Chợ Quán (TP.HCM)</option>
-                      <option value="Phường Diên Hồng (TP.HCM)">Phường Diên Hồng (TP.HCM)</option>
-                      <option value="Phường Dĩ An (Bình Dương)">Phường Dĩ An (Bình Dương)</option>
-                      <option value="Phường Đông Hòa (Bình Dương)">Phường Đông Hòa (Bình Dương)</option>
-                      <option value="Phường Đông Hưng Thuận (TP.HCM)">Phường Đông Hưng Thuận (TP.HCM)</option>
-                      <option value="Phường Đức Nhuận (TP.HCM)">Phường Đức Nhuận (TP.HCM)</option>
-                      <option value="Phường Gia Định (TP.HCM)">Phường Gia Định (TP.HCM)</option>
-                      <option value="Phường Gò Vấp (TP.HCM)">Phường Gò Vấp (TP.HCM)</option>
-                      <option value="Phường Hạnh Thông (TP.HCM)">Phường Hạnh Thông (TP.HCM)</option>
-                      <option value="Phường Hiệp Bằng (TP.HCM)">Phường Hiệp Bằng (TP.HCM)</option>
-                      <option value="Phường Hòa Bình (TP.HCM)">Phường Hòa Bình (TP.HCM)</option>
-                      <option value="Phường Hòa Hưng (TP.HCM)">Phường Hòa Hưng (TP.HCM)</option>
-                      <option value="Phường Hòa Lợi (Bình Dương)">Phường Hòa Lợi (Bình Dương)</option>
-                      <option value="Phường Khánh Hội (TP.HCM)">Phường Khánh Hội (TP.HCM)</option>
-                      <option value="Phường Lái Thiêu (Bình Dương)">Phường Lái Thiêu (Bình Dương)</option>
-                      <option value="Phường Linh Xuân (TP.HCM)">Phường Linh Xuân (TP.HCM)</option>
-                      <option value="Phường Long Bình (TP.HCM)">Phường Long Bình (TP.HCM)</option>
-                      <option value="Phường Long Hương (Bà Rịa - Vũng Tàu)">Phường Long Hương (Bà Rịa - Vũng Tàu)
-                      </option>
-                      <option value="Phường Long Nguyên (Bình Dương)">Phường Long Nguyên (Bình Dương)</option>
-                      <option value="Phường Long Phước (TP.HCM)">Phường Long Phước (TP.HCM)</option>
-                      <option value="Phường Long Trường (TP.HCM)">Phường Long Trường (TP.HCM)</option>
-                      <option value="Phường Minh Phụng (TP.HCM)">Phường Minh Phụng (TP.HCM)</option>
-                      <option value="Phường Nhiêu Lộc (TP.HCM)">Phường Nhiêu Lộc (TP.HCM)</option>
-                      <option value="Phường Phú An (Bình Dương)">Phường Phú An (Bình Dương)</option>
-                      <option value="Phường Phú Định (TP.HCM)">Phường Phú Định (TP.HCM)</option>
-                      <option value="Phường Phú Lâm (TP.HCM)">Phường Phú Lâm (TP.HCM)</option>
-                      <option value="Phường Phú Lợi (Bình Dương)">Phường Phú Lợi (Bình Dương)</option>
-                      <option value="Phường Phú Mỹ (Bà Rịa - Vũng Tàu)">Phường Phú Mỹ (Bà Rịa - Vũng Tàu)</option>
-                      <option value="Phường Phú Nhuận (TP.HCM)">Phường Phú Nhuận (TP.HCM)</option>
-                      <option value="Phường Phú Thạnh (TP.HCM)">Phường Phú Thạnh (TP.HCM)</option>
-                      <option value="Phường Phú Thọ (TP.HCM)">Phường Phú Thọ (TP.HCM)</option>
-                      <option value="Phường Phú Thọ Hòa (TP.HCM)">Phường Phú Thọ Hòa (TP.HCM)</option>
-                      <option value="Phường Phú Thuận (TP.HCM)">Phường Phú Thuận (TP.HCM)</option>
-                      <option value="Phường Phước Long (TP.HCM)">Phường Phước Long (TP.HCM)</option>
-                      <option value="Phường Phước Thắng (Bà Rịa - Vũng Tàu)">Phường Phước Thắng (Bà Rịa - Vũng Tàu)
-                      </option>
-                      <option value="Phường Rạch Dừa (Bà Rịa - Vũng Tàu)">Phường Rạch Dừa (Bà Rịa - Vũng Tàu)</option>
-                      <option value="Phường Sài Gòn (TP.HCM)">Phường Sài Gòn (TP.HCM)</option>
-                      <option value="Phường Tam Bình (TP.HCM)">Phường Tam Bình (TP.HCM)</option>
-                      <option value="Phường Tam Long (Bà Rịa - Vũng Tàu)">Phường Tam Long (Bà Rịa - Vũng Tàu)</option>
-                      <option value="Phường Tam Thắng (Bà Rịa - Vũng Tàu)">Phường Tam Thắng (Bà Rịa - Vũng Tàu)</option>
-                      <option value="Phường Tây Nam (Bình Dương)">Phường Tây Nam (Bình Dương)</option>
-                      <option value="Phường Tây Thạnh (TP.HCM)">Phường Tây Thạnh (TP.HCM)</option>
-                      <option value="Phường Tăng Nhơn Phú (TP.HCM)">Phường Tăng Nhơn Phú (TP.HCM)</option>
-                      <option value="Phường Tân Bình (TP.HCM)">Phường Tân Bình (TP.HCM)</option>
-                      <option value="Phường Tân Đông Hiệp (Bình Dương)">Phường Tân Đông Hiệp (Bình Dương)</option>
-                      <option value="Phường Tân Hòa (TP.HCM)">Phường Tân Hòa (TP.HCM)</option>
-                      <option value="Phường Tân Hải (Bà Rịa - Vũng Tàu)">Phường Tân Hải (Bà Rịa - Vũng Tàu)</option>
-                      <option value="Phường Tân Hiệp (Bình Dương)">Phường Tân Hiệp (Bình Dương)</option>
-                      <option value="Phường Tân Hưng (TP.HCM)">Phường Tân Hưng (TP.HCM)</option>
-                      <option value="Phường Tân Khánh (Bình Dương)">Phường Tân Khánh (Bình Dương)</option>
-                      <option value="Phường Tân Mỹ (TP.HCM)">Phường Tân Mỹ (TP.HCM)</option>
-                      <option value="Phường Tân Phú (TP.HCM)">Phường Tân Phú (TP.HCM)</option>
-                      <option value="Phường Tân Phước (Bà Rịa - Vũng Tàu)">Phường Tân Phước (Bà Rịa - Vũng Tàu)</option>
-                      <option value="Phường Tân Sơn (TP.HCM)">Phường Tân Sơn (TP.HCM)</option>
-                      <option value="Phường Tân Sơn Hòa (TP.HCM)">Phường Tân Sơn Hòa (TP.HCM)</option>
-                      <option value="Phường Tân Sơn Nhất (TP.HCM)">Phường Tân Sơn Nhất (TP.HCM)</option>
-                      <option value="Phường Tân Sơn Nhì (TP.HCM)">Phường Tân Sơn Nhì (TP.HCM)</option>
-                      <option value="Phường Tân Thành (Bà Rịa - Vũng Tàu)">Phường Tân Thành (Bà Rịa - Vũng Tàu)</option>
-                      <option value="Phường Tân Thới Hiệp (TP.HCM)">Phường Tân Thới Hiệp (TP.HCM)</option>
-                      <option value="Phường Tân Thuận (TP.HCM)">Phường Tân Thuận (TP.HCM)</option>
-                      <option value="Phường Tân Uyên (Bình Dương)">Phường Tân Uyên (Bình Dương)</option>
-                      <option value="Phường Tân Định (TP.HCM)">Phường Tân Định (TP.HCM)</option>
-                      <option value="Phường Thạnh Mỹ Tây (TP.HCM)">Phường Thạnh Mỹ Tây (TP.HCM)</option>
-                      <option value="Phường Thới An (TP.HCM)">Phường Thới An (TP.HCM)</option>
-                      <option value="Phường Thới Hòa (Bình Dương)">Phường Thới Hòa (Bình Dương)</option>
-                      <option value="Phường Thông Tây Hội (TP.HCM)">Phường Thông Tây Hội (TP.HCM)</option>
-                      <option value="Phường Thủ Dầu Một (Bình Dương)">Phường Thủ Dầu Một (Bình Dương)</option>
-                      <option value="Phường Thủ Đức (TP.HCM)">Phường Thủ Đức (TP.HCM)</option>
-                      <option value="Phường Thuận An (Bình Dương)">Phường Thuận An (Bình Dương)</option>
-                      <option value="Phường Thuận Giao (Bình Dương)">Phường Thuận Giao (Bình Dương)</option>
-                      <option value="Phường Trung Mỹ Tây (TP.HCM)">Phường Trung Mỹ Tây (TP.HCM)</option>
-                      <option value="Phường Vĩnh Hội (TP.HCM)">Phường Vĩnh Hội (TP.HCM)</option>
-                      <option value="Phường Vĩnh Tân (Bình Dương)">Phường Vĩnh Tân (Bình Dương)</option>
-                      <option value="Phường Vũng Tàu (Bà Rịa - Vũng Tàu)">Phường Vũng Tàu (Bà Rịa - Vũng Tàu)</option>
-                      <option value="Phường Vườn Lài (TP.HCM)">Phường Vườn Lài (TP.HCM)</option>
-                      <option value="Phường Xóm Chiếu (TP.HCM)">Phường Xóm Chiếu (TP.HCM)</option>
-                      <option value="Phường Xuân Hòa (TP.HCM)">Phường Xuân Hòa (TP.HCM)</option>
                     </select>
-                    <p class="form-error-msg hidden" id="error-ward">Vui lòng chọn Phường/Xã</p>
                   </div>
                 </div>
 
@@ -222,26 +110,11 @@
                   <p class="form-error-msg hidden" id="error-address">Vui lòng điền địa chỉ giao nhận</p>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                  <label class="form-label" for="ship-coupon">Mã giảm giá</label>
-                  <div style="display: flex; gap: 0.75rem;">
-                    <input type="text" id="ship-coupon" placeholder="Nhập mã giảm giá " class="form-input"
-                      style="flex: 1;">
-                    <button type="button" id="apply-coupon-btn" class="pay-now-btn"
-                      style="width: auto; padding: 0 1.5rem; margin: 0; font-size: 13.5px; border-radius: 0.75rem; white-space: nowrap; height: unset;">Áp
-                      dụng</button>
-                  </div>
-                  <p class="form-error-msg hidden" id="error-coupon"
-                    style="color: #ef4444; font-weight: 700; margin-top: 0.25rem;"></p>
-                  <p class="form-success-msg hidden" id="success-coupon"
-                    style="color: #047857; font-size: 11px; font-weight: 700; margin-top: 0.25rem;"></p>
-                </div>
-
                 <div class="form-group">
                   <label class="form-label">Phương thức giao hàng</label>
                   <div class="delivery-cards-grid">
 
-
+                    
                     <div class="delivery-card selected" id="delivery-method-standard">
                       <div style="text-align: left;">
                         <h3 class="delivery-card-title">Giao hàng tiêu chuẩn</h3>
@@ -253,7 +126,7 @@
                       </div>
                     </div>
 
-
+                    
                     <div class="delivery-card" id="delivery-method-express">
                       <div style="text-align: left;">
                         <h3 class="delivery-card-title">Giao hỏa tốc</h3>
@@ -272,16 +145,12 @@
                   <label class="form-label">Phương thức thanh toán</label>
                   <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                     <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                      <input type="radio" name="payment_method" value="cod" checked
-                        style="width: 18px; height: 18px; accent-color: var(--color-elite-primary);">
-                      <span style="font-size: 14px; font-weight: 500; color: #1c1917;">Thanh toán khi nhận hàng
-                        (COD)</span>
+                      <input type="radio" name="payment_method" value="cod" checked style="width: 18px; height: 18px; accent-color: var(--color-elite-primary);">
+                      <span style="font-size: 14px; font-weight: 500; color: #1c1917;">Thanh toán khi nhận hàng (COD)</span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                      <input type="radio" name="payment_method" value="momo"
-                        style="width: 18px; height: 18px; accent-color: #a50064;">
-                      <span style="font-size: 14px; font-weight: 500; color: #a50064;">Thanh toán qua Ví điện tử
-                        MoMo</span>
+                      <input type="radio" name="payment_method" value="momo" style="width: 18px; height: 18px; accent-color: #a50064;">
+                      <span style="font-size: 14px; font-weight: 500; color: #a50064;">Thanh toán qua Ví điện tử MoMo</span>
                     </label>
                   </div>
                 </div>
@@ -289,12 +158,12 @@
             </div>
           </div>
 
-
+          
           <div class="col-span-4" style="display: flex; flex-direction: column; gap: 1.25rem;">
             <div class="summary-card">
               <h2 class="shipping-title" style="margin-bottom: 1.25rem;">TÓM TẮT ĐƠN HÀNG</h2>
 
-
+              
               <div class="summary-rows">
                 <div class="summary-row">
                   <span id="summary-items-count">Tạm tính (0 sản phẩm)</span>
@@ -308,19 +177,15 @@
                   <span>Giảm giá Elite</span>
                   <span id="summary-discount">-0đ</span>
                 </div>
-                <div class="summary-row hidden" id="summary-coupon-row" style="color: #047857; font-weight: 600;">
-                  <span id="summary-coupon-label">Mã giảm giá</span>
-                  <span id="summary-coupon-value">-0đ</span>
-                </div>
               </div>
 
-
+              
               <div class="summary-total-row">
                 <span class="summary-total-label">Tổng cộng</span>
                 <span class="summary-total-price" id="summary-total-price">0đ</span>
               </div>
 
-
+              
               <div class="rewards-banner">
                 <span class="rewards-star-badge">★</span>
                 <div>
@@ -330,13 +195,13 @@
                 </div>
               </div>
 
-
+              
               <button type="button" class="pay-now-btn" id="pay-now-btn">
                 <span>Thanh toán ngay</span>
                 <i data-lucide="arrow-right" class="arrow-slide" style="width: 18px; height: 18px;"></i>
               </button>
 
-
+              
               <div class="assurance-group">
                 <div class="assurance-item">
                   <i data-lucide="shield-check"
@@ -355,19 +220,19 @@
         </div>
       </section>
 
-
-
-
+      
+      
+      
       <section class="nike-screen" id="screen-confirmation" style="text-align: center;">
 
-
+        
         <div class="success-check-badge">
           <div class="success-check-inner">
             <i data-lucide="check" style="width: 24px; height: 24px; stroke-width: 3;"></i>
           </div>
         </div>
 
-
+        
         <h1
           style="font-family: var(--font-display); font-weight: 900; font-size: 2.25rem; color: var(--color-elite-primary); letter-spacing: -0.02em; margin: 0 0 0.5rem 0; text-transform: uppercase;">
           ĐẶT HÀNG THÀNH CÔNG!
@@ -380,7 +245,7 @@
           Ngày đặt hàng: 29 tháng 5, 2026
         </p>
 
-
+        
         <div class="welcome-badge-box">
           <h2
             style="font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; color: #1c1917; margin: 0 0 0.5rem 0;">
@@ -390,7 +255,7 @@
             tới.</p>
         </div>
 
-
+        
         <div class="trophy-banner">
           <i data-lucide="trophy" class="trophy-icon" style="width: 20px; height: 20px;"></i>
           <p style="margin: 0; font-size: 12.5px; font-weight: 600; color: var(--color-elite-amber-text);">
@@ -398,21 +263,21 @@
           </p>
         </div>
 
-
+        
         <div class="grid-cols-12 text-left max-w-3xl mx-auto">
 
-
+          
           <div class="col-span-7" style="display: flex; flex-direction: column; gap: 0.75rem;">
             <h3
               style="font-family: var(--font-mono); font-size: 10px; font-weight: 750; color: var(--color-elite-muted); text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--color-elite-border); padding-bottom: 0.5rem; margin: 0 0 0.25rem 0;">
               Danh sách sản phẩm
             </h3>
             <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="confirm-items-container">
-
+              
             </div>
           </div>
 
-
+          
           <div class="col-span-5" style="display: flex; flex-direction: column; gap: 1rem;">
             <div class="confirm-total-box" style="display: flex; flex-direction: column; gap: 1rem;">
               <h3
@@ -435,14 +300,9 @@
                   <span>Giảm giá Elite</span>
                   <span id="confirm-discount" style="font-weight: 700;">-0đ</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; color: #047857;" class="hidden"
-                  id="confirm-coupon-row">
-                  <span id="confirm-coupon-label">Mã giảm giá</span>
-                  <span id="confirm-coupon-value" style="font-weight: 700;">-0đ</span>
-                </div>
               </div>
 
-
+              
               <div
                 style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid rgba(120, 113, 108, 0.25); padding-top: 0.75rem;">
                 <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #1c1917;">Tổng
@@ -452,7 +312,7 @@
                   id="confirm-total-price">0đ</span>
               </div>
 
-
+              
               <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
                 <button type="button" class="pay-now-btn" style="padding: 0.85rem 0; font-size: 13px;"
                   id="confirm-continue-shopping-btn">
@@ -467,7 +327,7 @@
 
         </div>
 
-
+        
         <div class="max-w-3xl mx-auto confirmation-features">
           <div class="feature-box">
             <i data-lucide="truck"
@@ -493,54 +353,54 @@
         </div>
       </section>
 
-
-
-
+      
+      
+      
       <section class="nike-screen" id="screen-tracker">
 
-
+        
         <div style="margin-bottom: 2rem;">
           <p class="tracker-sub-tag">POST-PURCHASE JOURNEY</p>
           <h1 class="tracker-title">Track Your Performance.</h1>
         </div>
 
-
+        
         <div class="grid-cols-12">
 
-
+          
           <div class="col-span-7" style="display: flex; flex-direction: column; gap: 0.5rem;">
             <p class="tracker-helper-hint">
               Bấm vào các mốc để cập nhật tiến độ (Hỗ trợ mô phỏng trực quan):
             </p>
 
             <div class="timeline-container">
-
+              
               <div class="timeline-line"></div>
 
-
+              
               <div id="tracker-timeline-steps" style="display: flex; flex-direction: column; gap: 2rem;">
-
+                
               </div>
             </div>
           </div>
 
-
+          
           <div class="col-span-5" style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div class="intel-card">
 
-
+              
               <div class="intel-header">
                 <i data-lucide="clipboard" style="color: var(--color-elite-primary); width: 20px; height: 20px;"></i>
                 <h2 class="intel-header-title">Order Intelligence</h2>
               </div>
 
-
+              
               <div>
                 <p class="intel-info-label">Order Identifier</p>
                 <h3 class="intel-info-val" id="tracker-order-id">#NKE-889922</h3>
               </div>
 
-
+              
               <div>
                 <p class="intel-info-label">Expected Arrival</p>
                 <div class="intel-info-val-green">
@@ -551,7 +411,7 @@
 
               <hr style="border: none; border-top: 1px solid #f5f5f4; margin: 0;" />
 
-
+              
               <div>
                 <p class="intel-info-label">Delivery Coordinates</p>
                 <div class="coordinates-box">
@@ -568,15 +428,15 @@
 
               <hr style="border: none; border-top: 1px solid #f5f5f4; margin: 0;" />
 
-
+              
               <div>
                 <p class="intel-info-label" style="margin-bottom: 0.75rem;">Manifest</p>
                 <div id="tracker-manifest-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
-
+                  
                 </div>
               </div>
 
-
+              
               <button type="button" class="download-pdf-btn" id="tracker-download-invoice-btn">
                 <i data-lucide="file-down" style="width: 16px; height: 16px;"></i>
                 <span>Download Invoice (PDF)</span>
@@ -584,7 +444,7 @@
 
             </div>
 
-
+            
             <div class="concierge-card">
               <p class="concierge-quote">
                 "Technical gear requires precise delivery. Our squad is monitoring your shipment 24/7."
@@ -603,15 +463,15 @@
     </div>
   </main>
 
-
+  
   <div class="nike-toast-container" id="toast-container"></div>
 
-
+  
   <div id="footer-placeholder"></div>
 
-
+  
   <script>
-
+    
     async function loadTemplate(placeholderId, filePath) {
       try {
         const response = await fetch(filePath);
@@ -623,18 +483,18 @@
       }
     }
 
-
+    
     async function initPageComponents() {
       await Promise.all([
         loadTemplate('header-placeholder', 'components/header.html?v=2'),
-        loadTemplate('footer-placeholder', 'components/footer.html')
+        loadTemplate('footer-placeholder', 'components/footer.html?v=3')
       ]);
 
       if (window.lucide) {
         lucide.createIcons();
       }
 
-
+      
       const script = document.createElement('script');
       script.src = 'js/cart.js?v=' + new Date().getTime();
       document.body.appendChild(script);

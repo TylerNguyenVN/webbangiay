@@ -39,7 +39,6 @@ try {
     $shippingFee = floatval($input['shipping_fee'] ?? 0);
     $discountAmount = floatval($input['discount_amount'] ?? 0);
     $totalAmount = floatval($input['total_amount'] ?? 0);
-    $couponCode = !empty($input['coupon_code']) ? trim($input['coupon_code']) : null;
     $items = $input['items'] ?? [];
     
     if (empty($fullname) || empty($phone) || empty($address) || empty($items)) {
@@ -124,21 +123,12 @@ try {
         $stmtItem->execute([$orderId, $pName, $vInfo, $price, $qty]);
     }
 
-    if ($couponCode) {
-        $stmtVal = $db->prepare("SELECT * FROM coupons WHERE code = ? LIMIT 1 FOR UPDATE");
-        $stmtVal->execute([$couponCode]);
-        $coupon = $stmtVal->fetch();
-        if ($coupon) {
-            if (intval($coupon['status']) !== 1) {
-                throw new Exception("Mã giảm giá này hiện không được kích hoạt.");
-            }
-            if ($coupon['usage_limit'] !== null && intval($coupon['used_count']) >= intval($coupon['usage_limit'])) {
-                throw new Exception("Mã giảm giá đã hết lượt sử dụng.");
-            }
-            $stmtCoupon = $db->prepare("UPDATE coupons SET used_count = used_count + 1 WHERE code = ?");
-            $stmtCoupon->execute([$couponCode]);
-        } else {
-            throw new Exception("Mã giảm giá không hợp lệ.");
+    $pointsEarned = 0;
+    if ($userId && $paymentMethod !== 'momo') {
+        $pointsEarned = intval(floor($subtotal / 10000));
+        if ($pointsEarned > 0) {
+            $stmtPts = $db->prepare("UPDATE users SET loyalty_points = COALESCE(loyalty_points, 0) + ? WHERE id = ?");
+            $stmtPts->execute([$pointsEarned, $userId]);
         }
     }
 
@@ -155,7 +145,8 @@ try {
         "order_code" => $orderCode,
         "order_id" => $orderId,
         "payment_method" => $paymentMethod,
-        "total_amount" => $totalAmount
+        "total_amount" => $totalAmount,
+        "points_earned" => $pointsEarned
     ]);
 
 } catch (Exception $e) {

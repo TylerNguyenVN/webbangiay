@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thông Tin Giao Hàng — TL Shop</title>
+  <meta name="description" content="Thông tin chi phí và thời gian giao hàng của TL Shop. Freeship cho đơn từ 1.000.000đ.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/help-pages.css">
+</head>
+<body class="help-page">
+
+  <!-- Navbar -->
+  <nav class="hp-navbar">
+    <a href="../views/index.html" class="hp-navbar__brand">
+      TL<span class="hp-navbar__dot"></span>
+    </a>
+    <a href="javascript:history.back()" class="hp-navbar__back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      Quay lại
+    </a>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hp-hero">
+    <div class="hp-hero__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="3" width="15" height="13" rx="1"/>
+        <path d="M16 8h4l3 5v3h-7V8z"/>
+        <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+      </svg>
+    </div>
+    <div class="hp-hero__tag">Trợ giúp / Vận chuyển</div>
+    <h1 class="hp-hero__title">Thông Tin Giao Hàng</h1>
+    <p class="hp-hero__sub">Chính sách vận chuyển rõ ràng, minh bạch — giao hàng toàn quốc với đơn vị đối tác uy tín.</p>
+  </div>
+
+  <!-- Content -->
+  <main class="hp-container">
+
+    <!-- Freeship Banner -->
+    <div class="hp-freeship" style="margin-bottom:2rem;">
+      <div class="hp-freeship__icon">🎁</div>
+      <div class="hp-freeship__text">
+        <strong>MIỄN PHÍ VẬN CHUYỂN</strong>
+        <span>Áp dụng cho tất cả đơn hàng từ <strong style="color:#34d399;">1.000.000 ₫</strong> trở lên — không giới hạn khu vực.</span>
+      </div>
+    </div>
+
+    <!-- Shipping Table -->
+    <div class="hp-section-label">Bảng phí & thời gian vận chuyển</div>
+    <div class="hp-table-wrap">
+      <table class="hp-table">
+        <thead>
+          <tr>
+            <th>Khu vực giao hàng</th>
+            <th>Thời gian dự kiến</th>
+            <th>Phí vận chuyển</th>
+            <th>Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.65rem;">
+                <span style="font-size:1.1rem;">🏙️</span>
+                <div>
+                  <div style="font-weight:600;color:#e5e7eb;">Nội thành</div>
+                  <div style="font-size:0.75rem;color:#4b5563;">Hà Nội & TP.HCM</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="hp-badge hp-badge--green">1 – 2 ngày</span></td>
+            <td style="font-weight:700;color:#2dd4bf;">20.000 ₫</td>
+            <td style="font-size:0.8125rem;color:#6b7280;">Giao trong ngày nếu đặt trước 14:00</td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.65rem;">
+                <span style="font-size:1.1rem;">🗺️</span>
+                <div>
+                  <div style="font-weight:600;color:#e5e7eb;">Ngoại tỉnh</div>
+                  <div style="font-size:0.75rem;color:#4b5563;">Các tỉnh thành khác</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="hp-badge hp-badge--teal">3 – 5 ngày</span></td>
+            <td style="font-weight:700;color:#2dd4bf;">35.000 ₫</td>
+            <td style="font-size:0.8125rem;color:#6b7280;">Tùy tỉnh thành và đơn vị vận chuyển</td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.65rem;">
+                <span style="font-size:1.1rem;">🏝️</span>
+                <div>
+                  <div style="font-weight:600;color:#e5e7eb;">Vùng xa / Hải đảo</div>
+                  <div style="font-size:0.75rem;color:#4b5563;">Khu vực đặc biệt</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="hp-badge hp-badge--amber">5 – 8 ngày</span></td>
+            <td style="font-weight:700;color:#fbbf24;">Theo báo giá</td>
+            <td style="font-size:0.8125rem;color:#6b7280;">Phí theo bảng giá đối tác vận chuyển</td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.65rem;">
+                <span style="font-size:1.1rem;">⚡</span>
+                <div>
+                  <div style="font-weight:600;color:#e5e7eb;">Giao hỏa tốc</div>
+                  <div style="font-size:0.75rem;color:#4b5563;">Nội thành HN & HCM</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="hp-badge hp-badge--blue">2 – 4 giờ</span></td>
+            <td style="font-weight:700;color:#93c5fd;">60.000 ₫</td>
+            <td style="font-size:0.8125rem;color:#6b7280;">Đặt trước 11:00 hoặc 15:00 hàng ngày</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Note cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin-top:2rem;">
+      <div class="hp-card" style="padding:1.25rem;">
+        <div style="font-size:1.5rem;margin-bottom:0.75rem;">📦</div>
+        <div style="font-weight:700;color:#e5e7eb;margin-bottom:0.4rem;font-size:0.9375rem;">Đóng gói cẩn thận</div>
+        <div style="font-size:0.8125rem;color:#6b7280;line-height:1.6;">Mỗi đôi giày được bọc bảo vệ bên trong hộp gốc, đảm bảo nguyên vẹn khi đến tay bạn.</div>
+      </div>
+      <div class="hp-card" style="padding:1.25rem;">
+        <div style="font-size:1.5rem;margin-bottom:0.75rem;">🔍</div>
+        <div style="font-weight:700;color:#e5e7eb;margin-bottom:0.4rem;font-size:0.9375rem;">Theo dõi vận đơn</div>
+        <div style="font-size:0.8125rem;color:#6b7280;line-height:1.6;">Mã vận đơn được gửi qua email/SMS sau khi đơn hàng được bàn giao cho đơn vị vận chuyển.</div>
+      </div>
+      <div class="hp-card" style="padding:1.25rem;">
+        <div style="font-size:1.5rem;margin-bottom:0.75rem;">🛡️</div>
+        <div style="font-weight:700;color:#e5e7eb;margin-bottom:0.4rem;font-size:0.9375rem;">Bảo hiểm hàng hóa</div>
+        <div style="font-size:0.8125rem;color:#6b7280;line-height:1.6;">TL Shop cam kết xử lý và bồi thường nếu hàng bị hư hỏng trong quá trình vận chuyển.</div>
+      </div>
+    </div>
+
+    <!-- Alert -->
+    <div class="hp-alert hp-alert--info" style="margin-top:2rem;">
+      <svg class="hp-alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span>Thời gian giao hàng tính từ ngày kho xác nhận đóng gói (không tính ngày lễ, ngày nghỉ). Liên hệ <strong>1900 1234</strong> nếu đơn hàng chậm so với dự kiến.</span>
+    </div>
+
+  </main>
+
+  <footer class="hp-footer">
+    © 2026 TL Shop, Inc. — <a href="order-status.html">Đơn hàng</a> · <a href="returns.html">Đổi trả</a> · <a href="contact.html">Liên hệ</a>
+  </footer>
+
+</body>
+</html>

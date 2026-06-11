@@ -16,6 +16,7 @@
 
   
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/footer-modals.js" defer></script>
 </head>
 
 <body class="nike-body light-theme">
@@ -25,7 +26,7 @@
 
   
   <main class="nike-main">
-    <div class="nike-container product-detail__container">
+    <div class="nike-container" style="padding: 2.5rem 1.5rem 1.5rem 1.5rem;">
 
       
       
@@ -34,10 +35,11 @@
         <div class="grid-cols-12">
 
           
-          <div class="col-span-7 product-detail__left-col">
+          <div class="col-span-7" style="display: flex; flex-direction: column; gap: 1.5rem;">
             
             <div class="image-showcase">
-              <span class="nike-badge-green product-detail__badge" id="prod-tag-badge">
+              <span class="nike-badge-green" id="prod-tag-badge"
+                style="position: absolute; top: 1rem; left: 1rem; z-index: 10;">
                 ELITE PERFORMANCE
               </span>
               <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&q=80&w=1200"
@@ -49,23 +51,26 @@
               
               <div class="col-span-6 rating-card">
                 <div>
-                  <div class="stars product-detail__stars">
+                  <div class="stars" style="margin-bottom: 0.5rem;">
                     <i data-lucide="star" class="star-icon"></i>
                     <i data-lucide="star" class="star-icon"></i>
                     <i data-lucide="star" class="star-icon"></i>
                     <i data-lucide="star" class="star-icon"></i>
                     <i data-lucide="star" class="star-icon"></i>
                   </div>
-                  <div class="product-detail__rating-row">
-                    <span class="product-detail__rating-score">4.8</span>
-                    <span class="product-detail__rating-count">/ 5 (128 reviews)</span>
+                  <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span
+                      style="font-family: var(--font-display); font-weight: 900; font-size: 1.5rem; color: #1c1917;">4.8</span>
+                    <span style="font-size: 12px; color: var(--color-elite-muted);">/ 5 (128 reviews)</span>
                   </div>
                 </div>
-                <div class="product-detail__review-section">
-                  <p class="product-detail__review-text">
+                <div style="border-top: 1px solid #f5f5f4; padding-top: 1rem;">
+                  <p
+                    style="margin: 0 0 0.5rem 0; font-size: 12.5px; font-style: italic; color: #44403c; line-height: 1.5;">
                     "Incredible touch on the ball. The lockdown is unmatched."
                   </p>
-                  <p class="product-detail__review-author">
+                  <p
+                    style="margin: 0; font-size: 10px; font-weight: 750; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-elite-muted);">
                     — M. Jordan
                   </p>
                 </div>
@@ -96,7 +101,8 @@
           </div>
 
           
-          <div class="col-span-5 product-detail__right-col">
+          <div class="col-span-5"
+            style="display: flex; flex-direction: column; justify-content: space-between; gap: 2rem;">
             <div>
               
               <p class="product-category-tag" id="prod-category-text">FOOTBALL / ELITE SERIES</p>
@@ -108,7 +114,7 @@
               <p class="product-price-tag" id="prod-price-text">6.499.000 đ</p>
 
               
-              <div class="product-detail__size-section">
+              <div style="margin-bottom: 2rem;">
                 <div class="size-selector-header">
                   <span>Chọn Size (US)</span>
                   <button type="button" class="size-guide-btn"
@@ -122,12 +128,12 @@
               </div>
 
               
-              <div class="product-detail__action-row">
+              <div style="display: flex; gap: 0.75rem; margin-bottom: 2.5rem;">
                 <button type="button" class="add-to-cart-big-btn" id="prod-add-to-cart-btn">
                   THÊM VÀO GIỎ HÀNG
                 </button>
                 <button type="button" class="wishlist-btn" id="prod-wishlist-btn" title="Yêu thích">
-                  <i data-lucide="heart" class="product-detail__heart-icon"></i>
+                  <i data-lucide="heart" style="width: 22px; height: 22px;"></i>
                 </button>
               </div>
 
@@ -137,7 +143,7 @@
                 <div class="accordion-item open" id="acc-description">
                   <button type="button" class="accordion-trigger">
                     <span>Giới thiệu sản phẩm</span>
-                    <i data-lucide="chevron-down" class="product-detail__accordion-icon"></i>
+                    <i data-lucide="chevron-down" style="width: 18px; height: 18px;"></i>
                   </button>
                   <div class="accordion-body" id="prod-desc-body">
                     Được thiết kế dành cho những cầu thủ nhanh nhất trên sân, Nike Mercurial Vapor 16 Elite sở hữu thiết
@@ -151,7 +157,7 @@
                 <div class="accordion-item" id="acc-delivery">
                   <button type="button" class="accordion-trigger">
                     <span>Giao hàng & Hoàn trả</span>
-                    <i data-lucide="chevron-down" class="product-detail__accordion-icon"></i>
+                    <i data-lucide="chevron-down" style="width: 18px; height: 18px;"></i>
                   </button>
                   <div class="accordion-body" id="prod-delivery-body">
                     Giao hàng toàn quốc từ 2-4 ngày làm việc. Đổi trả miễn phí trong vòng 30 ngày nếu sản phẩm chưa qua
@@ -163,10 +169,11 @@
                 <div class="accordion-item" id="acc-specs">
                   <button type="button" class="accordion-trigger">
                     <span>Thông số kỹ thuật</span>
-                    <i data-lucide="chevron-down" class="product-detail__accordion-icon"></i>
+                    <i data-lucide="chevron-down" style="width: 18px; height: 18px;"></i>
                   </button>
                   <div class="accordion-body">
-                    <div class="product-detail__specs-body" id="prod-specs-body">
+                    <div style="display: flex; flex-direction: column; gap: 0.65rem; padding: 0.25rem 0;"
+                      id="prod-specs-body">
                       
                     </div>
                   </div>
@@ -176,11 +183,13 @@
 
             
             <div class="authenticity-card">
-              <i data-lucide="shield-check" class="product-detail__auth-icon"></i>
+              <i data-lucide="shield-check"
+                style="color: var(--color-elite-primary); width: 22px; height: 22px; flex-shrink: 0; margin-top: 1px;"></i>
               <div>
-                <p class="product-detail__auth-title">
+                <p
+                  style="margin: 0 0 0.15rem 0; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: var(--color-elite-primary); text-transform: uppercase;">
                   AUTHENTICITY GUARANTEED</p>
-                <p class="product-detail__auth-desc">Verified
+                <p style="margin: 0; font-size: 10.5px; color: var(--color-elite-muted); line-height: 1.4;">Verified
                   Technical Precision. Trực tiếp ủy quyền từ nhà máy sản xuất Nike toàn cầu.</p>
               </div>
             </div>
@@ -216,7 +225,7 @@
     async function initPageComponents() {
       await Promise.all([
         loadTemplate('header-placeholder', 'components/header.html?v=2'),
-        loadTemplate('footer-placeholder', 'components/footer.html')
+        loadTemplate('footer-placeholder', 'components/footer.html?v=3')
       ]);
 
       if (window.lucide) {

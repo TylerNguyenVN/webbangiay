@@ -306,3 +306,40 @@ export const ModernPagination: React.FC<PaginationProps> = ({
    - Thay vì nạp lại dot trên mỗi trang, sử dụng một thẻ `div.pag-indicator-active` tuyệt đối và tịnh tiến chuyển dịch thuộc tính `transform: translateX()` tới tọa độ của trang đang hoạt động. Điều này tạo cảm giác trượt mượt mà.
 3. **Hover Scale Dampening**:
    - Tỷ lệ co giãn tối đa là `scale(1.08)` đảm bảo chuyển động không quá rõ rệt nhưng đủ nhạy để thu hút sự chú ý của người dùng.
+
+---
+
+## 7. Dark Mode Integration Spec
+
+Để tích hợp Dark Mode liền mạch (phù hợp với các bảng điều khiển tối màu sang trọng):
+
+```css
+/* Thiết lập mã màu tối ưu cho Dark Mode */
+.dark-theme .pag-btn {
+  color: #9ca3af;
+}
+
+.dark-theme .pag-btn:hover:not(:disabled) {
+  color: #10b981; /* Xanh lục bảo sáng (emerald-500) */
+}
+
+.dark-theme .pag-page {
+  color: #4b5563; /* Xám sẫm */
+}
+
+.dark-theme .pag-page:hover {
+  color: #10b981;
+}
+
+.dark-theme .pag-page.active {
+  color: #10b981;
+}
+
+.dark-theme .pag-page.active::after {
+  background-color: #10b981;
+}
+
+.dark-theme .pag-ellipsis {
+  color: #374151;
+}
+```
