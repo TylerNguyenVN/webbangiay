@@ -170,6 +170,30 @@
               </div>
             </form>
           </section>
+          <section class="bg-white dark:bg-[#151712] border border-[#F0EBE0] dark:border-[#2c2f25] p-10 rounded-[32px] shadow-sm">
+              <div class="flex justify-between items-center mb-6">
+                  <h3 class="font-display text-xl md:text-2xl font-bold text-[#2D3025] dark:text-[#FDFBF7]">🛒 Đơn hàng của tôi</h3>
+              </div>
+              <div class="overflow-x-auto">
+                  <table class="w-full text-left font-sans text-sm border-collapse">
+                      <thead>
+                          <tr class="border-b border-[#F0EBE0] dark:border-[#2c2f25] text-[#7C7F6E] dark:text-[#9ea390] font-bold uppercase tracking-wider text-[10px]">
+                              <th class="pb-4 px-2">Mã đơn hàng</th>
+                              <th class="pb-4 px-2">Ngày đặt</th>
+                              <th class="pb-4 px-2">Tổng tiền</th>
+                              <th class="pb-4 px-2 text-right">Trạng thái</th>
+                          </tr>
+                      </thead>
+                      <tbody id="my-orders-table-body" class="divide-y divide-[#F0EBE0]/40 dark:divide-[#2c2f25]/40 text-[#2D3025] dark:text-[#e4e7dd]">
+                          <tr>
+                              <td colspan="4" class="py-8 text-center text-[#7C7F6E] dark:text-[#9ea390] font-medium text-xs">
+                                  Đang tải danh sách đơn hàng...
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </section>
 
         </div>
       </div>
@@ -388,7 +412,61 @@
       const loyaltyPoints = Number(user.loyalty_points) || 1500;
       updateLoyaltyUI(loyaltyPoints);
       initLoyaltyModal();
+// FETCH LỊCH SỬ ĐƠN HÀNG CỦA TÔI
+      const fetchMyOrders = () => {
+         fetch(`api/get_my_orders.php?user_id=${user.id}`)
+          .then(res => res.json())
+          .then(data => {
+            const tableBody = document.getElementById("my-orders-table-body");
+            
+            if (!data.success || !data.orders || data.orders.length === 0) {
+              tableBody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-[#7C7F6E] dark:text-[#9ea390] text-xs font-medium">Bạn chưa đặt đơn hàng nào tại cửa hàng.</td></tr>`;
+              return;
+            }
 
+            const getStatusBadge = (status) => {
+              switch(status) {
+                case 'pending': 
+                  return '<span class="px-2.5 py-1 text-[11px] font-bold rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">Chờ xử lý</span>';
+                case 'processing': 
+                  return '<span class="px-2.5 py-1 text-[11px] font-bold rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">Đang chuẩn bị</span>';
+                case 'shipping': 
+                  return '<span class="px-2.5 py-1 text-[11px] font-bold rounded-full bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300">Đang giao</span>';
+                case 'completed': 
+                  return '<span class="px-2.5 py-1 text-[11px] font-bold rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">Đã giao</span>';
+                case 'cancelled': 
+                  return '<span class="px-2.5 py-1 text-[11px] font-bold rounded-full bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">Đã hủy</span>';
+                default: 
+                  return `<span class="px-2.5 py-1 text-[11px] font-bold rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">${status}</span>`;
+              }
+            };
+
+            let html = "";
+            data.orders.forEach(order => {
+              const formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total_amount);
+              const orderDate = new Date(order.created_at).toLocaleDateString('vi-VN');
+              
+              html += `
+                <tr class="hover:bg-[#F2EDE4]/20 dark:hover:bg-[#1c2019]/40 transition-colors">
+                  <td class="py-4 px-2 font-bold text-brand dark:text-[#b4bda5] text-xs tracking-wide">${order.order_code}</td>
+                  <td class="py-4 px-2 text-[#7C7F6E] dark:text-[#9ea390] text-xs">${orderDate}</td>
+                  <td class="py-4 px-2 font-semibold text-xs text-[#2D3025] dark:text-[#FDFBF7]">${formattedPrice}</td>
+                  <td class="py-4 px-2 text-right">${getStatusBadge(order.status)}</td>
+                </tr>
+              `;
+            });
+            
+            tableBody.innerHTML = html;
+          })
+          .catch(err => {
+            console.error(err);
+            document.getElementById("my-orders-table-body").innerHTML = `
+              <tr><td colspan="4" class="py-8 text-center text-rose-600 dark:text-rose-400 text-xs font-semibold">Lỗi kết nối máy chủ không thể tải đơn hàng!</td></tr>
+            `;
+          });
+      };
+
+      fetchMyOrders();
       const editBtn = document.getElementById("edit-btn");
       const inputs = [
         document.getElementById("input-name"),
