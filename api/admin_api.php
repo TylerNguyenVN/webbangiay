@@ -470,49 +470,6 @@ try {
     
     $response = ["success" => false, "message" => $message, "error" => $e->getMessage()];
 }
-// Đoạn code xử lý nhận mảng Excel đẩy vào MySQL
-if ($action === 'import_products') {
-    // Đọc luồng dữ liệu JSON dạng thô gửi từ fetch qua
-    $input = json_decode(file_get_contents('php://input'), true);
-    $products = $input['products'] ?? [];
-    
-    if (empty($products)) {
-        echo json_encode(['success' => false, 'message' => 'Không tìm thấy dữ liệu sản phẩm hợp lệ!']);
-        exit;
-    }
-    
-    $successCount = 0;
-    
-    // Vòng lặp quét qua từng hàng dữ liệu từ file Excel dịch ra
-    foreach ($products as $row) {
-        // Tên cột bên trái phải viết ĐÚNG CHÍNH XÁC tiêu đề hàng đầu tiên trong file Excel của bạn
-        $name = $row['TenSanPham'] ?? '';
-        $slug = $row['Slug'] ?? '';
-        $price = $row['GiaBanGoc'] ?? 0;
-        $description = $row['MoTa'] ?? '';
-        $category_id = $row['DanhMucID'] ?? null; 
-        $status = 'active';
-        
-        if (empty($name) || empty($slug)) {
-            continue; // Nếu hàng đó thiếu tên hoặc slug thì bỏ qua để không lỗi database
-        }
-        
-        // Bạn chỉnh lại tên bảng 'products' và các trường (name, slug...) cho khớp với file shoes_db_schema của nhóm
-        // Giả sử biến kết nối cơ sở dữ liệu MySQL của nhóm bạn tên là $conn
-        $stmt = $conn->prepare("INSERT INTO products (name, slug, price, description, category_id, status) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssdsss", $name, $slug, $price, $description, $category_id, $status);
-        
-        if ($stmt->execute()) {
-            $successCount++;
-        }
-    }
-    
-    // Trả kết quả về cho file JS hiển thị thông báo thành công
-    echo json_encode([
-        'success' => true, 
-        'message' => "Đã nhập (Import) thành công tổng cộng $successCount sản phẩm từ Excel vào MySQL Database!"
-    ]);
-    exit;
-}
+
 echo json_encode($response);
 exit;

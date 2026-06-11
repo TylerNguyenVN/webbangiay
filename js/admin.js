@@ -33,7 +33,6 @@ const unresolvedQueries = [
 document.addEventListener("DOMContentLoaded", () => {
   let currentProducts = [];
   let editingProductImageUrl = "";
-  /*
   const currentUserStr = localStorage.getItem("nike_current_user");
   if (!currentUserStr) {
     window.location.href = "auth.html";
@@ -45,8 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "index.html";
     return;
   }
-  /*
-  */
+
   const adminLogoutBtn = document.getElementById("admin-logout-btn");
   if (adminLogoutBtn) {
     adminLogoutBtn.addEventListener("click", (e) => {
@@ -1155,83 +1153,3 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
-
-document.addEventListener("DOMContentLoaded", function () {
-    const themeBtn = document.getElementById("btn-toggle-theme");
-
-    if (themeBtn) {
-        themeBtn.addEventListener("click", function () {
-            document.body.classList.toggle("dark-theme");
-
-            const icon = themeBtn.querySelector("i");
-            if (document.body.classList.contains("dark-theme")) {
-                icon.setAttribute("data-lucide", "sun");
-            } else {
-                icon.setAttribute("data-lucide", "moon");
-            }
-            lucide.createIcons();
-        });
-    }
-});
-document.getElementById("btn-export-excel").addEventListener("click", function () {
-    const table = document.getElementById("table-products-body");
-
-    const wb = XLSX.utils.table_to_book(document.querySelector(".admin-table"), { sheet: "SanPham" });
-
-    XLSX.writeFile(wb, "Danh_Sach_San_Pham.xlsx");
-});
-
-// Tính năng Nhập (Import) hàng loạt từ file Excel
-const btnImportExcel = document.getElementById("btn-import-excel");
-const fileImportExcel = document.getElementById("file-import-excel");
-
-if (btnImportExcel && fileImportExcel) {
-    // Khi bấm nút giao diện, kích hoạt bấm vào input file ẩn
-    btnImportExcel.addEventListener("click", () => fileImportExcel.click());
-
-    // Khi người dùng chọn file xong
-    fileImportExcel.addEventListener("change", function (e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function (evt) {
-            const data = new Uint8Array(evt.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-
-            // Lấy dữ liệu từ Sheet đầu tiên của file Excel
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-
-            // Ép toàn bộ các dòng trong Excel thành mảng JSON
-            const productsData = XLSX.utils.sheet_to_json(worksheet);
-
-            if (productsData.length === 0) {
-                alert("Hệ thống: File Excel này trống rỗng!");
-                return;
-            }
-
-            // Gửi mảng JSON sản phẩm này sang file PHP quản lý API của bạn
-            fetch("api/admin_api.php?action=import_products", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ products: productsData })
-            })
-                .then(res => res.json())
-                .then(resData => {
-                    if (resData.success) {
-                        alert("Hệ thống: " + resData.message);
-                        location.reload(); // Tải lại trang để bảng hiển thị sản phẩm mới nhập
-                    } else {
-                        alert("Lỗi import: " + resData.message);
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("Lỗi kết nối đến Server API!");
-                });
-        };
-        reader.readAsArrayBuffer(file);
-        fileImportExcel.value = ""; // Đặt lại input để lần sau chọn lại file cũ vẫn ăn
-    });
-}
